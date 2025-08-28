@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://du6kxaldswwyq"]
+
+[ext_resource type="PackedScene" uid="uid://dgixv1ydirgkn" path="res://Prefabs/mechanical_arachnid_rig.tscn" id="1_i2uhj"]
+
+[node name="MechanicalArachnid" type="CharacterBody3D"]
+
+[node name="MechanicalArachnidRig" parent="." instance=ExtResource("1_i2uhj")]

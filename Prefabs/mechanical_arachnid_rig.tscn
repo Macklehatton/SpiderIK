@@ -1,0 +1,221 @@
+[gd_scene load_steps=5 format=3 uid="uid://dgixv1ydirgkn"]
+
+[ext_resource type="PackedScene" uid="uid://hj4wma4rvocm" path="res://Meshes/MechanicalArachnid.glb" id="1_i2uhj"]
+[ext_resource type="Script" uid="uid://mc2ijaj7xf1r" path="res://Scripts/setup_ik.gd" id="2_l0n85"]
+[ext_resource type="Script" uid="uid://ppagnhmcok57" path="res://Scripts/foot_constraint.gd" id="3_3mqb4"]
+[ext_resource type="Script" uid="uid://df7j0ab7lmhoy" path="res://addons/libik/script/pole_bone_constraint.gd" id="4_3mqb4"]
+
+[node name="MechanicalArachnidRig" instance=ExtResource("1_i2uhj")]
+
+[node name="SetupIK" type="Node3D" parent="." index="0" node_paths=PackedStringArray("godot_ik", "skeleton")]
+script = ExtResource("2_l0n85")
+godot_ik = NodePath("../ArachnidRig/Skeleton3D/GodotIK")
+skeleton = NodePath("../ArachnidRig/Skeleton3D")
+chain_length = 3
+
+[node name="foot_target_e2_2-3_leaf" type="Node3D" parent="SetupIK" index="0" node_paths=PackedStringArray("ik_effector")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.08851, -1.12879, 1.90734)
+script = ExtResource("3_3mqb4")
+ik_effector = NodePath("../../ArachnidRig/Skeleton3D/GodotIK/ik_e2_2-3")
+
+[node name="foot_target_e5_6-7_leaf" type="Node3D" parent="SetupIK" index="1" node_paths=PackedStringArray("ik_effector")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.56214, -2.06929, -0.98245)
+script = ExtResource("3_3mqb4")
+ik_effector = NodePath("../../ArachnidRig/Skeleton3D/GodotIK/ik_e5_6-7")
+
+[node name="foot_target_e8_10-11_leaf" type="Node3D" parent="SetupIK" index="2" node_paths=PackedStringArray("ik_effector")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.56214, -2.06929, -1.23065)
+script = ExtResource("3_3mqb4")
+ik_effector = NodePath("../../ArachnidRig/Skeleton3D/GodotIK/ik_e8_10-11")
+
+[node name="foot_target_e11_14-15_leaf" type="Node3D" parent="SetupIK" index="3" node_paths=PackedStringArray("ik_effector")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.08851, -2.06929, -3.40439)
+script = ExtResource("3_3mqb4")
+ik_effector = NodePath("../../ArachnidRig/Skeleton3D/GodotIK/ik_e11_14-15")
+
+[node name="foot_target_e14_18-19_leaf" type="Node3D" parent="SetupIK" index="4" node_paths=PackedStringArray("ik_effector")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08851, -2.06929, 1.58769)
+script = ExtResource("3_3mqb4")
+ik_effector = NodePath("../../ArachnidRig/Skeleton3D/GodotIK/ik_e14_18-19")
+
+[node name="foot_target_e17_22-23_leaf" type="Node3D" parent="SetupIK" index="5" node_paths=PackedStringArray("ik_effector")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.56214, -2.06929, 0.23065)
+script = ExtResource("3_3mqb4")
+ik_effector = NodePath("../../ArachnidRig/Skeleton3D/GodotIK/ik_e17_22-23")
+
+[node name="foot_target_e20_26-27_leaf" type="Node3D" parent="SetupIK" index="6" node_paths=PackedStringArray("ik_effector")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.56214, -2.06929, -1.23065)
+script = ExtResource("3_3mqb4")
+ik_effector = NodePath("../../ArachnidRig/Skeleton3D/GodotIK/ik_e20_26-27")
+
+[node name="foot_target_e23_30-31_leaf" type="Node3D" parent="SetupIK" index="7" node_paths=PackedStringArray("ik_effector")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08851, -2.06928, -2.58769)
+script = ExtResource("3_3mqb4")
+ik_effector = NodePath("../../ArachnidRig/Skeleton3D/GodotIK/ik_e23_30-31")
+
+[node name="GodotIK" type="GodotIK" parent="ArachnidRig/Skeleton3D" index="0"]
+
+[node name="ik_e2_2-3" type="GodotIKEffector" parent="ArachnidRig/Skeleton3D/GodotIK" index="0"]
+bone_name = "e2_2-3"
+bone_idx = 3
+chain_length = 3
+transform_mode = 3
+transform = Transform3D(0.616802, 0.34812, 0.705952, -3.96976e-08, -0.896881, 0.442272, 0.787119, -0.272794, -0.553198, -2.76676, 0.618617, 2.43883)
+
+[node name="pole_e2_2-3" type="GodotIKConstraint" parent="ArachnidRig/Skeleton3D/GodotIK/ik_e2_2-3" index="0"]
+bone_name = "e2_2-3"
+bone_idx = 2
+script = ExtResource("4_3mqb4")
+pole_direction = Vector3(0, 1, 0)
+
+[node name="ik_e5_6-7" type="GodotIKEffector" parent="ArachnidRig/Skeleton3D/GodotIK" index="1"]
+bone_name = "e5_6-7"
+bone_idx = 7
+chain_length = 3
+transform_mode = 3
+transform = Transform3D(0.229282, 0.43049, 0.872988, -4.24916e-08, -0.896881, 0.442272, 0.97336, -0.101405, -0.205639, -3.40087, -0.321873, -0.784881)
+
+[node name="pole_e5_6-7" type="GodotIKConstraint" parent="ArachnidRig/Skeleton3D/GodotIK/ik_e5_6-7" index="0"]
+bone_name = "e5_6-7"
+bone_idx = 6
+script = ExtResource("4_3mqb4")
+pole_direction = Vector3(0, 1, 0)
+
+[node name="ik_e8_10-11" type="GodotIKEffector" parent="ArachnidRig/Skeleton3D/GodotIK" index="2"]
+bone_name = "e8_10-11"
+bone_idx = 11
+chain_length = 3
+transform_mode = 3
+transform = Transform3D(-0.200623, 0.43328, 0.878646, 1.58325e-08, -0.896881, 0.442271, 0.979669, 0.0887298, 0.179935, -3.40631, -0.321873, -1.40352)
+
+[node name="pole_e8_10-11" type="GodotIKConstraint" parent="ArachnidRig/Skeleton3D/GodotIK/ik_e8_10-11" index="0"]
+bone_name = "e8_10-11"
+bone_idx = 10
+script = ExtResource("4_3mqb4")
+pole_direction = Vector3(0, 1, 0)
+
+[node name="ik_e11_14-15" type="GodotIKEffector" parent="ArachnidRig/Skeleton3D/GodotIK" index="3"]
+bone_name = "e11_14-15"
+bone_idx = 15
+chain_length = 3
+transform_mode = 3
+transform = Transform3D(-0.593441, 0.355975, 0.72188, 9.06875e-08, -0.896881, 0.442272, 0.804878, 0.262462, 0.532246, -2.78206, -0.321873, -3.91575)
+
+[node name="pole_e11_14-15" type="GodotIKConstraint" parent="ArachnidRig/Skeleton3D/GodotIK/ik_e11_14-15" index="0"]
+bone_name = "e11_14-15"
+bone_idx = 14
+script = ExtResource("4_3mqb4")
+pole_direction = Vector3(0, 1, 0)
+
+[node name="ik_e14_18-19" type="GodotIKEffector" parent="ArachnidRig/Skeleton3D/GodotIK" index="4"]
+bone_name = "e14_18-19"
+bone_idx = 19
+chain_length = 3
+transform_mode = 3
+transform = Transform3D(0.593441, -0.355975, -0.72188, -1.21188e-07, -0.896881, 0.442272, -0.804878, -0.262462, -0.532246, 2.78206, -0.321874, 2.09905)
+
+[node name="pole_e14_18-19" type="GodotIKConstraint" parent="ArachnidRig/Skeleton3D/GodotIK/ik_e14_18-19" index="0"]
+bone_name = "e14_18-19"
+bone_idx = 18
+script = ExtResource("4_3mqb4")
+pole_direction = Vector3(0, 1, 0)
+
+[node name="ik_e17_22-23" type="GodotIKEffector" parent="ArachnidRig/Skeleton3D/GodotIK" index="5"]
+bone_name = "e17_22-23"
+bone_idx = 23
+chain_length = 3
+transform_mode = 3
+transform = Transform3D(0.200623, -0.43328, -0.878646, 8.9407e-08, -0.896881, 0.442272, -0.979669, -0.0887298, -0.179935, 3.40631, -0.321873, 0.403524)
+
+[node name="pole_e17_22-23" type="GodotIKConstraint" parent="ArachnidRig/Skeleton3D/GodotIK/ik_e17_22-23" index="0"]
+bone_name = "e17_22-23"
+bone_idx = 22
+script = ExtResource("4_3mqb4")
+pole_direction = Vector3(0, 1, 0)
+
+[node name="ik_e20_26-27" type="GodotIKEffector" parent="ArachnidRig/Skeleton3D/GodotIK" index="6"]
+bone_name = "e20_26-27"
+bone_idx = 27
+chain_length = 3
+transform_mode = 3
+transform = Transform3D(-0.229282, -0.43049, -0.872988, 3.29455e-08, -0.896881, 0.442272, -0.97336, 0.101405, 0.205639, 3.40087, -0.321873, -1.42822)
+
+[node name="pole_e20_26-27" type="GodotIKConstraint" parent="ArachnidRig/Skeleton3D/GodotIK/ik_e20_26-27" index="0"]
+bone_name = "e20_26-27"
+bone_idx = 26
+script = ExtResource("4_3mqb4")
+pole_direction = Vector3(0, 1, 0)
+
+[node name="ik_e23_30-31" type="GodotIKEffector" parent="ArachnidRig/Skeleton3D/GodotIK" index="7"]
+bone_name = "e23_30-31"
+bone_idx = 31
+chain_length = 3
+transform_mode = 3
+transform = Transform3D(-0.616802, -0.34812, -0.705952, 3.13157e-08, -0.896881, 0.442272, -0.787119, 0.272794, 0.553198, 2.76676, -0.321873, -3.11918)
+
+[node name="pole_e23_30-31" type="GodotIKConstraint" parent="ArachnidRig/Skeleton3D/GodotIK/ik_e23_30-31" index="0"]
+bone_name = "e23_30-31"
+bone_idx = 30
+script = ExtResource("4_3mqb4")
+pole_direction = Vector3(0, 1, 0)
+
+[node name="Base" parent="ArachnidRig/Skeleton3D" index="1"]
+transform = Transform3D(1, 5.96865e-14, 0, 7.10543e-14, -1, 3.89414e-07, 0, -3.89414e-07, -1, 2.16722e-08, 0.31486, -0.495801)
+visible = false
+
+[node name="Cube" parent="ArachnidRig/Skeleton3D" index="2"]
+transform = Transform3D(0.255069, -1.52242e-14, -5.92851e-21, 1.81237e-14, 0.255069, 1.42109e-14, 0, 7.10543e-15, 0.255069, 2.16721e-08, 1.3194, -0.496464)
+
+[node name="Cube_001" parent="ArachnidRig/Skeleton3D" index="3"]
+transform = Transform3D(0.21851, 4.03022e-15, 1.24038e-14, 1.5526e-14, -0.0675232, -0.207815, 0, 0.207815, -0.0675232, 2.16722e-08, 0.325759, -2.81694)
+
+[node name="Cube_002" parent="ArachnidRig/Skeleton3D" index="4"]
+transform = Transform3D(0.202136, 1.05458e-08, -0.0541622, -1.05457e-08, 0.209267, 1.38838e-09, 0.0541622, 1.38839e-09, 0.202136, -0.444968, -0.16768, 0.430178)
+
+[node name="Cube_003" parent="ArachnidRig/Skeleton3D" index="5"]
+transform = Transform3D(0.965926, 5.03939e-08, -0.258819, -5.03939e-08, 1, 6.63456e-09, 0.258819, 6.63442e-09, 0.965926, -0.61306, -0.16768, 1.23014)
+
+[node name="Cylinder" parent="ArachnidRig/Skeleton3D" index="6"]
+transform = Transform3D(0.678898, 1.77706e-14, 3.85378e-14, 4.82386e-14, -0.297732, -0.64567, 0, 0.916324, -0.209791, 2.16721e-08, 1.31201, -2.75102)
+
+[node name="Cylinder_002" parent="ArachnidRig/Skeleton3D" index="7"]
+transform = Transform3D(0.559359, 1.47384e-14, 0, 3.97448e-14, -0.246929, 2.17822e-07, 0, -9.61578e-08, -0.559359, 2.16721e-08, 0.745012, -0.495801)
+
+[node name="Cylinder_003" parent="ArachnidRig/Skeleton3D" index="8"]
+transform = Transform3D(0.67064, 1.49586e-14, 3.80691e-14, 4.76519e-14, -0.250619, -0.637817, 0, 0.771326, -0.207239, 2.16721e-08, 1.08906, -2.06483)
+
+[node name="Cylinder_004" parent="ArachnidRig/Skeleton3D" index="9"]
+transform = Transform3D(0.662732, 1.47822e-14, 3.76202e-14, 4.70899e-14, -0.247664, -0.630296, 0, 0.762231, -0.204795, 2.16721e-08, 1.37925, -2.95795)
+
+[node name="Cylinder_005" parent="ArachnidRig/Skeleton3D" index="10"]
+transform = Transform3D(2.93665e-08, -0.0255035, 0.0951802, 0.0985378, 3.34152e-08, -2.75513e-08, -1.44878e-08, 0.0951802, 0.0255035, -0.658878, -0.16768, 1.40114)
+
+[node name="Cylinder_006" parent="ArachnidRig/Skeleton3D" index="11"]
+transform = Transform3D(-2.53589e-15, -0.0233924, 0.0410391, 0.0424868, 9.10066e-09, -4.83543e-10, -4.98052e-09, 0.0873016, 0.0109964, -0.845334, -0.16768, 1.52903)
+
+[node name="Cylinder_007" parent="ArachnidRig/Skeleton3D" index="12"]
+transform = Transform3D(-5.96865e-14, -0.258819, 0.965926, 1, -1.37727e-07, 4.82238e-08, 3.17865e-08, 0.965926, 0.258819, 0.590594, -0.16768, 1.1463)
+
+[node name="Cylinder_008" parent="ArachnidRig/Skeleton3D" index="13"]
+transform = Transform3D(0.446703, -3.17838e-20, 2.66622e-14, 3.17402e-14, 3.58559e-07, -0.446704, 0, 0.446703, 3.58559e-07, 2.16721e-08, 1.3194, 0.0200057)
+
+[node name="Cylinder_009" parent="ArachnidRig/Skeleton3D" index="14"]
+transform = Transform3D(0.0615584, -1.752e-21, 3.67421e-15, 4.37399e-15, 5.38161e-09, -0.0615584, 0, 0.0615584, 5.38161e-09, 2.16721e-08, 1.83714, 0.345339)
+
+[node name="Cylinder_010" parent="ArachnidRig/Skeleton3D" index="15"]
+transform = Transform3D(0.122823, -3.49564e-21, 7.33088e-15, 8.7271e-15, 1.07375e-08, -0.122823, 0, 0.122823, 1.07375e-08, 0.579517, 1.33801, 0.345339)
+
+[node name="Cylinder_011" parent="ArachnidRig/Skeleton3D" index="16"]
+transform = Transform3D(0.0615584, -1.752e-21, 3.67421e-15, 4.37399e-15, 5.38161e-09, -0.0615584, 0, 0.0615584, 5.38161e-09, -0.188541, 1.80993, 0.345339)
+
+[node name="Cylinder_012" parent="ArachnidRig/Skeleton3D" index="17"]
+transform = Transform3D(0.0615584, -1.752e-21, 3.67421e-15, 4.37399e-15, 5.38161e-09, -0.0615584, 0, 0.0615584, 5.38161e-09, -0.353758, 1.72441, 0.345339)
+
+[node name="Cylinder_013" parent="ArachnidRig/Skeleton3D" index="18"]
+transform = Transform3D(0.0615584, -1.752e-21, 3.67421e-15, 4.37399e-15, 5.38161e-09, -0.0615584, 0, 0.0615584, 5.38161e-09, 0.188541, 1.81576, 0.345339)
+
+[node name="Cylinder_014" parent="ArachnidRig/Skeleton3D" index="19"]
+transform = Transform3D(1, -5.64347e-14, 1.9432e-14, 7.10543e-14, 0.945519, -0.325568, 0, 0.325568, 0.945518, -0.00412434, 2.16278, -2.57576)
+
+[node name="Cylinder_015" parent="ArachnidRig/Skeleton3D" index="20"]
+transform = Transform3D(0.999307, 0.0213305, 0.0305118, -0.0108647, 0.951, -0.308999, -0.0356079, 0.308453, 0.950573, 0.0124486, 1.85148, -2.01567)
