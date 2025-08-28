@@ -2,12 +2,12 @@
 
 extends Node3D
 
-@export var run : bool
-@export var godot_ik : GodotIK
-@export var skeleton : Skeleton3D
-@export var chain_length : int
+@export var run: bool
+@export var godot_ik: GodotIK
+@export var skeleton: Skeleton3D
+@export var chain_length: int
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if !run:
 		return
 		
@@ -39,28 +39,28 @@ func _process(delta: float) -> void:
 			
 	run = !run
 
-func add_effector(id, name) -> GodotIKEffector:
+func add_effector(id, effector_name) -> GodotIKEffector:
 	var effector = GodotIKEffector.new()
-	effector.name = "ik_" + name
-	effector.bone_name = name
+	effector.name = "ik_" + effector_name
+	effector.bone_name = effector_name
 	effector.bone_idx = id
 	effector.transform = skeleton.get_bone_global_rest(id)
 	effector.chain_length = chain_length
 	effector.transform_mode = GodotIKEffector.FULL_TRANSFORM
 	return effector
 	
-func add_pole(id, name) -> PoleBoneConstraint:
+func add_pole(id, pole_name) -> PoleBoneConstraint:
 	var pole = PoleBoneConstraint.new()
-	pole.name = "pole_" + name
+	pole.name = "pole_" + pole_name
 	var grandparent_ID = skeleton.get_bone_parent(id)
 	var grandparent_name = skeleton.get_bone_name(id)
 	pole.bone_idx = grandparent_ID
-	pole.bone_name = grandparent_name			
+	pole.bone_name = grandparent_name
 	pole.pole_direction.y = 1
 	return pole
 	
-func add_foot_constraint(effector, leaf_id, name) -> FootConstraint:
+func add_foot_constraint(effector, leaf_id, foot_name) -> FootConstraint:
 	var foot_constraint = FootConstraint.new()
-	foot_constraint.name = "foot_target_" + name
+	foot_constraint.name = "foot_target_" + foot_name
 	foot_constraint.initialize(effector, skeleton, godot_ik, leaf_id)
 	return foot_constraint

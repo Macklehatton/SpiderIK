@@ -1,7 +1,16 @@
-[gd_scene load_steps=2 format=3 uid="uid://du6kxaldswwyq"]
+[gd_scene load_steps=3 format=3 uid="uid://du6kxaldswwyq"]
 
 [ext_resource type="PackedScene" uid="uid://dgixv1ydirgkn" path="res://Prefabs/mechanical_arachnid_rig.tscn" id="1_i2uhj"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_i2uhj"]
+height = 4.0
+radius = 3.25
 
 [node name="MechanicalArachnid" type="CharacterBody3D"]
 
 [node name="MechanicalArachnidRig" parent="." instance=ExtResource("1_i2uhj")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.0744, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, -0.829)
+shape = SubResource("CylinderShape3D_i2uhj")
