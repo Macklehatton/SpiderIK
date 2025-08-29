@@ -2,19 +2,31 @@
 
 extends Node3D
 
-@export var run: bool
-@export var godot_ik: GodotIK
-@export var skeleton: Skeleton3D
-@export var chain_length: int
+@export var run : bool
+@export var skeleton : Skeleton3D
+@export var chain_length : int
+@export var godot_ik : GodotIK
+@export var foot_container : Node3D
 
 func _process(_delta: float) -> void:
 	if !run:
 		return
 		
-	for node in get_children():
+	if foot_container == null:
+		foot_container = Node3D.new()
+		add_child(foot_container)
+		foot_container.owner = get_tree().edited_scene_root
+		foot_container.name = "FootContainer"
+	
+	for node in foot_container.get_children():
 		node.queue_free()
 		remove_child(node)
 	
+	if godot_ik == null:
+		godot_ik = GodotIK.new()
+		skeleton.add_child(godot_ik)
+		godot_ik.owner = get_tree().edited_scene_root
+		
 	for node in godot_ik.get_children():
 		node.queue_free()
 		remove_child(node)
@@ -34,8 +46,6 @@ func _process(_delta: float) -> void:
 			pole.owner = get_tree().edited_scene_root
 			
 			var foot_constraint = add_foot_constraint(effector, bone_id, bone_name)
-			add_child(foot_constraint)
-			foot_constraint.owner = get_tree().edited_scene_root
 			
 	run = !run
 
@@ -62,5 +72,7 @@ func add_pole(id, pole_name) -> PoleBoneConstraint:
 func add_foot_constraint(effector, leaf_id, foot_name) -> FootConstraint:
 	var foot_constraint = FootConstraint.new()
 	foot_constraint.name = "foot_target_" + foot_name
-	foot_constraint.initialize(effector, skeleton, godot_ik, leaf_id)
+	foot_container.add_child(foot_constraint)
+	foot_constraint.owner = get_tree().edited_scene_root
+	foot_constraint.initialize(effector, skeleton, leaf_id)
 	return foot_constraint

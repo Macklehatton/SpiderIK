@@ -12,6 +12,7 @@ var leaf_rest_position
 func initialize(p_ik_effector, skeleton, leaf_index):
 	ik_effector = p_ik_effector
 	leaf_rest_position = skeleton.get_bone_global_rest(leaf_index).origin
+	leaf_rest_position = skeleton.to_global(leaf_rest_position)
 	initial_position = ik_effector.global_position
 	global_position = leaf_rest_position
 	offset = initial_position - leaf_rest_position
