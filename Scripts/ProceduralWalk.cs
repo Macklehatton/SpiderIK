@@ -16,13 +16,15 @@ public partial class ProceduralWalk : CharacterBody3D
     {
         RayCasts = new Dictionary<Node3D, RayCast3D>();
         AddRayCasts(footContainer);
+
+        footContainer.CallDeferred("reparent", GetTree().Root);
+        AlignAll();
     }
 
     public override void _PhysicsProcess(double delta)
     {
         Velocity = new Vector3(0.0f, 0.0f, walkSpeed);
         MoveAndSlide();
-        AlignAll();
     }
 
     // Temporary test
