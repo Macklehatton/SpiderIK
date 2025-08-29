@@ -8,6 +8,8 @@ public partial class ProceduralWalk : CharacterBody3D
     [Export] private float raycastHeight;
     [Export] private Node3D footContainer;
 
+    [Export] private float walkSpeed;
+
     private Dictionary<Node3D, RayCast3D> RayCasts;
 
     public override void _Ready()
@@ -16,8 +18,10 @@ public partial class ProceduralWalk : CharacterBody3D
         AddRayCasts(footContainer);
     }
 
-    public override void _Process(double delta)
+    public override void _PhysicsProcess(double delta)
     {
+        Velocity = new Vector3(0.0f, 0.0f, walkSpeed);
+        MoveAndSlide();
         AlignAll();
     }
 

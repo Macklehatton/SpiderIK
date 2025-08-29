@@ -45,7 +45,7 @@ func _process(_delta: float) -> void:
 			effector.add_child(pole)
 			pole.owner = get_tree().edited_scene_root
 			
-			var foot_constraint = add_foot_constraint(effector, bone_id, bone_name)
+			add_foot_constraint(effector, bone_id, bone_name)
 			
 	run = !run
 
