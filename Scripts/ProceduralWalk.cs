@@ -5,6 +5,8 @@ public partial class ProceduralWalk : CharacterBody3D
 {
     [Export] private float raycastDistance;
     [Export] private float raycastHeight;
+    [Export] private float raycastForwardOffset;
+
     [Export] private Node3D footContainer;
     [Export] private float strideDistance;
     [Export] private float cycleRate;
@@ -19,6 +21,7 @@ public partial class ProceduralWalk : CharacterBody3D
     private bool[] inCycle;
     // Feet currently moving
     private bool[] feetMoving;
+    private Vector3?[] currentTarget;
 
     private bool offFoot;
     private float strideDistanceSquared;
@@ -32,9 +35,12 @@ public partial class ProceduralWalk : CharacterBody3D
 
         feet = GetFeet();
         rayCasts = AddRayCasts(feet);
-        inCycle = new bool[feet.Length];
         feetMoving = new bool[feet.Length];
+
+        inCycle = new bool[feet.Length];
         SetAlternateFeet();
+
+        currentTarget = new Vector3?[feet.Length];
 
         strideDistanceSquared = strideDistance * strideDistance;
 
@@ -82,14 +88,28 @@ public partial class ProceduralWalk : CharacterBody3D
     {
         if (!inCycle[footIndex])
         {
+            currentTarget[footIndex] = null;
             return false;
         }
 
-        if (CheckDistance(footIndex))
+        if (currentTarget[footIndex].HasValue)
         {
             return true;
         }
 
+        if (CheckDistance(footIndex))
+        {
+            // Cache the target position
+            currentTarget[footIndex] = rayCasts[footIndex].GetCollisionPoint();
+            return true;
+        }
+        else
+        {
+            currentTarget[footIndex] = null;
+            feetMoving[footIndex] = false;
+        }
+
+        currentTarget[footIndex] = null;
         return false;
     }
 
@@ -117,7 +137,7 @@ public partial class ProceduralWalk : CharacterBody3D
             return;
         }
 
-        Vector3 targetPosition = raycast.GetCollisionPoint();
+        Vector3 targetPosition = currentTarget[footIndex].Value;
 
         Node3D foot = feet[footIndex];
 
@@ -154,6 +174,7 @@ public partial class ProceduralWalk : CharacterBody3D
             AddChild(rayCast);
             rayCast.GlobalPosition = foot.GlobalPosition;
             rayCast.GlobalPosition += new Vector3(0.0f, raycastHeight, 0.0f);
+            rayCast.Position += new Vector3(0.0f, 0.0f, raycastForwardOffset);
             rayCast.TargetPosition = new Vector3(0.0f, -raycastDistance, 0.0f);
             rayCasts[i] = rayCast;
         }
