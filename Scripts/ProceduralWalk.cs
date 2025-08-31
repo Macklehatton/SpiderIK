@@ -57,14 +57,15 @@ public partial class ProceduralWalk : CharacterBody3D
         Velocity = Transform.Basis.Z * moveSpeed;
         MoveAndSlide();
         MoveFeet();
-        DebugRaycasts();
+        DebugDraw();
     }
 
-    public void DebugRaycasts()
+    public void DebugDraw()
     {
         for (int i = 0; i <= rayCasts.Length - 1; i++)
         {
             //DebugDraw3D.DrawBox(rayCasts[i].GlobalPosition, rayCasts[i].Quaternion, Vector3.One);
+            DebugDraw3D.DrawSphere(currentTarget[i]);
         }
     }
 
