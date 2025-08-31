@@ -25,6 +25,7 @@ raycastDistance = 50.0
 strideDistance = 0.5
 cycleRate = 1.0
 moveSpeed = 1.0
+turnRate = -0.05
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_r0du0")
