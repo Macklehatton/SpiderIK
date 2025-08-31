@@ -1,44 +1,106 @@
 using Godot;
 using System;
-using System.Collections.Generic;
 
 public partial class ProceduralWalk : CharacterBody3D
 {
     [Export] private float raycastDistance;
     [Export] private float raycastHeight;
     [Export] private Node3D footContainer;
+    [Export] private float strideDistance;
+    [Export] private float cycleRate;
 
-    [Export] private float walkSpeed;
+    [Export] private float moveSpeed;
+    [Export] private float turnRate;
 
-    private Dictionary<Node3D, RayCast3D> RayCasts;
+    private Node3D[] feet;
+    private RayCast3D[] rayCasts;
+    private bool[] feetMoving;
+
+    private bool offFoot;
+    private float strideDistanceSquared;
+
+    private float currentCycle;
 
     public override void _Ready()
     {
-        RayCasts = new Dictionary<Node3D, RayCast3D>();
-        AddRayCasts(footContainer);
+        // Giving my GPU a break
+        Engine.MaxFps = 60;
 
+        feet = GetFeet();
+        rayCasts = AddRayCasts(feet);
+        feetMoving = new bool[feet.Length];
+        SetAlternateFeet();
+
+        strideDistanceSquared = strideDistance * strideDistance;
+
+        // We don't want the foot IK targets moving with the character
         footContainer.CallDeferred("reparent", GetTree().Root);
-        AlignAll();
     }
 
     public override void _PhysicsProcess(double delta)
     {
-        Velocity = new Vector3(0.0f, 0.0f, walkSpeed);
+        UpdateCycle((float)delta);
+
+        Rotate(Vector3.Up, Mathf.Pi * turnRate * moveSpeed * (float)delta);
+
+        Velocity = Transform.Basis.Z * moveSpeed;
         MoveAndSlide();
+        MoveFeet();
     }
 
-    // Temporary test
-    public void AlignAll()
+    public void UpdateCycle(float delta)
     {
-        foreach (Node3D foot in RayCasts.Keys)
+        currentCycle += cycleRate * moveSpeed * delta;
+
+        // Wrap
+        if (currentCycle > 1.0f)
         {
-            AlignToRaycast(foot);
+            currentCycle = currentCycle - 1.0f;
+            SwapFeet();
         }
     }
 
-    public void AlignToRaycast(Node3D foot)
+    public void MoveFeet()
     {
-        RayCast3D raycast = RayCasts[foot];
+        for (int i = 0; i <= feet.Length - 1; i++)
+        {
+            // Only move one side at a time
+            if (feetMoving[Opposite(i)])
+            {
+                continue;
+            }
+
+            // Does nothing(?)
+            // if (CheckDistance(i))
+            // {
+            //     feetMoving[i] = true;
+            // }
+
+            if (feetMoving[i])
+            {
+                MoveFoot(i);
+            }
+        }
+    }
+
+    public bool CheckDistance(int footIndex)
+    {
+        Vector3 footPosition = feet[footIndex].GlobalPosition;
+        Vector3 targetPosition = rayCasts[footIndex].GetCollisionPoint();
+
+        if (footPosition.DistanceSquaredTo(targetPosition) > strideDistanceSquared)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    public void MoveFoot(int footIndex)
+    {
+        RayCast3D raycast = rayCasts[footIndex];
 
         if (!raycast.IsColliding())
         {
@@ -46,21 +108,88 @@ public partial class ProceduralWalk : CharacterBody3D
         }
 
         Vector3 targetPosition = raycast.GetCollisionPoint();
-        foot.GlobalPosition = targetPosition;
+
+        Node3D foot = feet[footIndex];
+
+        foot.GlobalPosition = foot.GlobalPosition.Lerp(targetPosition, currentCycle);
     }
 
-    public void AddRayCasts(Node3D footContainer)
+    public Node3D[] GetFeet()
     {
-        foreach (Node3D child in footContainer.GetChildren())
+        // Personal preference not to just use the Godot.Array
+        // that comes from GetChildren()
+
+        var children = footContainer.GetChildren();
+        Node3D[] feet = new Node3D[children.Count];
+
+        for (int i = 0; i <= feet.Length - 1; i++)
         {
+            feet[i] = (Node3D)children[i];
+        }
+
+        return feet;
+    }
+
+
+    public RayCast3D[] AddRayCasts(Node3D[] feet)
+    {
+        RayCast3D[] rayCasts = new RayCast3D[feet.Length];
+
+        for (int i = 0; i <= feet.Length - 1; i++)
+        {
+            Node3D foot = feet[i];
+
             RayCast3D rayCast = new RayCast3D();
-            rayCast.Name = "Raycast_" + child.Name;
+            rayCast.Name = "Raycast_" + foot.Name;
             AddChild(rayCast);
-            rayCast.GlobalPosition = child.GlobalPosition;
+            rayCast.GlobalPosition = foot.GlobalPosition;
             rayCast.GlobalPosition += new Vector3(0.0f, raycastHeight, 0.0f);
             rayCast.TargetPosition = new Vector3(0.0f, -raycastDistance, 0.0f);
-
-            RayCasts.Add(child, rayCast);
+            rayCasts[i] = rayCast;
         }
+        return rayCasts;
+    }
+
+    public void SwapFeet()
+    {
+        for (int i = 0; i <= feetMoving.Length - 1; i++)
+        {
+            feetMoving[i] = !feetMoving[i];
+        }
+    }
+
+    public void SetAlternateFeet()
+    {
+        int row = feet.Length / 2;
+
+        for (int i = 0; i <= row - 1; i++)
+        {
+            if (i % 2 == 0)
+            {
+                feetMoving[i] = true;
+            }
+            else
+            {
+                int oppositeIndex = Opposite(i);
+                feetMoving[oppositeIndex] = true;
+            }
+        }
+    }
+
+    // Foot pairs
+    // 0 4
+    // 1 5
+    // 2 6
+    // 3 7
+    public int Opposite(int i)
+    {
+        int row = feet.Length / 2;
+        int opposite = i + row;
+
+        if (opposite > feet.Length - 1)
+        {
+            opposite = opposite - feet.Length;
+        }
+        return opposite;
     }
 }

@@ -79,7 +79,7 @@ bone_name = "e2_2-3"
 bone_idx = 3
 chain_length = 3
 transform_mode = 3
-transform = Transform3D(0.616802, 0.34812, 0.705952, -3.81842e-08, -0.896881, 0.442272, 0.787118, -0.272794, -0.553198, -2.76676, -0.321873, 2.11918)
+transform = Transform3D(0.616815, 0.348128, 0.705969, -3.81842e-08, -0.896881, 0.442272, 0.787135, -0.272799, -0.553208, -2.76676, -0.321875, 2.11918)
 
 [node name="pole_e2_2-3" type="GodotIKConstraint" parent="EDGE_ARM_LegsEdges_002/Skeleton3D/@GodotIK@28814/ik_e2_2-3" index="0"]
 bone_name = "e2_2-3"
@@ -92,7 +92,7 @@ bone_name = "e5_6-7"
 bone_idx = 7
 chain_length = 3
 transform_mode = 3
-transform = Transform3D(0.229282, 0.43049, 0.872988, -3.10829e-08, -0.896881, 0.442272, 0.97336, -0.101405, -0.205639, -3.40087, -0.321874, 0.42822)
+transform = Transform3D(0.229286, 0.4305, 0.87301, -3.10829e-08, -0.896881, 0.442272, 0.973381, -0.101408, -0.205645, -3.40087, -0.321876, 0.42822)
 
 [node name="pole_e5_6-7" type="GodotIKConstraint" parent="EDGE_ARM_LegsEdges_002/Skeleton3D/@GodotIK@28814/ik_e5_6-7" index="0"]
 bone_name = "e5_6-7"
@@ -105,7 +105,7 @@ bone_name = "e8_10-11"
 bone_idx = 11
 chain_length = 3
 transform_mode = 3
-transform = Transform3D(-0.200622, 0.43328, 0.878646, 3.93484e-08, -0.896881, 0.442272, 0.979669, 0.0887296, 0.179934, -3.40631, -0.321872, -1.40352)
+transform = Transform3D(-0.200625, 0.433292, 0.878667, 3.93484e-08, -0.896881, 0.442272, 0.979691, 0.088732, 0.179939, -3.40631, -0.321875, -1.40352)
 
 [node name="pole_e8_10-11" type="GodotIKConstraint" parent="EDGE_ARM_LegsEdges_002/Skeleton3D/@GodotIK@28814/ik_e8_10-11" index="0"]
 bone_name = "e8_10-11"
@@ -118,7 +118,7 @@ bone_name = "e11_14-15"
 bone_idx = 15
 chain_length = 3
 transform_mode = 3
-transform = Transform3D(-0.59344, 0.355975, 0.72188, 9.60426e-08, -0.896881, 0.442272, 0.804878, 0.262462, 0.532246, -2.78206, -0.321873, -3.09905)
+transform = Transform3D(-0.593451, 0.35598, 0.721894, 9.60426e-08, -0.896881, 0.442272, 0.804891, 0.262467, 0.532257, -2.78206, -0.321876, -3.09905)
 
 [node name="pole_e11_14-15" type="GodotIKConstraint" parent="EDGE_ARM_LegsEdges_002/Skeleton3D/@GodotIK@28814/ik_e11_14-15" index="0"]
 bone_name = "e11_14-15"
@@ -131,7 +131,7 @@ bone_name = "e14_18-19"
 bone_idx = 19
 chain_length = 3
 transform_mode = 3
-transform = Transform3D(0.593441, -0.355974, -0.72188, -1.08965e-07, -0.896881, 0.442272, -0.804878, -0.262462, -0.532246, 2.78206, -0.321872, 2.09905)
+transform = Transform3D(0.593456, -0.35598, -0.721894, -1.08965e-07, -0.896881, 0.442272, -0.804894, -0.262467, -0.532257, 2.78206, -0.321875, 2.09905)
 
 [node name="pole_e14_18-19" type="GodotIKConstraint" parent="EDGE_ARM_LegsEdges_002/Skeleton3D/@GodotIK@28814/ik_e14_18-19" index="0"]
 bone_name = "e14_18-19"
@@ -144,7 +144,7 @@ bone_name = "e17_22-23"
 bone_idx = 23
 chain_length = 3
 transform_mode = 3
-transform = Transform3D(0.200623, -0.433279, -0.878646, -1.17579e-08, -0.896881, 0.442272, -0.979669, -0.0887297, -0.179935, 3.40631, -0.321872, 0.403524)
+transform = Transform3D(0.200629, -0.433291, -0.878668, -1.17579e-08, -0.896881, 0.442272, -0.979693, -0.0887323, -0.17994, 3.40631, -0.321876, 0.403524)
 
 [node name="pole_e17_22-23" type="GodotIKConstraint" parent="EDGE_ARM_LegsEdges_002/Skeleton3D/@GodotIK@28814/ik_e17_22-23" index="0"]
 bone_name = "e17_22-23"
@@ -157,7 +157,7 @@ bone_name = "e20_26-27"
 bone_idx = 27
 chain_length = 3
 transform_mode = 3
-transform = Transform3D(-0.229282, -0.43049, -0.872989, -5.21541e-08, -0.896881, 0.442272, -0.97336, 0.101405, 0.205639, 3.40087, -0.321873, -1.42822)
+transform = Transform3D(-0.229286, -0.4305, -0.873012, -5.21541e-08, -0.896881, 0.442272, -0.973381, 0.101408, 0.205643, 3.40087, -0.321876, -1.42822)
 
 [node name="pole_e20_26-27" type="GodotIKConstraint" parent="EDGE_ARM_LegsEdges_002/Skeleton3D/@GodotIK@28814/ik_e20_26-27" index="0"]
 bone_name = "e20_26-27"
@@ -170,7 +170,7 @@ bone_name = "e23_30-31"
 bone_idx = 31
 chain_length = 3
 transform_mode = 3
-transform = Transform3D(-0.616802, -0.34812, -0.705952, 2.53785e-08, -0.896881, 0.442272, -0.787118, 0.272794, 0.553198, 2.76676, -0.321874, -3.11918)
+transform = Transform3D(-0.616815, -0.348128, -0.705969, 2.53785e-08, -0.896881, 0.442272, -0.787135, 0.272799, 0.553208, 2.76676, -0.321876, -3.11918)
 
 [node name="pole_e23_30-31" type="GodotIKConstraint" parent="EDGE_ARM_LegsEdges_002/Skeleton3D/@GodotIK@28814/ik_e23_30-31" index="0"]
 bone_name = "e23_30-31"

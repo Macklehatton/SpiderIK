@@ -21,8 +21,10 @@ data = PackedVector3Array(-50, -0.5, 50, -50, -0.5, -50, -50, 0.5, -50, 50, -0.5
 [node name="Root" type="Node3D"]
 
 [node name="MechanicalArachnid" parent="." instance=ExtResource("1_glv2v")]
-raycastHeight = 4.0
-walkSpeed = 1.0
+raycastDistance = 50.0
+strideDistance = 0.5
+cycleRate = 1.0
+moveSpeed = 1.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_r0du0")
@@ -33,7 +35,7 @@ shadow_enabled = true
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
-size = Vector3(100, 1, 100)
+size = Vector3(500, 1, 500)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="CSGBox3D"]
 
@@ -41,4 +43,5 @@ size = Vector3(100, 1, 100)
 shape = SubResource("ConcavePolygonShape3D_glv2v")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(0.282298, 0.531548, -0.798601, 0, 0.83246, 0.554085, 0.959327, -0.156417, 0.235002, -12.9525, 11.1667, 10.5509)
+transform = Transform3D(0.394739, 0.552359, -0.734221, 0, 0.799115, 0.601178, 0.918793, -0.237308, 0.315442, -10.4194, 15.9877, 15.5918)
+size = 29.283

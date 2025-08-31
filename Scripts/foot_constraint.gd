@@ -21,4 +21,5 @@ func initialize(p_ik_effector, skeleton, leaf_index):
 func _process(_delta: float) -> void:
 	if !initialized:
 		return
-	ik_effector.global_position = global_position + offset
+	ik_effector.global_position = global_position
+	ik_effector.position += offset
