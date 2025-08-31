@@ -23,10 +23,10 @@ data = PackedVector3Array(-50, -0.5, 50, -50, -0.5, -50, -50, 0.5, -50, 50, -0.5
 [node name="MechanicalArachnid" parent="." instance=ExtResource("1_glv2v")]
 raycastDistance = 50.0
 raycastForwardOffset = 1.0
-strideDistance = 1.0
+strideDistance = 0.75
 cycleRate = 1.0
 moveSpeed = 1.0
-turnRate = 0.01
+turnRate = -0.085
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_r0du0")

@@ -21,7 +21,7 @@ public partial class ProceduralWalk : CharacterBody3D
     private bool[] inCycle;
     // Feet currently moving
     private bool[] feetMoving;
-    private Vector3?[] currentTarget;
+    private Vector3[] currentTarget;
 
     private bool offFoot;
     private float strideDistanceSquared;
@@ -40,7 +40,7 @@ public partial class ProceduralWalk : CharacterBody3D
         inCycle = new bool[feet.Length];
         SetAlternateFeet();
 
-        currentTarget = new Vector3?[feet.Length];
+        currentTarget = new Vector3[feet.Length];
 
         strideDistanceSquared = strideDistance * strideDistance;
 
@@ -57,7 +57,17 @@ public partial class ProceduralWalk : CharacterBody3D
         Velocity = Transform.Basis.Z * moveSpeed;
         MoveAndSlide();
         MoveFeet();
+        DebugRaycasts();
     }
+
+    public void DebugRaycasts()
+    {
+        for (int i = 0; i <= rayCasts.Length - 1; i++)
+        {
+            //DebugDraw3D.DrawBox(rayCasts[i].GlobalPosition, rayCasts[i].Quaternion, Vector3.One);
+        }
+    }
+
 
     public void UpdateCycle(float delta)
     {
@@ -88,29 +98,30 @@ public partial class ProceduralWalk : CharacterBody3D
     {
         if (!inCycle[footIndex])
         {
-            currentTarget[footIndex] = null;
             return false;
         }
 
-        if (currentTarget[footIndex].HasValue)
-        {
-            return true;
-        }
+        // if (currentTarget[footIndex].HasValue)
+        // {
+        //     return true;
+        // }
 
-        if (CheckDistance(footIndex))
-        {
-            // Cache the target position
-            currentTarget[footIndex] = rayCasts[footIndex].GetCollisionPoint();
-            return true;
-        }
-        else
-        {
-            currentTarget[footIndex] = null;
-            feetMoving[footIndex] = false;
-        }
+        return true;
 
-        currentTarget[footIndex] = null;
-        return false;
+        // if (CheckDistance(footIndex))
+        // {
+        //     // Cache the target position
+        //     currentTarget[footIndex] = rayCasts[footIndex].GetCollisionPoint();
+        //     return true;
+        // }
+        // else
+        // {
+        //     currentTarget[footIndex] = null;
+        //     feetMoving[footIndex] = false;
+        // }
+
+        // currentTarget[footIndex] = null;
+        // return false;
     }
 
     public bool CheckDistance(int footIndex)
@@ -137,7 +148,7 @@ public partial class ProceduralWalk : CharacterBody3D
             return;
         }
 
-        Vector3 targetPosition = currentTarget[footIndex].Value;
+        Vector3 targetPosition = currentTarget[footIndex];
 
         Node3D foot = feet[footIndex];
 
@@ -186,6 +197,11 @@ public partial class ProceduralWalk : CharacterBody3D
         for (int i = 0; i <= inCycle.Length - 1; i++)
         {
             inCycle[i] = !inCycle[i];
+
+            if (inCycle[i])
+            {
+                currentTarget[i] = rayCasts[i].GetCollisionPoint();
+            }
         }
     }
 
