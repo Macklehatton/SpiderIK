@@ -14,6 +14,10 @@ public partial class ProceduralWalk : CharacterBody3D
 
     private Node3D[] feet;
     private RayCast3D[] rayCasts;
+    // Feet that we currently prefer to move 
+    // for a balanced walk
+    private bool[] inCycle;
+    // Feet currently moving
     private bool[] feetMoving;
 
     private bool offFoot;
@@ -28,6 +32,7 @@ public partial class ProceduralWalk : CharacterBody3D
 
         feet = GetFeet();
         rayCasts = AddRayCasts(feet);
+        inCycle = new bool[feet.Length];
         feetMoving = new bool[feet.Length];
         SetAlternateFeet();
 
@@ -56,7 +61,7 @@ public partial class ProceduralWalk : CharacterBody3D
         if (currentCycle > 1.0f)
         {
             currentCycle = currentCycle - 1.0f;
-            SwapFeet();
+            SwapInCycle();
         }
     }
 
@@ -64,23 +69,28 @@ public partial class ProceduralWalk : CharacterBody3D
     {
         for (int i = 0; i <= feet.Length - 1; i++)
         {
-            // Only move one side at a time
-            if (feetMoving[Opposite(i)])
-            {
-                continue;
-            }
-
-            // Does nothing(?)
-            // if (CheckDistance(i))
-            // {
-            //     feetMoving[i] = true;
-            // }
+            feetMoving[i] = CheckMoveFoot(i);
 
             if (feetMoving[i])
             {
                 MoveFoot(i);
             }
         }
+    }
+
+    public bool CheckMoveFoot(int footIndex)
+    {
+        if (!inCycle[footIndex])
+        {
+            return false;
+        }
+
+        if (CheckDistance(footIndex))
+        {
+            return true;
+        }
+
+        return false;
     }
 
     public bool CheckDistance(int footIndex)
@@ -150,11 +160,11 @@ public partial class ProceduralWalk : CharacterBody3D
         return rayCasts;
     }
 
-    public void SwapFeet()
+    public void SwapInCycle()
     {
-        for (int i = 0; i <= feetMoving.Length - 1; i++)
+        for (int i = 0; i <= inCycle.Length - 1; i++)
         {
-            feetMoving[i] = !feetMoving[i];
+            inCycle[i] = !inCycle[i];
         }
     }
 
@@ -166,12 +176,12 @@ public partial class ProceduralWalk : CharacterBody3D
         {
             if (i % 2 == 0)
             {
-                feetMoving[i] = true;
+                inCycle[i] = true;
             }
             else
             {
                 int oppositeIndex = Opposite(i);
-                feetMoving[oppositeIndex] = true;
+                inCycle[oppositeIndex] = true;
             }
         }
     }
