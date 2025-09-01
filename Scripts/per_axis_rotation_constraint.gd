@@ -1,5 +1,5 @@
 @tool
-class_name MaxRotationBoneConstraint extends GodotIKConstraint
+class_name PerAxisRotationConstraint extends GodotIKConstraint
 # Per-axis max rotation constraint for a bone using bone-local axes.
 # Euler order for reconstruction is Z -> X -> Y.
 

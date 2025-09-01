@@ -1,178 +1,118 @@
 [gd_scene load_steps=5 format=3 uid="uid://dgixv1ydirgkn"]
 
-[ext_resource type="PackedScene" uid="uid://cgho2bjdbxhvn" path="res://Meshes/MechanicalArachnid.glb" id="1_i2uhj"]
+[ext_resource type="PackedScene" uid="uid://fcylmkur2f71" path="res://Meshes/MechanicalArachnid.glb" id="1_i2uhj"]
 [ext_resource type="Script" uid="uid://mc2ijaj7xf1r" path="res://Scripts/setup_ik.gd" id="2_l0n85"]
 [ext_resource type="Script" uid="uid://df7j0ab7lmhoy" path="res://addons/libik/script/pole_bone_constraint.gd" id="3_2d012"]
 [ext_resource type="Script" uid="uid://ppagnhmcok57" path="res://Scripts/foot_constraint.gd" id="4_frr67"]
 
 [node name="MechanicalArachnid" node_paths=PackedStringArray("skeleton", "godot_ik", "foot_container") instance=ExtResource("1_i2uhj")]
 script = ExtResource("2_l0n85")
-skeleton = NodePath("EDGE_ARM_LegsEdges_002/Skeleton3D")
+skeleton = NodePath("EDGE_ARM_LegsEdges_004/Skeleton3D")
 chain_length = 3
-godot_ik = NodePath("EDGE_ARM_LegsEdges_002/Skeleton3D/@GodotIK@28814")
+godot_ik = NodePath("EDGE_ARM_LegsEdges_004/Skeleton3D/@GodotIK@28232")
 foot_container = NodePath("FootContainer")
 
-[node name="Base" parent="EDGE_ARM_LegsEdges_002/Skeleton3D" index="0"]
-transform = Transform3D(1, 6.77626e-21, 2.84217e-14, 0, -1, 3.89414e-07, 2.84217e-14, -3.89414e-07, -1, 1.42109e-14, 0.31486, -0.495801)
+[node name="@GodotIK@28232" type="GodotIK" parent="EDGE_ARM_LegsEdges_004/Skeleton3D" index="1"]
 
-[node name="Cube" parent="EDGE_ARM_LegsEdges_002/Skeleton3D" index="1"]
-transform = Transform3D(0.207634, 8.91074e-22, -5.90131e-15, 0, 0.207634, 0, 5.90131e-15, 0, 0.207634, 1.3407e-14, 1.3194, -0.467517)
-
-[node name="Cube_001" parent="EDGE_ARM_LegsEdges_002/Skeleton3D" index="2"]
-transform = Transform3D(0.21851, -5.90646e-15, 1.91912e-15, 0, -0.0675232, -0.207815, 6.21042e-15, 0.207815, -0.0675232, 8.01817e-14, 0.325759, -2.81694)
-
-[node name="Cube_002" parent="EDGE_ARM_LegsEdges_002/Skeleton3D" index="3"]
-transform = Transform3D(0.202136, 1.05458e-08, -0.0541622, -1.05458e-08, 0.209267, 1.38838e-09, 0.0541622, 1.38839e-09, 0.202136, -0.444968, -0.167679, 0.430179)
-
-[node name="Cube_003" parent="EDGE_ARM_LegsEdges_002/Skeleton3D" index="4"]
-transform = Transform3D(0.965926, 5.03939e-08, -0.258819, -5.03939e-08, 1, 6.63454e-09, 0.258819, 6.63439e-09, 0.965926, -0.61306, -0.167679, 1.23014)
-
-[node name="Cylinder" parent="EDGE_ARM_LegsEdges_002/Skeleton3D" index="5"]
-transform = Transform3D(0.678898, -2.60435e-14, 5.96261e-15, 0, -0.297732, -0.64567, 1.92954e-14, 0.916324, -0.209791, 7.8308e-14, 1.31201, -2.75102)
-
-[node name="Cylinder_002" parent="EDGE_ARM_LegsEdges_002/Skeleton3D" index="6"]
-transform = Transform3D(0.559359, 1.67326e-21, 1.58979e-14, 0, -0.246929, 2.17822e-07, 1.58979e-14, -9.61578e-08, -0.559359, 1.42109e-14, 0.745013, -0.495801)
-
-[node name="Cylinder_003" parent="EDGE_ARM_LegsEdges_002/Skeleton3D" index="7"]
-transform = Transform3D(0.670641, -2.19224e-14, 5.89009e-15, 0, -0.250619, -0.637817, 1.90608e-14, 0.771326, -0.207239, 5.88055e-14, 1.08906, -2.06484)
-
-[node name="Cylinder_004" parent="EDGE_ARM_LegsEdges_002/Skeleton3D" index="8"]
-transform = Transform3D(0.662732, -2.16639e-14, 5.82064e-15, 0, -0.247664, -0.630296, 1.8836e-14, 0.762231, -0.204795, 8.41894e-14, 1.37925, -2.95795)
-
-[node name="Cylinder_005" parent="EDGE_ARM_LegsEdges_002/Skeleton3D" index="9"]
-transform = Transform3D(2.93666e-08, -0.0255035, 0.0951802, 0.0985378, 3.34152e-08, -2.75514e-08, -1.44878e-08, 0.0951802, 0.0255035, -0.658878, -0.167679, 1.40114)
-
-[node name="Cylinder_006" parent="EDGE_ARM_LegsEdges_002/Skeleton3D" index="10"]
-transform = Transform3D(3.2389e-22, -0.0233924, 0.0410391, 0.0424868, 9.10065e-09, -4.83547e-10, -4.98052e-09, 0.0873016, 0.0109964, -0.845334, -0.167679, 1.52903)
-
-[node name="Cylinder_007" parent="EDGE_ARM_LegsEdges_002/Skeleton3D" index="11"]
-transform = Transform3D(3.38813e-21, -0.258819, 0.965926, 1, -1.37727e-07, 4.82237e-08, 3.17864e-08, 0.965926, 0.258819, 0.590594, -0.167679, 1.1463)
-
-[node name="Cylinder_008" parent="EDGE_ARM_LegsEdges_002/Skeleton3D" index="12"]
-transform = Transform3D(1, -2.84217e-14, -2.37169e-20, 0, 6.83469e-07, -1, 2.84217e-14, 1, 6.83469e-07, -4.49244e-16, 1.3194, 0.0200057)
-
-[node name="Cylinder_009" parent="EDGE_ARM_LegsEdges_002/Skeleton3D" index="13"]
-transform = Transform3D(0.0615584, -1.74959e-15, -4.17136e-22, 0, 5.38161e-09, -0.0615584, 1.7496e-15, 0.0615584, 5.38161e-09, -9.69577e-15, 1.83714, 0.345339)
-
-[node name="Cylinder_010" parent="EDGE_ARM_LegsEdges_002/Skeleton3D" index="14"]
-transform = Transform3D(0.122823, -3.49084e-15, -8.32282e-22, 0, 1.07375e-08, -0.122823, 3.49084e-15, 0.122823, 1.07375e-08, 0.579517, 1.33801, 0.345339)
-
-[node name="Cylinder_011" parent="EDGE_ARM_LegsEdges_002/Skeleton3D" index="15"]
-transform = Transform3D(0.0615584, -1.74959e-15, -4.17136e-22, 0, 5.38161e-09, -0.0615584, 1.7496e-15, 0.0615584, 5.38161e-09, -0.188541, 1.80993, 0.345339)
-
-[node name="Cylinder_012" parent="EDGE_ARM_LegsEdges_002/Skeleton3D" index="16"]
-transform = Transform3D(0.0615584, -1.74959e-15, -4.17136e-22, 0, 5.38161e-09, -0.0615584, 1.7496e-15, 0.0615584, 5.38161e-09, -0.353758, 1.72441, 0.345339)
-
-[node name="Cylinder_013" parent="EDGE_ARM_LegsEdges_002/Skeleton3D" index="17"]
-transform = Transform3D(0.0615584, -1.74959e-15, -4.17136e-22, 0, 5.38161e-09, -0.0615584, 1.7496e-15, 0.0615584, 5.38161e-09, 0.188541, 1.81576, 0.345339)
-
-[node name="Cylinder_014" parent="EDGE_ARM_LegsEdges_002/Skeleton3D" index="18"]
-transform = Transform3D(1, -9.2532e-15, -2.68733e-14, 0, 0.945519, -0.325568, 2.84217e-14, 0.325568, 0.945519, -0.00412436, 2.16278, -2.57577)
-
-[node name="Cylinder_015" parent="EDGE_ARM_LegsEdges_002/Skeleton3D" index="19"]
-transform = Transform3D(0.999307, 0.0213305, 0.0305118, -0.0108647, 0.951, -0.308999, -0.0356079, 0.308453, 0.950573, 0.0124486, 1.85148, -2.01567)
-
-[node name="@GodotIK@28814" type="GodotIK" parent="EDGE_ARM_LegsEdges_002/Skeleton3D" index="21"]
-
-[node name="ik_e2_2-3" type="GodotIKEffector" parent="EDGE_ARM_LegsEdges_002/Skeleton3D/@GodotIK@28814" index="0"]
+[node name="ik_e2_2-3" type="GodotIKEffector" parent="EDGE_ARM_LegsEdges_004/Skeleton3D/@GodotIK@28232" index="0"]
 bone_name = "e2_2-3"
 bone_idx = 3
 chain_length = 3
 transform_mode = 3
-transform = Transform3D(0.616815, 0.348128, 0.705969, -3.81842e-08, -0.896881, 0.442272, 0.787135, -0.272799, -0.553208, -4.03278, -0.281229, 1.32862)
+transform = Transform3D(0.852877, 0.152593, 0.499315, 5.58794e-09, -0.956338, 0.292261, 0.522111, -0.249263, -0.81564, -2.68467, 1.93124, 4.20453)
 
-[node name="pole_e2_2-3" type="GodotIKConstraint" parent="EDGE_ARM_LegsEdges_002/Skeleton3D/@GodotIK@28814/ik_e2_2-3" index="0"]
+[node name="pole_e2_2-3" type="GodotIKConstraint" parent="EDGE_ARM_LegsEdges_004/Skeleton3D/@GodotIK@28232/ik_e2_2-3" index="0"]
 bone_name = "e2_2-3"
 bone_idx = 2
 script = ExtResource("3_2d012")
 pole_direction = Vector3(0, 1, 0)
 
-[node name="ik_e5_6-7" type="GodotIKEffector" parent="EDGE_ARM_LegsEdges_002/Skeleton3D/@GodotIK@28814" index="1"]
+[node name="ik_e5_6-7" type="GodotIKEffector" parent="EDGE_ARM_LegsEdges_004/Skeleton3D/@GodotIK@28232" index="1"]
 bone_name = "e5_6-7"
 bone_idx = 7
 chain_length = 3
 transform_mode = 3
-transform = Transform3D(0.229286, 0.4305, 0.87301, -3.10829e-08, -0.896881, 0.442272, 0.973381, -0.101408, -0.205645, -3.40087, -0.321876, 0.42822)
+transform = Transform3D(0.347408, 0.274057, 0.896772, 1.39698e-09, -0.956338, 0.292261, 0.937714, -0.101534, -0.33224, -4.70981, 1.93125, 1.64417)
 
-[node name="pole_e5_6-7" type="GodotIKConstraint" parent="EDGE_ARM_LegsEdges_002/Skeleton3D/@GodotIK@28814/ik_e5_6-7" index="0"]
+[node name="pole_e5_6-7" type="GodotIKConstraint" parent="EDGE_ARM_LegsEdges_004/Skeleton3D/@GodotIK@28232/ik_e5_6-7" index="0"]
 bone_name = "e5_6-7"
 bone_idx = 6
 script = ExtResource("3_2d012")
 pole_direction = Vector3(0, 1, 0)
 
-[node name="ik_e8_10-11" type="GodotIKEffector" parent="EDGE_ARM_LegsEdges_002/Skeleton3D/@GodotIK@28814" index="2"]
+[node name="ik_e8_10-11" type="GodotIKEffector" parent="EDGE_ARM_LegsEdges_004/Skeleton3D/@GodotIK@28232" index="2"]
 bone_name = "e8_10-11"
 bone_idx = 11
 chain_length = 3
 transform_mode = 3
-transform = Transform3D(-0.200625, 0.433292, 0.878667, 3.93484e-08, -0.896881, 0.442272, 0.979691, 0.088732, 0.179939, -3.40631, -0.321875, -1.40352)
+transform = Transform3D(-0.30683, 0.278164, 0.910209, -9.96515e-08, -0.956339, 0.292261, 0.951764, 0.0896744, 0.293434, -4.71808, 1.93125, -1.62027)
 
-[node name="pole_e8_10-11" type="GodotIKConstraint" parent="EDGE_ARM_LegsEdges_002/Skeleton3D/@GodotIK@28814/ik_e8_10-11" index="0"]
+[node name="pole_e8_10-11" type="GodotIKConstraint" parent="EDGE_ARM_LegsEdges_004/Skeleton3D/@GodotIK@28232/ik_e8_10-11" index="0"]
 bone_name = "e8_10-11"
 bone_idx = 10
 script = ExtResource("3_2d012")
 pole_direction = Vector3(0, 1, 0)
 
-[node name="ik_e11_14-15" type="GodotIKEffector" parent="EDGE_ARM_LegsEdges_002/Skeleton3D/@GodotIK@28814" index="3"]
+[node name="ik_e11_14-15" type="GodotIKEffector" parent="EDGE_ARM_LegsEdges_004/Skeleton3D/@GodotIK@28232" index="3"]
 bone_name = "e11_14-15"
 bone_idx = 15
 chain_length = 3
 transform_mode = 3
-transform = Transform3D(-0.593451, 0.35598, 0.721894, 9.60426e-08, -0.896881, 0.442272, 0.804891, 0.262467, 0.532257, -2.78206, -0.321876, -3.09905)
+transform = Transform3D(-0.829676, 0.163153, 0.533871, -2.28174e-08, -0.956339, 0.29226, 0.558245, 0.242482, 0.793452, -2.70595, 1.93125, -4.19087)
 
-[node name="pole_e11_14-15" type="GodotIKConstraint" parent="EDGE_ARM_LegsEdges_002/Skeleton3D/@GodotIK@28814/ik_e11_14-15" index="0"]
+[node name="pole_e11_14-15" type="GodotIKConstraint" parent="EDGE_ARM_LegsEdges_004/Skeleton3D/@GodotIK@28232/ik_e11_14-15" index="0"]
 bone_name = "e11_14-15"
 bone_idx = 14
 script = ExtResource("3_2d012")
 pole_direction = Vector3(0, 1, 0)
 
-[node name="ik_e14_18-19" type="GodotIKEffector" parent="EDGE_ARM_LegsEdges_002/Skeleton3D/@GodotIK@28814" index="4"]
+[node name="ik_e14_18-19" type="GodotIKEffector" parent="EDGE_ARM_LegsEdges_004/Skeleton3D/@GodotIK@28232" index="4"]
 bone_name = "e14_18-19"
 bone_idx = 19
 chain_length = 3
 transform_mode = 3
-transform = Transform3D(0.593456, -0.35598, -0.721894, -1.08965e-07, -0.896881, 0.442272, -0.804894, -0.262467, -0.532257, 2.78206, -0.321875, 2.09905)
+transform = Transform3D(0.829676, -0.163153, -0.533871, -4.65661e-09, -0.956339, 0.292261, -0.558245, -0.242482, -0.793452, 2.70595, 1.93124, 4.19087)
 
-[node name="pole_e14_18-19" type="GodotIKConstraint" parent="EDGE_ARM_LegsEdges_002/Skeleton3D/@GodotIK@28814/ik_e14_18-19" index="0"]
+[node name="pole_e14_18-19" type="GodotIKConstraint" parent="EDGE_ARM_LegsEdges_004/Skeleton3D/@GodotIK@28232/ik_e14_18-19" index="0"]
 bone_name = "e14_18-19"
 bone_idx = 18
 script = ExtResource("3_2d012")
 pole_direction = Vector3(0, 1, 0)
 
-[node name="ik_e17_22-23" type="GodotIKEffector" parent="EDGE_ARM_LegsEdges_002/Skeleton3D/@GodotIK@28814" index="5"]
+[node name="ik_e17_22-23" type="GodotIKEffector" parent="EDGE_ARM_LegsEdges_004/Skeleton3D/@GodotIK@28232" index="5"]
 bone_name = "e17_22-23"
 bone_idx = 23
 chain_length = 3
 transform_mode = 3
-transform = Transform3D(0.200629, -0.433291, -0.878668, -1.17579e-08, -0.896881, 0.442272, -0.979693, -0.0887323, -0.17994, 3.40631, -0.321876, 0.403524)
+transform = Transform3D(0.30683, -0.278163, -0.910209, 7.17118e-08, -0.956338, 0.292261, -0.951764, -0.0896745, -0.293433, 4.71808, 1.93124, 1.62027)
 
-[node name="pole_e17_22-23" type="GodotIKConstraint" parent="EDGE_ARM_LegsEdges_002/Skeleton3D/@GodotIK@28814/ik_e17_22-23" index="0"]
+[node name="pole_e17_22-23" type="GodotIKConstraint" parent="EDGE_ARM_LegsEdges_004/Skeleton3D/@GodotIK@28232/ik_e17_22-23" index="0"]
 bone_name = "e17_22-23"
 bone_idx = 22
 script = ExtResource("3_2d012")
 pole_direction = Vector3(0, 1, 0)
 
-[node name="ik_e20_26-27" type="GodotIKEffector" parent="EDGE_ARM_LegsEdges_002/Skeleton3D/@GodotIK@28814" index="6"]
+[node name="ik_e20_26-27" type="GodotIKEffector" parent="EDGE_ARM_LegsEdges_004/Skeleton3D/@GodotIK@28232" index="6"]
 bone_name = "e20_26-27"
 bone_idx = 27
 chain_length = 3
 transform_mode = 3
-transform = Transform3D(-0.229286, -0.4305, -0.873012, -5.21541e-08, -0.896881, 0.442272, -0.973381, 0.101408, 0.205643, 3.40087, -0.321876, -1.42822)
+transform = Transform3D(-0.347408, -0.274057, -0.896772, 6.51926e-08, -0.956338, 0.292261, -0.937714, 0.101534, 0.33224, 4.70981, 1.93124, -1.64417)
 
-[node name="pole_e20_26-27" type="GodotIKConstraint" parent="EDGE_ARM_LegsEdges_002/Skeleton3D/@GodotIK@28814/ik_e20_26-27" index="0"]
+[node name="pole_e20_26-27" type="GodotIKConstraint" parent="EDGE_ARM_LegsEdges_004/Skeleton3D/@GodotIK@28232/ik_e20_26-27" index="0"]
 bone_name = "e20_26-27"
 bone_idx = 26
 script = ExtResource("3_2d012")
 pole_direction = Vector3(0, 1, 0)
 
-[node name="ik_e23_30-31" type="GodotIKEffector" parent="EDGE_ARM_LegsEdges_002/Skeleton3D/@GodotIK@28814" index="7"]
+[node name="ik_e23_30-31" type="GodotIKEffector" parent="EDGE_ARM_LegsEdges_004/Skeleton3D/@GodotIK@28232" index="7"]
 bone_name = "e23_30-31"
 bone_idx = 31
 chain_length = 3
 transform_mode = 3
-transform = Transform3D(-0.616815, -0.348128, -0.705969, 2.53785e-08, -0.896881, 0.442272, -0.787135, 0.272799, 0.553208, 2.76676, -0.321876, -3.11918)
+transform = Transform3D(-0.852878, -0.152592, -0.499314, 3.07336e-08, -0.956339, 0.292261, -0.522111, 0.249263, 0.81564, 2.68467, 1.93124, -4.20453)
 
-[node name="pole_e23_30-31" type="GodotIKConstraint" parent="EDGE_ARM_LegsEdges_002/Skeleton3D/@GodotIK@28814/ik_e23_30-31" index="0"]
+[node name="pole_e23_30-31" type="GodotIKConstraint" parent="EDGE_ARM_LegsEdges_004/Skeleton3D/@GodotIK@28232/ik_e23_30-31" index="0"]
 bone_name = "e23_30-31"
 bone_idx = 30
 script = ExtResource("3_2d012")
@@ -181,57 +121,57 @@ pole_direction = Vector3(0, 1, 0)
 [node name="FootContainer" type="Node3D" parent="." index="1"]
 
 [node name="foot_target_e2_2-3_leaf" type="Node3D" parent="FootContainer" index="0" node_paths=PackedStringArray("ik_effector")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -3.35453, 0.0503606, 0.797134)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.37722, 0.00437033, 3.70231)
 script = ExtResource("4_frr67")
-ik_effector = NodePath("../../EDGE_ARM_LegsEdges_002/Skeleton3D/@GodotIK@28814/ik_e2_2-3")
+ik_effector = NodePath("../../EDGE_ARM_LegsEdges_004/Skeleton3D/@GodotIK@28232/ik_e2_2-3")
 initialized = true
-offset = Vector3(-0.67825, 1.74741, 0.531491)
+offset = Vector3(-0.30745, 1.92687, 0.502225)
 
 [node name="foot_target_e5_6-7_leaf" type="Node3D" parent="FootContainer" index="1" node_paths=PackedStringArray("ik_effector")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.56214, 0.00971413, 0.230651)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.15762, 0.00437164, 1.43959)
 script = ExtResource("4_frr67")
-ik_effector = NodePath("../../EDGE_ARM_LegsEdges_002/Skeleton3D/@GodotIK@28814/ik_e5_6-7")
+ik_effector = NodePath("../../EDGE_ARM_LegsEdges_004/Skeleton3D/@GodotIK@28232/ik_e5_6-7")
 initialized = true
-offset = Vector3(-0.838732, 1.74741, 0.197569)
+offset = Vector3(-0.552183, 1.92687, 0.204575)
 
 [node name="foot_target_e8_10-11_leaf" type="Node3D" parent="FootContainer" index="2" node_paths=PackedStringArray("ik_effector")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.56214, 0.00971508, -1.23065)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4.15763, 0.00437069, -1.43959)
 script = ExtResource("4_frr67")
-ik_effector = NodePath("../../EDGE_ARM_LegsEdges_002/Skeleton3D/@GodotIK@28814/ik_e8_10-11")
+ik_effector = NodePath("../../EDGE_ARM_LegsEdges_004/Skeleton3D/@GodotIK@28232/ik_e8_10-11")
 initialized = true
-offset = Vector3(-0.844168, 1.74741, -0.172874)
+offset = Vector3(-0.560456, 1.92688, -0.18068)
 
 [node name="foot_target_e11_14-15_leaf" type="Node3D" parent="FootContainer" index="3" node_paths=PackedStringArray("ik_effector")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.08851, 0.00971365, -2.58769)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.37722, 0.00436985, -3.70231)
 script = ExtResource("4_frr67")
-ik_effector = NodePath("../../EDGE_ARM_LegsEdges_002/Skeleton3D/@GodotIK@28814/ik_e11_14-15")
+ik_effector = NodePath("../../EDGE_ARM_LegsEdges_004/Skeleton3D/@GodotIK@28232/ik_e11_14-15")
 initialized = true
-offset = Vector3(-0.693553, 1.74741, -0.51136)
+offset = Vector3(-0.328728, 1.92688, -0.488562)
 
 [node name="foot_target_e14_18-19_leaf" type="Node3D" parent="FootContainer" index="4" node_paths=PackedStringArray("ik_effector")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08851, 0.0097146, 1.58769)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.37722, 0.0043695, 3.70231)
 script = ExtResource("4_frr67")
-ik_effector = NodePath("../../EDGE_ARM_LegsEdges_002/Skeleton3D/@GodotIK@28814/ik_e14_18-19")
+ik_effector = NodePath("../../EDGE_ARM_LegsEdges_004/Skeleton3D/@GodotIK@28232/ik_e14_18-19")
 initialized = true
-offset = Vector3(0.693553, 1.74741, 0.51136)
+offset = Vector3(0.328728, 1.92687, 0.488563)
 
 [node name="foot_target_e17_22-23_leaf" type="Node3D" parent="FootContainer" index="5" node_paths=PackedStringArray("ik_effector")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.56214, 0.00971437, 0.23065)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.15762, 0.00437069, 1.43959)
 script = ExtResource("4_frr67")
-ik_effector = NodePath("../../EDGE_ARM_LegsEdges_002/Skeleton3D/@GodotIK@28814/ik_e17_22-23")
+ik_effector = NodePath("../../EDGE_ARM_LegsEdges_004/Skeleton3D/@GodotIK@28232/ik_e17_22-23")
 initialized = true
-offset = Vector3(0.844167, 1.74741, 0.172874)
+offset = Vector3(0.560456, 1.92687, 0.18068)
 
 [node name="foot_target_e20_26-27_leaf" type="Node3D" parent="FootContainer" index="6" node_paths=PackedStringArray("ik_effector")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.56214, 0.00971413, -1.23065)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.15762, 0.00437129, -1.43959)
 script = ExtResource("4_frr67")
-ik_effector = NodePath("../../EDGE_ARM_LegsEdges_002/Skeleton3D/@GodotIK@28814/ik_e20_26-27")
+ik_effector = NodePath("../../EDGE_ARM_LegsEdges_004/Skeleton3D/@GodotIK@28232/ik_e20_26-27")
 initialized = true
-offset = Vector3(0.838733, 1.74741, -0.197569)
+offset = Vector3(0.552182, 1.92687, -0.204574)
 
 [node name="foot_target_e23_30-31_leaf" type="Node3D" parent="FootContainer" index="7" node_paths=PackedStringArray("ik_effector")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.08851, 0.00971413, -2.58769)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.37722, 0.00437117, -3.70231)
 script = ExtResource("4_frr67")
-ik_effector = NodePath("../../EDGE_ARM_LegsEdges_002/Skeleton3D/@GodotIK@28814/ik_e23_30-31")
+ik_effector = NodePath("../../EDGE_ARM_LegsEdges_004/Skeleton3D/@GodotIK@28232/ik_e23_30-31")
 initialized = true
-offset = Vector3(0.678251, 1.74741, -0.531491)
+offset = Vector3(0.30745, 1.92687, -0.502225)
