@@ -21,7 +21,7 @@ public partial class ProceduralWalk : CharacterBody3D
     private bool[] inCycle;
     // Feet currently moving
     private bool[] feetMoving;
-    private Vector3[] currentTarget;
+    private Vector3[] currentTargets;
 
     private bool offFoot;
     private float strideDistanceSquared;
@@ -40,7 +40,8 @@ public partial class ProceduralWalk : CharacterBody3D
         inCycle = new bool[feet.Length];
         SetAlternateFeet();
 
-        currentTarget = new Vector3[feet.Length];
+        currentTargets = new Vector3[feet.Length];
+        SetInitialTargets();
 
         strideDistanceSquared = strideDistance * strideDistance;
 
@@ -65,7 +66,7 @@ public partial class ProceduralWalk : CharacterBody3D
         for (int i = 0; i <= rayCasts.Length - 1; i++)
         {
             //DebugDraw3D.DrawBox(rayCasts[i].GlobalPosition, rayCasts[i].Quaternion, Vector3.One);
-            DebugDraw3D.DrawSphere(currentTarget[i]);
+            DebugDraw3D.DrawSphere(currentTargets[i]);
         }
     }
 
@@ -149,7 +150,7 @@ public partial class ProceduralWalk : CharacterBody3D
             return;
         }
 
-        Vector3 targetPosition = currentTarget[footIndex];
+        Vector3 targetPosition = currentTargets[footIndex];
 
         Node3D foot = feet[footIndex];
 
@@ -201,7 +202,7 @@ public partial class ProceduralWalk : CharacterBody3D
 
             if (inCycle[i])
             {
-                currentTarget[i] = rayCasts[i].GetCollisionPoint();
+                currentTargets[i] = rayCasts[i].GetCollisionPoint();
             }
         }
     }
@@ -239,5 +240,13 @@ public partial class ProceduralWalk : CharacterBody3D
             opposite = opposite - feet.Length;
         }
         return opposite;
+    }
+
+    public void SetInitialTargets()
+    {
+        for (int i = 0; i <= currentTargets.Length - 1; i++)
+        {
+            currentTargets[i] = feet[i].GlobalPosition + new Vector3(0.0f, 0.0f, raycastForwardOffset);
+        }
     }
 }

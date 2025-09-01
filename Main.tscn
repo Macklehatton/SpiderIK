@@ -15,16 +15,17 @@ sky = SubResource("Sky_uu6xs")
 tonemap_mode = 2
 glow_enabled = true
 
-[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_glv2v"]
-data = PackedVector3Array(-50, -0.5, 50, -50, -0.5, -50, -50, 0.5, -50, 50, -0.5, -50, -50, -0.5, -50, -50, -0.5, 50, -50, 0.5, -50, -50, -0.5, -50, 50, -0.5, -50, -50, 0.5, -50, -50, 0.5, 50, -50, -0.5, 50, -50, -0.5, 50, -50, 0.5, 50, 50, 0.5, 50, 50, 0.5, 50, -50, 0.5, 50, -50, 0.5, -50, -50, -0.5, 50, 50, -0.5, 50, 50, -0.5, -50, 50, 0.5, 50, 50, -0.5, 50, -50, -0.5, 50, 50, -0.5, -50, 50, -0.5, 50, 50, 0.5, 50, 50, -0.5, -50, 50, 0.5, -50, -50, 0.5, -50, -50, 0.5, -50, 50, 0.5, -50, 50, 0.5, 50, 50, 0.5, 50, 50, 0.5, -50, 50, -0.5, -50)
+[sub_resource type="BoxShape3D" id="BoxShape3D_glv2v"]
+size = Vector3(500, 1, 500)
 
 [node name="Root" type="Node3D"]
 
 [node name="MechanicalArachnid" parent="." instance=ExtResource("1_glv2v")]
 raycastDistance = 50.0
-raycastForwardOffset = 1.25
-cycleRate = 1.5
-moveSpeed = 0.1
+raycastForwardOffset = 2.0
+strideDistance = 5.0
+cycleRate = 0.625
+moveSpeed = 2.0
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_r0du0")
@@ -40,7 +41,7 @@ size = Vector3(500, 1, 500)
 [node name="StaticBody3D" type="StaticBody3D" parent="CSGBox3D"]
 
 [node name="CSGBakedCollisionShape3D" type="CollisionShape3D" parent="CSGBox3D/StaticBody3D"]
-shape = SubResource("ConcavePolygonShape3D_glv2v")
+shape = SubResource("BoxShape3D_glv2v")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(0.394739, 0.552359, -0.734221, 0, 0.799115, 0.601178, 0.918793, -0.237308, 0.315442, -10.4194, 15.9877, 15.5918)
