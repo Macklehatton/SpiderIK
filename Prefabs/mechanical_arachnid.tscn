@@ -15,66 +15,6 @@ footContainer = NodePath("MechanicalArachnidRig/FootContainer")
 
 [node name="MechanicalArachnidRig" parent="." instance=ExtResource("1_i2uhj")]
 
-[node name="Base" parent="MechanicalArachnidRig/EDGE_ARM_LegsEdges_002/Skeleton3D" index="0"]
-transform = Transform3D(1, 6.77626e-21, 2.84217e-14, 0, -1, 3.89414e-07, 2.84217e-14, -3.89414e-07, -1, 1.42109e-14, 0.31486, -0.495801)
-
-[node name="Cube" parent="MechanicalArachnidRig/EDGE_ARM_LegsEdges_002/Skeleton3D" index="1"]
-transform = Transform3D(0.207634, 8.91074e-22, -5.90131e-15, 0, 0.207634, 0, 5.90131e-15, 0, 0.207634, 1.3407e-14, 1.3194, -0.467517)
-
-[node name="Cube_001" parent="MechanicalArachnidRig/EDGE_ARM_LegsEdges_002/Skeleton3D" index="2"]
-transform = Transform3D(0.21851, -5.90646e-15, 1.91912e-15, 0, -0.0675232, -0.207815, 6.21042e-15, 0.207815, -0.0675232, 8.01817e-14, 0.325759, -2.81694)
-
-[node name="Cube_002" parent="MechanicalArachnidRig/EDGE_ARM_LegsEdges_002/Skeleton3D" index="3"]
-transform = Transform3D(0.202136, 1.05458e-08, -0.0541622, -1.05458e-08, 0.209267, 1.38838e-09, 0.0541622, 1.38839e-09, 0.202136, -0.444968, -0.167679, 0.430179)
-
-[node name="Cube_003" parent="MechanicalArachnidRig/EDGE_ARM_LegsEdges_002/Skeleton3D" index="4"]
-transform = Transform3D(0.965926, 5.03939e-08, -0.258819, -5.03939e-08, 1, 6.63454e-09, 0.258819, 6.63439e-09, 0.965926, -0.61306, -0.167679, 1.23014)
-
-[node name="Cylinder" parent="MechanicalArachnidRig/EDGE_ARM_LegsEdges_002/Skeleton3D" index="5"]
-transform = Transform3D(0.678898, -2.60435e-14, 5.96261e-15, 0, -0.297732, -0.64567, 1.92954e-14, 0.916324, -0.209791, 7.8308e-14, 1.31201, -2.75102)
-
-[node name="Cylinder_002" parent="MechanicalArachnidRig/EDGE_ARM_LegsEdges_002/Skeleton3D" index="6"]
-transform = Transform3D(0.559359, 1.67326e-21, 1.58979e-14, 0, -0.246929, 2.17822e-07, 1.58979e-14, -9.61578e-08, -0.559359, 1.42109e-14, 0.745013, -0.495801)
-
-[node name="Cylinder_003" parent="MechanicalArachnidRig/EDGE_ARM_LegsEdges_002/Skeleton3D" index="7"]
-transform = Transform3D(0.670641, -2.19224e-14, 5.89009e-15, 0, -0.250619, -0.637817, 1.90608e-14, 0.771326, -0.207239, 5.88055e-14, 1.08906, -2.06484)
-
-[node name="Cylinder_004" parent="MechanicalArachnidRig/EDGE_ARM_LegsEdges_002/Skeleton3D" index="8"]
-transform = Transform3D(0.662732, -2.16639e-14, 5.82064e-15, 0, -0.247664, -0.630296, 1.8836e-14, 0.762231, -0.204795, 8.41894e-14, 1.37925, -2.95795)
-
-[node name="Cylinder_005" parent="MechanicalArachnidRig/EDGE_ARM_LegsEdges_002/Skeleton3D" index="9"]
-transform = Transform3D(2.93666e-08, -0.0255035, 0.0951802, 0.0985378, 3.34152e-08, -2.75514e-08, -1.44878e-08, 0.0951802, 0.0255035, -0.658878, -0.167679, 1.40114)
-
-[node name="Cylinder_006" parent="MechanicalArachnidRig/EDGE_ARM_LegsEdges_002/Skeleton3D" index="10"]
-transform = Transform3D(3.2389e-22, -0.0233924, 0.0410391, 0.0424868, 9.10065e-09, -4.83547e-10, -4.98052e-09, 0.0873016, 0.0109964, -0.845334, -0.167679, 1.52903)
-
-[node name="Cylinder_007" parent="MechanicalArachnidRig/EDGE_ARM_LegsEdges_002/Skeleton3D" index="11"]
-transform = Transform3D(3.38813e-21, -0.258819, 0.965926, 1, -1.37727e-07, 4.82237e-08, 3.17864e-08, 0.965926, 0.258819, 0.590594, -0.167679, 1.1463)
-
-[node name="Cylinder_008" parent="MechanicalArachnidRig/EDGE_ARM_LegsEdges_002/Skeleton3D" index="12"]
-transform = Transform3D(1, -2.84217e-14, -2.37169e-20, 0, 6.83469e-07, -1, 2.84217e-14, 1, 6.83469e-07, -4.49244e-16, 1.3194, 0.0200057)
-
-[node name="Cylinder_009" parent="MechanicalArachnidRig/EDGE_ARM_LegsEdges_002/Skeleton3D" index="13"]
-transform = Transform3D(0.0615584, -1.74959e-15, -4.17136e-22, 0, 5.38161e-09, -0.0615584, 1.7496e-15, 0.0615584, 5.38161e-09, -9.69577e-15, 1.83714, 0.345339)
-
-[node name="Cylinder_010" parent="MechanicalArachnidRig/EDGE_ARM_LegsEdges_002/Skeleton3D" index="14"]
-transform = Transform3D(0.122823, -3.49084e-15, -8.32282e-22, 0, 1.07375e-08, -0.122823, 3.49084e-15, 0.122823, 1.07375e-08, 0.579517, 1.33801, 0.345339)
-
-[node name="Cylinder_011" parent="MechanicalArachnidRig/EDGE_ARM_LegsEdges_002/Skeleton3D" index="15"]
-transform = Transform3D(0.0615584, -1.74959e-15, -4.17136e-22, 0, 5.38161e-09, -0.0615584, 1.7496e-15, 0.0615584, 5.38161e-09, -0.188541, 1.80993, 0.345339)
-
-[node name="Cylinder_012" parent="MechanicalArachnidRig/EDGE_ARM_LegsEdges_002/Skeleton3D" index="16"]
-transform = Transform3D(0.0615584, -1.74959e-15, -4.17136e-22, 0, 5.38161e-09, -0.0615584, 1.7496e-15, 0.0615584, 5.38161e-09, -0.353758, 1.72441, 0.345339)
-
-[node name="Cylinder_013" parent="MechanicalArachnidRig/EDGE_ARM_LegsEdges_002/Skeleton3D" index="17"]
-transform = Transform3D(0.0615584, -1.74959e-15, -4.17136e-22, 0, 5.38161e-09, -0.0615584, 1.7496e-15, 0.0615584, 5.38161e-09, 0.188541, 1.81576, 0.345339)
-
-[node name="Cylinder_014" parent="MechanicalArachnidRig/EDGE_ARM_LegsEdges_002/Skeleton3D" index="18"]
-transform = Transform3D(1, -9.2532e-15, -2.68733e-14, 0, 0.945519, -0.325568, 2.84217e-14, 0.325568, 0.945519, -0.00412436, 2.16278, -2.57577)
-
-[node name="Cylinder_015" parent="MechanicalArachnidRig/EDGE_ARM_LegsEdges_002/Skeleton3D" index="19"]
-transform = Transform3D(0.999307, 0.0213305, 0.0305118, -0.0108647, 0.951, -0.308999, -0.0356079, 0.308453, 0.950573, 0.0124486, 1.85148, -2.01567)
-
 [node name="ik_e2_2-3" parent="MechanicalArachnidRig/EDGE_ARM_LegsEdges_002/Skeleton3D/@GodotIK@28814" index="0"]
 transform = Transform3D(0.61682, 0.34813, 0.705973, -3.81842e-08, -0.896881, 0.442272, 0.787143, -0.272802, -0.553213, -2.76676, -0.321875, 2.11918)
 
