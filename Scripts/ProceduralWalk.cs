@@ -56,8 +56,10 @@ public partial class ProceduralWalk : CharacterBody3D
         UpdateCycle((float)delta);
 
         Rotate(Vector3.Up, Mathf.Pi * turnRate * moveSpeed * (float)delta);
-
         Velocity = -Transform.Basis.Z * moveSpeed;
+
+        UpdateRaycastProjections();
+
         MoveAndSlide();
         MoveFeet();
         DebugDraw();
@@ -85,19 +87,22 @@ public partial class ProceduralWalk : CharacterBody3D
         }
     }
 
-    public void UpdateRaycasts()
+    public void UpdateRaycastProjections()
     {
         Vector3 forward = -Transform.Basis.Z;
-        float dot = forward.Dot(Velocity);
+        float dot = forward.Dot(Velocity.Normalized());
 
-        Vector3 projectionOffset = new Vector3(0.0f, 0.0f, 0.0f);
+        Vector3 projectionOffset = forward * raycastForwardOffset;
 
-        //projectionOffset.Rotated(Vector3.Up, turnProjection * dot);
-        //projectionOffset += new Vector3(0.0f, 0.0f, -raycastForwardOffset);
+        projectionOffset = projectionOffset.Rotated(Vector3.Up, turnProjection * dot);
+
+        DebugDraw3D.DrawSphere(GlobalPosition + projectionOffset, 0.25f);
+        DebugDraw3D.DrawLine(GlobalPosition, GlobalPosition + projectionOffset);
 
         for (int i = 0; i <= rayCasts.Length - 1; i++)
         {
-            rayCasts[i].Position = projectionOffset;
+            Node3D raycastRoot = (Node3D)rayCasts[i].GetParent();
+            rayCasts[i].GlobalPosition = raycastRoot.GlobalPosition + projectionOffset;
         }
     }
 
@@ -217,7 +222,6 @@ public partial class ProceduralWalk : CharacterBody3D
             raycastOrigin.AddChild(rayCast);
             rayCast.Name = "Raycast_" + foot.Name;
 
-            rayCast.Position = new Vector3(0.0f, 0.0f, -raycastForwardOffset);
             rayCast.TargetPosition = new Vector3(0.0f, -raycastDistance, 0.0f);
             rayCasts[i] = rayCast;
         }
@@ -276,7 +280,7 @@ public partial class ProceduralWalk : CharacterBody3D
     {
         for (int i = 0; i <= currentTargets.Length - 1; i++)
         {
-            currentTargets[i] = feet[i].GlobalPosition + new Vector3(0.0f, 0.0f, -raycastForwardOffset);
+            currentTargets[i] = feet[i].GlobalPosition;
         }
     }
 }
