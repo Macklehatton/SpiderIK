@@ -68,7 +68,7 @@ public partial class ProceduralWalk : CharacterBody3D
         DebugDraw();
     }
 
-    public void DebugDraw()
+    private void DebugDraw()
     {
         for (int i = 0; i <= rayCasts.Length - 1; i++)
         {
@@ -77,7 +77,7 @@ public partial class ProceduralWalk : CharacterBody3D
         }
     }
 
-    public void UpdateCycle(float delta)
+    private void UpdateCycle(float delta)
     {
         currentCycle += cycleRate * moveSpeed * delta;
 
@@ -89,15 +89,13 @@ public partial class ProceduralWalk : CharacterBody3D
         }
     }
 
-    public void UpdateRaycastProjections()
+    private void UpdateRaycastProjections()
     {
         Vector3 forward = -Transform.Basis.Z;
         Vector3 projectionOffset = forward * raycastForwardOffset;
 
         float rotationFactor = Remap(currentRotation, -maxRotationProjection, maxRotationProjection, -1.0f, 1.0f);
 
-        // Map
-        // Max rotation
         float projectionRotation = turnProjection * rotationFactor;
 
         projectionOffset = projectionOffset.Rotated(Vector3.Up, projectionRotation);
@@ -113,12 +111,12 @@ public partial class ProceduralWalk : CharacterBody3D
         }
     }
 
-    public static float Remap(float value, float inMin, float inMax, float outMin, float outMax)
+    private static float Remap(float value, float inMin, float inMax, float outMin, float outMax)
     {
         return outMin + (value - inMin) * (outMax - outMin) / (inMax - inMin);
     }
 
-    public void MoveFeet()
+    private void MoveFeet()
     {
         for (int i = 0; i <= feet.Length - 1; i++)
         {
@@ -131,7 +129,7 @@ public partial class ProceduralWalk : CharacterBody3D
         }
     }
 
-    public bool CheckMoveFoot(int footIndex)
+    private bool CheckMoveFoot(int footIndex)
     {
         if (!inCycle[footIndex])
         {
@@ -161,7 +159,7 @@ public partial class ProceduralWalk : CharacterBody3D
         // return false;
     }
 
-    public bool CheckDistance(int footIndex)
+    private bool CheckDistance(int footIndex)
     {
         Vector3 footPosition = feet[footIndex].GlobalPosition;
         Vector3 targetPosition = rayCasts[footIndex].GetCollisionPoint();
@@ -176,7 +174,7 @@ public partial class ProceduralWalk : CharacterBody3D
         }
     }
 
-    public void MoveFoot(int footIndex)
+    private void MoveFoot(int footIndex)
     {
         RayCast3D raycast = rayCasts[footIndex];
 
@@ -198,7 +196,7 @@ public partial class ProceduralWalk : CharacterBody3D
         //foot.GlobalPosition = foot.GlobalPosition.Lerp(targetPosition, currentCycle);
     }
 
-    public Node3D[] GetFeet()
+    private Node3D[] GetFeet()
     {
         // Personal preference not to just use the Godot.Array
         // that comes from GetChildren()
@@ -215,7 +213,7 @@ public partial class ProceduralWalk : CharacterBody3D
     }
 
 
-    public RayCast3D[] AddRayCasts(Node3D[] feet)
+    private RayCast3D[] AddRayCasts(Node3D[] feet)
     {
         RayCast3D[] rayCasts = new RayCast3D[feet.Length];
 
@@ -240,7 +238,7 @@ public partial class ProceduralWalk : CharacterBody3D
         return rayCasts;
     }
 
-    public void SwapInCycle()
+    private void SwapInCycle()
     {
         for (int i = 0; i <= inCycle.Length - 1; i++)
         {
@@ -253,7 +251,7 @@ public partial class ProceduralWalk : CharacterBody3D
         }
     }
 
-    public void SetAlternateFeet()
+    private void SetAlternateFeet()
     {
         int row = feet.Length / 2;
 
@@ -276,7 +274,7 @@ public partial class ProceduralWalk : CharacterBody3D
     // 1 5
     // 2 6
     // 3 7
-    public int Opposite(int i)
+    private int Opposite(int i)
     {
         int row = feet.Length / 2;
         int opposite = i + row;
@@ -288,7 +286,7 @@ public partial class ProceduralWalk : CharacterBody3D
         return opposite;
     }
 
-    public void SetInitialTargets()
+    private void SetInitialTargets()
     {
         for (int i = 0; i <= currentTargets.Length - 1; i++)
         {
