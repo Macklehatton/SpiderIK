@@ -15,6 +15,7 @@ public partial class ProceduralWalk : CharacterBody3D
     [Export] private float moveSpeed;
     [Export] private float turnRate;
     [Export] private float turnProjection;
+    [Export] private float maxRotationProjection;
 
     private Node3D[] feet;
     private RayCast3D[] rayCasts;
@@ -29,6 +30,7 @@ public partial class ProceduralWalk : CharacterBody3D
     private float strideDistanceSquared;
 
     private float currentCycle;
+    private float currentRotation;
 
     public override void _Ready()
     {
@@ -55,7 +57,8 @@ public partial class ProceduralWalk : CharacterBody3D
     {
         UpdateCycle((float)delta);
 
-        Rotate(Vector3.Up, Mathf.Pi * turnRate * moveSpeed * (float)delta);
+        currentRotation = turnRate / Engine.PhysicsTicksPerSecond * moveSpeed;
+        Rotate(Vector3.Up, currentRotation);
         Velocity = -Transform.Basis.Z * moveSpeed;
 
         UpdateRaycastProjections();
@@ -74,7 +77,6 @@ public partial class ProceduralWalk : CharacterBody3D
         }
     }
 
-
     public void UpdateCycle(float delta)
     {
         currentCycle += cycleRate * moveSpeed * delta;
@@ -90,20 +92,30 @@ public partial class ProceduralWalk : CharacterBody3D
     public void UpdateRaycastProjections()
     {
         Vector3 forward = -Transform.Basis.Z;
-        float dot = forward.Dot(Velocity.Normalized());
-
         Vector3 projectionOffset = forward * raycastForwardOffset;
 
-        projectionOffset = projectionOffset.Rotated(Vector3.Up, turnProjection * dot);
+        float rotationFactor = Remap(currentRotation, -maxRotationProjection, maxRotationProjection, -1.0f, 1.0f);
 
-        DebugDraw3D.DrawSphere(GlobalPosition + projectionOffset, 0.25f);
-        DebugDraw3D.DrawLine(GlobalPosition, GlobalPosition + projectionOffset);
+        // Map
+        // Max rotation
+        float projectionRotation = turnProjection * rotationFactor;
+
+        projectionOffset = projectionOffset.Rotated(Vector3.Up, projectionRotation);
+
+        DebugDraw3D.DrawSphere(GlobalPosition + projectionOffset + Vector3.Up * 5.0f, 0.25f);
+        DebugDraw3D.DrawLine(GlobalPosition + Vector3.Up * 5.0f, GlobalPosition + projectionOffset + Vector3.Up * 5.0f);
 
         for (int i = 0; i <= rayCasts.Length - 1; i++)
         {
             Node3D raycastRoot = (Node3D)rayCasts[i].GetParent();
             rayCasts[i].GlobalPosition = raycastRoot.GlobalPosition + projectionOffset;
+            DebugDraw3D.DrawSphere(rayCasts[i].GlobalPosition);
         }
+    }
+
+    public static float Remap(float value, float inMin, float inMax, float outMin, float outMax)
+    {
+        return outMin + (value - inMin) * (outMax - outMin) / (inMax - inMin);
     }
 
     public void MoveFeet()

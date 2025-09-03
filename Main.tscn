@@ -27,8 +27,13 @@ strideDistance = 5.0
 cycleRate = 0.625
 footSpeed = 0.1
 moveSpeed = 2.0
-turnRate = 0.05
-turnProjection = 0.35
+turnRate = 0.3
+turnProjection = 1.571
+maxRotationProjection = 0.03
+
+[node name="CSGBox3D" type="CSGBox3D" parent="MechanicalArachnid"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.88957, -0.185486)
+size = Vector3(1, 1, 7.75818)
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_r0du0")
