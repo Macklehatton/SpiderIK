@@ -10,13 +10,17 @@ radius = 3.25
 [node name="MechanicalArachnid" type="CharacterBody3D" node_paths=PackedStringArray("footContainer")]
 collision_layer = 2
 script = ExtResource("1_l0n85")
-raycastDistance = 20.0
+raycastDistance = 50.0
 raycastHeight = 5.0
-raycastForwardOffset = 1.0
+raycastForwardOffset = 1.5
 footContainer = NodePath("MechanicalArachnidRig/FootContainer")
-strideDistance = 1.0
-cycleRate = 1.0
-moveSpeed = 1.0
+strideDistance = 5.0
+cycleRate = 0.6
+footSpeed = 0.2
+maxDifferential = 0.25
+moveSpeed = 2.0
+turnProjection = 2.8
+maxRotationProjection = 0.03
 
 [node name="MechanicalArachnidRig" parent="." instance=ExtResource("1_i2uhj")]
 

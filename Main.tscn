@@ -1,6 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://ccnba2mdvamym"]
+[gd_scene load_steps=8 format=3 uid="uid://ccnba2mdvamym"]
 
 [ext_resource type="PackedScene" uid="uid://du6kxaldswwyq" path="res://Prefabs/mechanical_arachnid.tscn" id="1_glv2v"]
+[ext_resource type="Texture2D" uid="uid://cbtx1yvpprivi" path="res://addons/kenney_prototype_textures/dark/texture_02.png" id="2_uu6xs"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_glv2v"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -15,21 +16,28 @@ sky = SubResource("Sky_uu6xs")
 tonemap_mode = 2
 glow_enabled = true
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r0du0"]
+albedo_texture = ExtResource("2_uu6xs")
+uv1_scale = Vector3(100, 100, 100)
+
 [sub_resource type="BoxShape3D" id="BoxShape3D_glv2v"]
-size = Vector3(500, 1, 500)
+size = Vector3(500, 1.95, 500)
 
 [node name="Root" type="Node3D"]
 
 [node name="MechanicalArachnid" parent="." instance=ExtResource("1_glv2v")]
-raycastDistance = 50.0
 raycastForwardOffset = 2.0
-strideDistance = 5.0
-cycleRate = 0.625
+cycleRate = 1.25
 footSpeed = 0.1
-moveSpeed = 2.0
-turnRate = 0.3
-turnProjection = 1.571
-maxRotationProjection = 0.03
+maxDifferential = 1.0
+turnRate = -0.155
+turnProjection = 1.16
+maxRotationProjection = 0.025
+
+[node name="Camera3D" type="Camera3D" parent="MechanicalArachnid"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 12.135, 0)
+projection = 1
+size = 13.122
 
 [node name="CSGBox3D" type="CSGBox3D" parent="MechanicalArachnid"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.88957, -0.185486)
@@ -43,8 +51,9 @@ transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -
 shadow_enabled = true
 
 [node name="CSGBox3D" type="CSGBox3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.5, 0)
-size = Vector3(500, 1, 500)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
+material_override = SubResource("StandardMaterial3D_r0du0")
+size = Vector3(500, 2, 500)
 
 [node name="StaticBody3D" type="StaticBody3D" parent="CSGBox3D"]
 

@@ -11,6 +11,7 @@ public partial class ProceduralWalk : CharacterBody3D
     [Export] private float strideDistance;
     [Export] private float cycleRate;
     [Export] private float footSpeed;
+    [Export] private float maxDifferential;
 
     [Export] private float moveSpeed;
     [Export] private float turnRate;
@@ -73,7 +74,7 @@ public partial class ProceduralWalk : CharacterBody3D
         for (int i = 0; i <= rayCasts.Length - 1; i++)
         {
             //DebugDraw3D.DrawBox(rayCasts[i].GlobalPosition, rayCasts[i].Quaternion, Vector3.One);
-            DebugDraw3D.DrawSphere(currentTargets[i]);
+            DebugDraw3D.DrawSphere(currentTargets[i], 0.25f, Colors.PaleVioletRed);
         }
     }
 
@@ -103,11 +104,40 @@ public partial class ProceduralWalk : CharacterBody3D
         DebugDraw3D.DrawSphere(GlobalPosition + projectionOffset + Vector3.Up * 5.0f, 0.25f);
         DebugDraw3D.DrawLine(GlobalPosition + Vector3.Up * 5.0f, GlobalPosition + projectionOffset + Vector3.Up * 5.0f);
 
+
+
         for (int i = 0; i <= rayCasts.Length - 1; i++)
         {
+            Vector3 differentialApplied = projectionOffset;
+
+            if (rotationFactor > 0.0f)
+            {
+                if (LeftLeg(i))
+                {
+                    differentialApplied *= 1.0f - maxDifferential;
+                }
+                else
+                {
+                    differentialApplied *= 1.0f + maxDifferential * 0.25f;
+                }
+            }
+            else
+            {
+                if (!LeftLeg(i))
+                {
+                    differentialApplied *= 1.0f - maxDifferential;
+                }
+                else
+                {
+                    differentialApplied *= 1.0f + maxDifferential * 0.25f;
+                }
+            }
+
             Node3D raycastRoot = (Node3D)rayCasts[i].GetParent();
-            rayCasts[i].GlobalPosition = raycastRoot.GlobalPosition + projectionOffset;
+            rayCasts[i].GlobalPosition = raycastRoot.GlobalPosition + differentialApplied;
             DebugDraw3D.DrawSphere(rayCasts[i].GlobalPosition);
+            // Root to current
+            DebugDraw3D.DrawLine(((Node3D)rayCasts[i].GetParent()).GlobalPosition, rayCasts[i].GlobalPosition);
         }
     }
 
@@ -291,6 +321,19 @@ public partial class ProceduralWalk : CharacterBody3D
         for (int i = 0; i <= currentTargets.Length - 1; i++)
         {
             currentTargets[i] = feet[i].GlobalPosition;
+        }
+    }
+
+    private bool LeftLeg(int footIndex)
+    {
+        int row = feet.Length / 2;
+        if (footIndex < row)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
         }
     }
 }
