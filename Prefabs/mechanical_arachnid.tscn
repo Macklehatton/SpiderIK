@@ -8,6 +8,7 @@ height = 2.39063
 radius = 3.25
 
 [node name="MechanicalArachnid" type="CharacterBody3D" node_paths=PackedStringArray("footContainer")]
+collision_layer = 2
 script = ExtResource("1_l0n85")
 raycastDistance = 20.0
 raycastHeight = 5.0

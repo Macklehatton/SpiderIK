@@ -10,9 +10,11 @@ public partial class ProceduralWalk : CharacterBody3D
     [Export] private Node3D footContainer;
     [Export] private float strideDistance;
     [Export] private float cycleRate;
+    [Export] private float footSpeed;
 
     [Export] private float moveSpeed;
     [Export] private float turnRate;
+    [Export] private float turnProjection;
 
     private Node3D[] feet;
     private RayCast3D[] rayCasts;
@@ -55,7 +57,7 @@ public partial class ProceduralWalk : CharacterBody3D
 
         Rotate(Vector3.Up, Mathf.Pi * turnRate * moveSpeed * (float)delta);
 
-        Velocity = Transform.Basis.Z * moveSpeed;
+        Velocity = -Transform.Basis.Z * moveSpeed;
         MoveAndSlide();
         MoveFeet();
         DebugDraw();
@@ -80,6 +82,22 @@ public partial class ProceduralWalk : CharacterBody3D
         {
             currentCycle = currentCycle - 1.0f;
             SwapInCycle();
+        }
+    }
+
+    public void UpdateRaycasts()
+    {
+        Vector3 forward = -Transform.Basis.Z;
+        float dot = forward.Dot(Velocity);
+
+        Vector3 projectionOffset = new Vector3(0.0f, 0.0f, 0.0f);
+
+        //projectionOffset.Rotated(Vector3.Up, turnProjection * dot);
+        //projectionOffset += new Vector3(0.0f, 0.0f, -raycastForwardOffset);
+
+        for (int i = 0; i <= rayCasts.Length - 1; i++)
+        {
+            rayCasts[i].Position = projectionOffset;
         }
     }
 
@@ -154,7 +172,13 @@ public partial class ProceduralWalk : CharacterBody3D
 
         Node3D foot = feet[footIndex];
 
-        foot.GlobalPosition = foot.GlobalPosition.Lerp(targetPosition, currentCycle);
+        foot.GlobalPosition = foot.GlobalPosition.MoveToward(targetPosition, moveSpeed * footSpeed);
+
+        // Uncached
+        //foot.GlobalPosition = foot.GlobalPosition.MoveToward(raycast.GetCollisionPoint(), moveSpeed * footSpeed);
+
+
+        //foot.GlobalPosition = foot.GlobalPosition.Lerp(targetPosition, currentCycle);
     }
 
     public Node3D[] GetFeet()
@@ -182,12 +206,18 @@ public partial class ProceduralWalk : CharacterBody3D
         {
             Node3D foot = feet[i];
 
+            Node3D raycastOrigin = new Node3D();
+            AddChild(raycastOrigin);
+            raycastOrigin.Name = "RaycastOrigin_" + foot.Name;
+
+            raycastOrigin.GlobalPosition = foot.GlobalPosition;
+            raycastOrigin.GlobalPosition += new Vector3(0.0f, raycastHeight, 0.0f);
+
             RayCast3D rayCast = new RayCast3D();
+            raycastOrigin.AddChild(rayCast);
             rayCast.Name = "Raycast_" + foot.Name;
-            AddChild(rayCast);
-            rayCast.GlobalPosition = foot.GlobalPosition;
-            rayCast.GlobalPosition += new Vector3(0.0f, raycastHeight, 0.0f);
-            rayCast.Position += new Vector3(0.0f, 0.0f, raycastForwardOffset);
+
+            rayCast.Position = new Vector3(0.0f, 0.0f, -raycastForwardOffset);
             rayCast.TargetPosition = new Vector3(0.0f, -raycastDistance, 0.0f);
             rayCasts[i] = rayCast;
         }
@@ -246,7 +276,7 @@ public partial class ProceduralWalk : CharacterBody3D
     {
         for (int i = 0; i <= currentTargets.Length - 1; i++)
         {
-            currentTargets[i] = feet[i].GlobalPosition + new Vector3(0.0f, 0.0f, raycastForwardOffset);
+            currentTargets[i] = feet[i].GlobalPosition + new Vector3(0.0f, 0.0f, -raycastForwardOffset);
         }
     }
 }
