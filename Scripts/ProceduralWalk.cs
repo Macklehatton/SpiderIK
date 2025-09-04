@@ -104,41 +104,46 @@ public partial class ProceduralWalk : CharacterBody3D
         DebugDraw3D.DrawSphere(GlobalPosition + projectionOffset + Vector3.Up * 5.0f, 0.25f);
         DebugDraw3D.DrawLine(GlobalPosition + Vector3.Up * 5.0f, GlobalPosition + projectionOffset + Vector3.Up * 5.0f);
 
-
-
         for (int i = 0; i <= rayCasts.Length - 1; i++)
         {
-            Vector3 differentialApplied = projectionOffset;
-
-            if (rotationFactor > 0.0f)
-            {
-                if (LeftLeg(i))
-                {
-                    differentialApplied *= 1.0f - maxDifferential;
-                }
-                else
-                {
-                    differentialApplied *= 1.0f + maxDifferential * 0.25f;
-                }
-            }
-            else
-            {
-                if (!LeftLeg(i))
-                {
-                    differentialApplied *= 1.0f - maxDifferential;
-                }
-                else
-                {
-                    differentialApplied *= 1.0f + maxDifferential * 0.25f;
-                }
-            }
+            Vector3 differentialApplied = ApplyDifferential(projectionOffset, rotationFactor, i);
 
             Node3D raycastRoot = (Node3D)rayCasts[i].GetParent();
             rayCasts[i].GlobalPosition = raycastRoot.GlobalPosition + differentialApplied;
+
             DebugDraw3D.DrawSphere(rayCasts[i].GlobalPosition);
             // Root to current
             DebugDraw3D.DrawLine(((Node3D)rayCasts[i].GetParent()).GlobalPosition, rayCasts[i].GlobalPosition);
         }
+    }
+
+    private Vector3 ApplyDifferential(Vector3 projectionOffset, float rotationFactor, int raycastIndex)
+    {
+        Vector3 differentialApplied = projectionOffset;
+
+        if (rotationFactor > 0.0f)
+        {
+            if (LeftLeg(raycastIndex))
+            {
+                differentialApplied *= 1.0f - maxDifferential;
+            }
+            else
+            {
+                differentialApplied *= 1.0f + maxDifferential * 0.25f;
+            }
+        }
+        else
+        {
+            if (!LeftLeg(raycastIndex))
+            {
+                differentialApplied *= 1.0f - maxDifferential;
+            }
+            else
+            {
+                differentialApplied *= 1.0f + maxDifferential * 0.25f;
+            }
+        }
+        return differentialApplied;
     }
 
     private static float Remap(float value, float inMin, float inMax, float outMin, float outMax)
