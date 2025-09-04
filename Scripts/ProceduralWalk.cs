@@ -17,10 +17,11 @@ public partial class ProceduralWalk : CharacterBody3D
     [Export] private float radialDifferential;
 
     [Export] private float moveSpeed;
-    [Export] private float turnRate;
+
+    [Export(PropertyHint.Range, "0,1")] private float turnRate;
     [Export] private float projectionRotation;
     [Export] private float radialProjection;
-    [Export] private float factorMaxRotation;
+    [Export] private float maxRotation;
 
     private Node3D[] feet;
     private RayCast3D[] rayCasts;
@@ -65,7 +66,11 @@ public partial class ProceduralWalk : CharacterBody3D
     {
         UpdateCycle((float)delta);
 
-        currentRotation = turnRate / Engine.PhysicsTicksPerSecond * moveSpeed;
+        currentRotation = turnRate * moveSpeed;
+        currentRotation = Mathf.Clamp(
+            currentRotation,
+            -maxRotation * moveSpeed,
+            maxRotation * moveSpeed);
         Rotate(Vector3.Up, currentRotation);
         Velocity = -Transform.Basis.Z * moveSpeed;
 
@@ -99,8 +104,10 @@ public partial class ProceduralWalk : CharacterBody3D
     private void UpdateRaycastProjections()
     {
         Vector3 forward = -Transform.Basis.Z;
-        float rotationFactor = Remap(currentRotation, -factorMaxRotation, factorMaxRotation, -1.0f, 1.0f);
-        float rotation = projectionRotation * rotationFactor;
+        int direction = Mathf.Sign(currentRotation);
+        // How quickly we're rotating, normalized
+        float rotationFactor = Remap(currentRotation, 0.0f, maxRotation, 0.0f, 1.0f);
+        float rotation = projectionRotation * direction;
 
         for (int i = 0; i <= rayCasts.Length - 1; i++)
         {
@@ -110,9 +117,9 @@ public partial class ProceduralWalk : CharacterBody3D
             legRootPosition = ToGlobal(legRootPosition);
 
             Vector3 radialOffset = (legRootPosition - GlobalPosition).Normalized();
-            radialOffset = radialOffset * radialProjection;
             float adjustedRotation = ApplyRadialDifferential(rotation, radialDifferential, rotationFactor, i);
             radialOffset = radialOffset.Rotated(Vector3.Up, adjustedRotation);
+            radialOffset = radialOffset * radialProjection;
 
             forwardOffset = ApplyDifferential(forwardOffset, forwardDifferential, rotationFactor, i);
 
@@ -131,14 +138,14 @@ public partial class ProceduralWalk : CharacterBody3D
         {
             if (LeftLeg(raycastIndex))
             {
-                differentialApplied *= 1.0f - negative;
+                differentialApplied *= 1.0f - negative * rotationFactor;
             }
         }
         else
         {
             if (!LeftLeg(raycastIndex))
             {
-                differentialApplied *= 1.0f - negative;
+                differentialApplied *= 1.0f - negative * rotationFactor;
             }
         }
         return differentialApplied;
