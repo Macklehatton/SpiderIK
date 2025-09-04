@@ -3,13 +3,16 @@ using System;
 
 public partial class ProceduralWalk : CharacterBody3D
 {
+    [ExportGroup("References")]
     [Export] private Node3D footContainer;
     [Export] private Skeleton3D skeleton;
 
+    [ExportGroup("Raycasts")]
     [Export] private float raycastDistance;
     [Export] private float raycastHeight;
     [Export] private float raycastForwardOffset;
 
+    [ExportGroup("")]
     [Export] private float strideDistance;
     [Export] private float cycleRate;
     [Export] private float footSpeed;
@@ -18,15 +21,16 @@ public partial class ProceduralWalk : CharacterBody3D
 
     [Export] private float moveSpeed;
 
-    [Export(PropertyHint.Range, "0,0.03")] private float turnRate;
+    [Export(PropertyHint.Range, "0,0.03")] private float turnSpeed;
     [Export] private float rotationProjection;
     [Export(PropertyHint.Range, "0,0.05")] private float factorMaxRotation;
     [Export(PropertyHint.Range, "0,0.03")] private float maxRotation;
     [Export] private float rotationCycleWeight;
-    [Export] private float rotationFootSpeedWeight;
+    [Export] private float footSpeedByRotation;
+    [Export] private float radialProjectionByRotation;
 
     [Export] private float projectionRotation;
-    [Export] private float radialProjection;
+    [Export] private float radialProjectionMagnitude;
 
     private Node3D[] feet;
     private RayCast3D[] rayCasts;
@@ -45,6 +49,7 @@ public partial class ProceduralWalk : CharacterBody3D
     private float currentCycle;
     private float currentRotation;
     private float currentRotationFactor;
+    private float currentRadialMagnitude;
 
     public override void _Ready()
     {
@@ -74,11 +79,11 @@ public partial class ProceduralWalk : CharacterBody3D
     {
         UpdateCycle((float)delta);
 
-        currentRotation = turnRate * moveSpeed;
+        currentRotation = turnSpeed;
         currentRotation = Mathf.Clamp(
             currentRotation,
-            -maxRotation * moveSpeed,
-            maxRotation * moveSpeed);
+            -maxRotation,
+            maxRotation);
         Rotate(Vector3.Up, currentRotation);
         Velocity = -Transform.Basis.Z * moveSpeed;
 
@@ -117,9 +122,13 @@ public partial class ProceduralWalk : CharacterBody3D
         currentRotationFactor = Remap(currentRotation, 0.0f, factorMaxRotation, 0.0f, 1.0f);
         float rotation = projectionRotation * direction * currentRotationFactor * rotationProjection;
 
+        currentRadialMagnitude = Mathf.Lerp(radialProjectionMagnitude, radialProjectionMagnitude + radialProjectionByRotation, currentRotationFactor);
+
         for (int i = 0; i <= rayCasts.Length - 1; i++)
         {
-            Vector3 forwardOffset = forward * raycastForwardOffset;
+            // Adjust by rotation
+            float adjustedForwardOffset = Mathf.Lerp(raycastForwardOffset, 0.0f, currentRotationFactor);
+            Vector3 forwardOffset = forward * adjustedForwardOffset;
 
             Vector3 legRootPosition = skeleton.GetBoneGlobalPose(legRoots[i]).Origin;
             legRootPosition = ToGlobal(legRootPosition);
@@ -127,8 +136,9 @@ public partial class ProceduralWalk : CharacterBody3D
             Vector3 radialOffset = (legRootPosition - GlobalPosition).Normalized();
             float adjustedRotation = ApplyRadialDifferential(rotation, radialDifferential, currentRotationFactor, i);
             radialOffset = radialOffset.Rotated(Vector3.Up, adjustedRotation);
-            radialOffset = radialOffset * radialProjection;
+            radialOffset = radialOffset * currentRadialMagnitude;
 
+            // Reduce forward offset of feet on the side that needs to move less
             forwardOffset = ApplyDifferential(forwardOffset, forwardDifferential, currentRotationFactor, i);
 
             rayCasts[i].GlobalPosition = legRootPosition + radialOffset + forwardOffset;
@@ -260,7 +270,7 @@ public partial class ProceduralWalk : CharacterBody3D
 
         // MoveToward isn't guaranteed to reach the target
         // It's a little easier to insert pauses with it
-        foot.GlobalPosition = foot.GlobalPosition.MoveToward(targetPosition, moveSpeed * footSpeed + currentRotationFactor * rotationFootSpeedWeight);
+        foot.GlobalPosition = foot.GlobalPosition.MoveToward(targetPosition, moveSpeed * footSpeed + currentRotationFactor * footSpeedByRotation);
         //foot.GlobalPosition = footOrigin.Slerp(targetPosition, currentCycle);
     }
 
