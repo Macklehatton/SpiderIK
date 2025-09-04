@@ -23,6 +23,7 @@ public partial class ProceduralWalk : CharacterBody3D
     [Export(PropertyHint.Range, "0,0.05")] private float factorMaxRotation;
     [Export(PropertyHint.Range, "0,0.03")] private float maxRotation;
     [Export] private float rotationCycleWeight;
+    [Export] private float rotationFootSpeedWeight;
 
     [Export] private float projectionRotation;
     [Export] private float radialProjection;
@@ -259,7 +260,7 @@ public partial class ProceduralWalk : CharacterBody3D
 
         // MoveToward isn't guaranteed to reach the target
         // It's a little easier to insert pauses with it
-        foot.GlobalPosition = foot.GlobalPosition.MoveToward(targetPosition, moveSpeed * footSpeed);
+        foot.GlobalPosition = foot.GlobalPosition.MoveToward(targetPosition, moveSpeed * footSpeed + currentRotationFactor * rotationFootSpeedWeight);
         //foot.GlobalPosition = footOrigin.Slerp(targetPosition, currentCycle);
     }
 
