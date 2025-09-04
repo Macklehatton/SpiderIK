@@ -1,13 +1,17 @@
 using Godot;
 using System;
+using System.Diagnostics;
+using System.Linq;
 
 public partial class ProceduralWalk : CharacterBody3D
 {
+    [Export] private Node3D footContainer;
+    [Export] private Skeleton3D skeleton;
+
     [Export] private float raycastDistance;
     [Export] private float raycastHeight;
     [Export] private float raycastForwardOffset;
 
-    [Export] private Node3D footContainer;
     [Export] private float strideDistance;
     [Export] private float cycleRate;
     [Export] private float footSpeed;
@@ -15,11 +19,13 @@ public partial class ProceduralWalk : CharacterBody3D
 
     [Export] private float moveSpeed;
     [Export] private float turnRate;
-    [Export] private float turnProjection;
-    [Export] private float maxRotationProjection;
+    [Export] private float projectionRotation;
+    [Export] private float radialProjection;
+    [Export] private float factorMaxRotation;
 
     private Node3D[] feet;
     private RayCast3D[] rayCasts;
+    private int[] legRoots;
     // Feet that we currently prefer to move 
     // for a balanced walk
     private bool[] inCycle;
@@ -47,6 +53,8 @@ public partial class ProceduralWalk : CharacterBody3D
 
         currentTargets = new Vector3[feet.Length];
         SetInitialTargets();
+
+        legRoots = GetLegRoots();
 
         strideDistanceSquared = strideDistance * strideDistance;
 
@@ -93,27 +101,28 @@ public partial class ProceduralWalk : CharacterBody3D
     private void UpdateRaycastProjections()
     {
         Vector3 forward = -Transform.Basis.Z;
-        Vector3 projectionOffset = forward * raycastForwardOffset;
 
-        float rotationFactor = Remap(currentRotation, -maxRotationProjection, maxRotationProjection, -1.0f, 1.0f);
+        float rotationFactor = Remap(currentRotation, -factorMaxRotation, factorMaxRotation, -1.0f, 1.0f);
+        float projectionRotation = this.projectionRotation * rotationFactor;
 
-        float projectionRotation = turnProjection * rotationFactor;
 
-        projectionOffset = projectionOffset.Rotated(Vector3.Up, projectionRotation);
-
-        DebugDraw3D.DrawSphere(GlobalPosition + projectionOffset + Vector3.Up * 5.0f, 0.25f);
-        DebugDraw3D.DrawLine(GlobalPosition + Vector3.Up * 5.0f, GlobalPosition + projectionOffset + Vector3.Up * 5.0f);
 
         for (int i = 0; i <= rayCasts.Length - 1; i++)
         {
-            Vector3 differentialApplied = ApplyDifferential(projectionOffset, rotationFactor, i);
+            Vector3 legRootPosition = skeleton.GetBoneGlobalPose(legRoots[i]).Origin;
+            legRootPosition = ToGlobal(legRootPosition);
 
-            Node3D raycastRoot = (Node3D)rayCasts[i].GetParent();
-            rayCasts[i].GlobalPosition = raycastRoot.GlobalPosition + differentialApplied;
+            Vector3 radialOffset = (legRootPosition - GlobalPosition).Normalized();
+            radialOffset = radialOffset * radialProjection;
+            radialOffset = radialOffset.Rotated(Vector3.Up, projectionRotation);
+
+            //Vector3 differentialApplied = ApplyDifferential(projectionOffset, rotationFactor, i);
+
+            rayCasts[i].GlobalPosition = legRootPosition + radialOffset;
 
             DebugDraw3D.DrawSphere(rayCasts[i].GlobalPosition);
             // Root to current
-            DebugDraw3D.DrawLine(((Node3D)rayCasts[i].GetParent()).GlobalPosition, rayCasts[i].GlobalPosition);
+            DebugDraw3D.DrawLine(legRootPosition, rayCasts[i].GlobalPosition);
         }
     }
 
@@ -229,6 +238,12 @@ public partial class ProceduralWalk : CharacterBody3D
 
 
         //foot.GlobalPosition = foot.GlobalPosition.Lerp(targetPosition, currentCycle);
+    }
+
+    private int[] GetLegRoots()
+    {
+        int[] rootChildren = skeleton.GetBoneChildren(0);
+        return rootChildren;
     }
 
     private Node3D[] GetFeet()
