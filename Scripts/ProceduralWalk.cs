@@ -1,7 +1,5 @@
 using Godot;
 using System;
-using System.Diagnostics;
-using System.Linq;
 
 public partial class ProceduralWalk : CharacterBody3D
 {
@@ -75,14 +73,13 @@ public partial class ProceduralWalk : CharacterBody3D
 
         MoveAndSlide();
         MoveFeet();
-        DebugDraw();
+        DrawDebugs();
     }
 
-    private void DebugDraw()
+    private void DrawDebugs()
     {
         for (int i = 0; i <= rayCasts.Length - 1; i++)
         {
-            //DebugDraw3D.DrawBox(rayCasts[i].GlobalPosition, rayCasts[i].Quaternion, Vector3.One);
             DebugDraw3D.DrawSphere(currentTargets[i], 0.25f, Colors.PaleVioletRed);
         }
     }
@@ -117,12 +114,11 @@ public partial class ProceduralWalk : CharacterBody3D
             float adjustedRotation = ApplyRadialDifferential(rotation, radialDifferential, rotationFactor, i);
             radialOffset = radialOffset.Rotated(Vector3.Up, adjustedRotation);
 
-            forwardOffset = ApplyDifferential(forwardOffset, 0.0f, forwardDifferential, rotationFactor, i);
+            forwardOffset = ApplyDifferential(forwardOffset, forwardDifferential, rotationFactor, i);
 
             rayCasts[i].GlobalPosition = legRootPosition + radialOffset + forwardOffset;
 
             DebugDraw3D.DrawSphere(rayCasts[i].GlobalPosition);
-            // Root to current
             DebugDraw3D.DrawLine(legRootPosition, rayCasts[i].GlobalPosition);
         }
     }
@@ -148,7 +144,7 @@ public partial class ProceduralWalk : CharacterBody3D
         return differentialApplied;
     }
 
-    private Vector3 ApplyDifferential(Vector3 vector, float positive, float negative, float rotationFactor, int raycastIndex)
+    private Vector3 ApplyDifferential(Vector3 vector, float negative, float rotationFactor, int raycastIndex)
     {
         Vector3 differentialApplied = vector;
 
@@ -158,10 +154,6 @@ public partial class ProceduralWalk : CharacterBody3D
             {
                 differentialApplied *= 1.0f - negative;
             }
-            else
-            {
-                //differentialApplied *= 1.0f + positive;
-            }
         }
         else
         {
@@ -169,10 +161,6 @@ public partial class ProceduralWalk : CharacterBody3D
             {
                 differentialApplied *= 1.0f - negative;
             }
-            // else
-            // {
-            //     differentialApplied *= 1.0f + positive;
-            // }
         }
         return differentialApplied;
     }
@@ -254,12 +242,6 @@ public partial class ProceduralWalk : CharacterBody3D
         Node3D foot = feet[footIndex];
 
         foot.GlobalPosition = foot.GlobalPosition.MoveToward(targetPosition, moveSpeed * footSpeed);
-
-        // Uncached
-        //foot.GlobalPosition = foot.GlobalPosition.MoveToward(raycast.GetCollisionPoint(), moveSpeed * footSpeed);
-
-
-        //foot.GlobalPosition = foot.GlobalPosition.Lerp(targetPosition, currentCycle);
     }
 
     private int[] GetLegRoots()
@@ -272,7 +254,6 @@ public partial class ProceduralWalk : CharacterBody3D
     {
         // Personal preference not to just use the Godot.Array
         // that comes from GetChildren()
-
         var children = footContainer.GetChildren();
         Node3D[] feet = new Node3D[children.Count];
 
@@ -342,10 +323,8 @@ public partial class ProceduralWalk : CharacterBody3D
     }
 
     // Foot pairs
-    // 0 4
-    // 1 5
-    // 2 6
-    // 3 7
+    // 0 1 2 3
+    // 4 5 6 7
     private int Opposite(int i)
     {
         int row = feet.Length / 2;
