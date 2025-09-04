@@ -15,7 +15,8 @@ public partial class ProceduralWalk : CharacterBody3D
     [Export] private float strideDistance;
     [Export] private float cycleRate;
     [Export] private float footSpeed;
-    [Export] private float maxDifferential;
+    [Export] private float forwardDifferential;
+    [Export] private float radialDifferential;
 
     [Export] private float moveSpeed;
     [Export] private float turnRate;
@@ -101,24 +102,24 @@ public partial class ProceduralWalk : CharacterBody3D
     private void UpdateRaycastProjections()
     {
         Vector3 forward = -Transform.Basis.Z;
-
         float rotationFactor = Remap(currentRotation, -factorMaxRotation, factorMaxRotation, -1.0f, 1.0f);
-        float projectionRotation = this.projectionRotation * rotationFactor;
-
-
+        float rotation = projectionRotation * rotationFactor;
 
         for (int i = 0; i <= rayCasts.Length - 1; i++)
         {
+            Vector3 forwardOffset = forward * raycastForwardOffset;
+
             Vector3 legRootPosition = skeleton.GetBoneGlobalPose(legRoots[i]).Origin;
             legRootPosition = ToGlobal(legRootPosition);
 
             Vector3 radialOffset = (legRootPosition - GlobalPosition).Normalized();
             radialOffset = radialOffset * radialProjection;
-            radialOffset = radialOffset.Rotated(Vector3.Up, projectionRotation);
+            float adjustedRotation = ApplyRadialDifferential(rotation, radialDifferential, rotationFactor, i);
+            radialOffset = radialOffset.Rotated(Vector3.Up, adjustedRotation);
 
-            //Vector3 differentialApplied = ApplyDifferential(projectionOffset, rotationFactor, i);
+            forwardOffset = ApplyDifferential(forwardOffset, 0.0f, forwardDifferential, rotationFactor, i);
 
-            rayCasts[i].GlobalPosition = legRootPosition + radialOffset;
+            rayCasts[i].GlobalPosition = legRootPosition + radialOffset + forwardOffset;
 
             DebugDraw3D.DrawSphere(rayCasts[i].GlobalPosition);
             // Root to current
@@ -126,31 +127,52 @@ public partial class ProceduralWalk : CharacterBody3D
         }
     }
 
-    private Vector3 ApplyDifferential(Vector3 projectionOffset, float rotationFactor, int raycastIndex)
+    private float ApplyRadialDifferential(float rotation, float negative, float rotationFactor, int raycastIndex)
     {
-        Vector3 differentialApplied = projectionOffset;
+        float differentialApplied = rotation;
 
         if (rotationFactor > 0.0f)
         {
             if (LeftLeg(raycastIndex))
             {
-                differentialApplied *= 1.0f - maxDifferential;
-            }
-            else
-            {
-                differentialApplied *= 1.0f + maxDifferential * 0.25f;
+                differentialApplied *= 1.0f - negative;
             }
         }
         else
         {
             if (!LeftLeg(raycastIndex))
             {
-                differentialApplied *= 1.0f - maxDifferential;
+                differentialApplied *= 1.0f - negative;
+            }
+        }
+        return differentialApplied;
+    }
+
+    private Vector3 ApplyDifferential(Vector3 vector, float positive, float negative, float rotationFactor, int raycastIndex)
+    {
+        Vector3 differentialApplied = vector;
+
+        if (rotationFactor > 0.0f)
+        {
+            if (LeftLeg(raycastIndex))
+            {
+                differentialApplied *= 1.0f - negative;
             }
             else
             {
-                differentialApplied *= 1.0f + maxDifferential * 0.25f;
+                //differentialApplied *= 1.0f + positive;
             }
+        }
+        else
+        {
+            if (!LeftLeg(raycastIndex))
+            {
+                differentialApplied *= 1.0f - negative;
+            }
+            // else
+            // {
+            //     differentialApplied *= 1.0f + positive;
+            // }
         }
         return differentialApplied;
     }

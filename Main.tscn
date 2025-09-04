@@ -26,19 +26,21 @@ size = Vector3(500, 1.95, 500)
 [node name="Root" type="Node3D"]
 
 [node name="MechanicalArachnid" parent="." instance=ExtResource("1_glv2v")]
-raycastForwardOffset = 3.0
-cycleRate = 0.9
+raycastForwardOffset = 2.0
+cycleRate = 1.25
 footSpeed = 0.1
-maxDifferential = 1.0
-turnRate = -0.155
-projectionRotation = 3.125
-radialProjection = 4.3
+forwardDifferential = 0.5
+radialDifferential = 0.5
+turnRate = 0.52
+projectionRotation = 2.0
+radialProjection = 4.0
 factorMaxRotation = 0.03
 
 [node name="Camera3D" type="Camera3D" parent="MechanicalArachnid"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 12.135, 0)
 projection = 1
-size = 13.122
+current = true
+size = 20.0
 
 [node name="CSGBox3D" type="CSGBox3D" parent="MechanicalArachnid"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.88957, -0.185486)
