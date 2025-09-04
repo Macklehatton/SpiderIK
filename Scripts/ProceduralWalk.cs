@@ -22,6 +22,7 @@ public partial class ProceduralWalk : CharacterBody3D
     [Export] private float rotationProjection;
     [Export(PropertyHint.Range, "0,0.05")] private float factorMaxRotation;
     [Export(PropertyHint.Range, "0,0.03")] private float maxRotation;
+    [Export] private float rotationCycleWeight;
 
     [Export] private float projectionRotation;
     [Export] private float radialProjection;
@@ -35,12 +36,14 @@ public partial class ProceduralWalk : CharacterBody3D
     // Feet currently moving
     private bool[] feetMoving;
     private Vector3[] currentTargets;
+    private Vector3[] footOrigins;
 
     private bool offFoot;
     private float strideDistanceSquared;
 
     private float currentCycle;
     private float currentRotation;
+    private float currentRotationFactor;
 
     public override void _Ready()
     {
@@ -55,6 +58,7 @@ public partial class ProceduralWalk : CharacterBody3D
         SetAlternateFeet();
 
         currentTargets = new Vector3[feet.Length];
+        footOrigins = new Vector3[feet.Length];
         SetInitialTargets();
 
         legRoots = GetLegRoots();
@@ -94,7 +98,7 @@ public partial class ProceduralWalk : CharacterBody3D
 
     private void UpdateCycle(float delta)
     {
-        currentCycle += cycleRate * moveSpeed * delta;
+        currentCycle += cycleRate * (moveSpeed + currentRotationFactor * rotationCycleWeight) * delta;
 
         // Wrap
         if (currentCycle > 1.0f)
@@ -109,8 +113,8 @@ public partial class ProceduralWalk : CharacterBody3D
         Vector3 forward = -Transform.Basis.Z;
         int direction = Mathf.Sign(currentRotation);
         // How quickly we're rotating, normalized
-        float rotationFactor = Remap(currentRotation, 0.0f, factorMaxRotation, 0.0f, 1.0f);
-        float rotation = projectionRotation * direction * rotationFactor * rotationProjection;
+        currentRotationFactor = Remap(currentRotation, 0.0f, factorMaxRotation, 0.0f, 1.0f);
+        float rotation = projectionRotation * direction * currentRotationFactor * rotationProjection;
 
         for (int i = 0; i <= rayCasts.Length - 1; i++)
         {
@@ -120,11 +124,11 @@ public partial class ProceduralWalk : CharacterBody3D
             legRootPosition = ToGlobal(legRootPosition);
 
             Vector3 radialOffset = (legRootPosition - GlobalPosition).Normalized();
-            float adjustedRotation = ApplyRadialDifferential(rotation, radialDifferential, rotationFactor, i);
+            float adjustedRotation = ApplyRadialDifferential(rotation, radialDifferential, currentRotationFactor, i);
             radialOffset = radialOffset.Rotated(Vector3.Up, adjustedRotation);
             radialOffset = radialOffset * radialProjection;
 
-            forwardOffset = ApplyDifferential(forwardOffset, forwardDifferential, rotationFactor, i);
+            forwardOffset = ApplyDifferential(forwardOffset, forwardDifferential, currentRotationFactor, i);
 
             rayCasts[i].GlobalPosition = legRootPosition + radialOffset + forwardOffset;
 
@@ -248,11 +252,15 @@ public partial class ProceduralWalk : CharacterBody3D
             return;
         }
 
+        Vector3 footOrigin = footOrigins[footIndex];
         Vector3 targetPosition = currentTargets[footIndex];
 
         Node3D foot = feet[footIndex];
 
+        // MoveToward isn't guaranteed to reach the target
+        // It's a little easier to insert pauses with it
         foot.GlobalPosition = foot.GlobalPosition.MoveToward(targetPosition, moveSpeed * footSpeed);
+        //foot.GlobalPosition = footOrigin.Slerp(targetPosition, currentCycle);
     }
 
     private int[] GetLegRoots()
@@ -311,6 +319,7 @@ public partial class ProceduralWalk : CharacterBody3D
             if (inCycle[i])
             {
                 currentTargets[i] = rayCasts[i].GetCollisionPoint();
+                footOrigins[i] = feet[i].GlobalPosition;
             }
         }
     }
@@ -353,6 +362,7 @@ public partial class ProceduralWalk : CharacterBody3D
         for (int i = 0; i <= currentTargets.Length - 1; i++)
         {
             currentTargets[i] = feet[i].GlobalPosition;
+            footOrigins[i] = feet[i].GlobalPosition;
         }
     }
 

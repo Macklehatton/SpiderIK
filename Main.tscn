@@ -25,14 +25,19 @@ size = Vector3(500, 1.95, 500)
 
 [node name="Root" type="Node3D"]
 
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(-0.636076, -0.498564, 0.588932, 0, 0.763235, 0.646121, -0.771626, 0.410982, -0.485476, 11.7486, 18.0173, -20.3672)
+size = 29.283
+
 [node name="MechanicalArachnid" parent="." instance=ExtResource("1_glv2v")]
-raycastForwardOffset = 0.0
-cycleRate = 3.0
+raycastForwardOffset = 1.0
+cycleRate = 1.25
 footSpeed = 0.3
-forwardDifferential = 1.0
-turnRate = 0.03
+forwardDifferential = 0.0
 rotationProjection = 1.25
+factorMaxRotation = 0.05
 maxRotation = 2.0
+rotationCycleWeight = 2.75
 projectionRotation = 1.25
 radialProjection = 6.0
 
@@ -62,7 +67,3 @@ size = Vector3(500, 2, 500)
 
 [node name="CSGBakedCollisionShape3D" type="CollisionShape3D" parent="CSGBox3D/StaticBody3D"]
 shape = SubResource("BoxShape3D_glv2v")
-
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(-0.636076, -0.498564, 0.588932, 0, 0.763235, 0.646121, -0.771626, 0.410982, -0.485475, 11.7486, 18.0173, -20.3672)
-size = 29.283
