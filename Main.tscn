@@ -27,7 +27,7 @@ size = Vector3(500, 1.95, 500)
 
 [node name="MechanicalArachnid" parent="." instance=ExtResource("1_glv2v")]
 raycastForwardOffset = 0.0
-cycleRate = 3.5
+cycleRate = 3.0
 footSpeed = 0.3
 forwardDifferential = 1.0
 turnRate = 0.03
