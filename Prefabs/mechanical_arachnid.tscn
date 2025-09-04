@@ -20,6 +20,8 @@ cycleRate = 0.6
 footSpeed = 0.2
 forwardDifferential = 0.5
 moveSpeed = 2.0
+factorMaxRotation = 0.03
+maxRotation = 0.03
 
 [node name="MechanicalArachnidRig" parent="." instance=ExtResource("1_i2uhj")]
 

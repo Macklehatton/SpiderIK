@@ -18,10 +18,13 @@ public partial class ProceduralWalk : CharacterBody3D
 
     [Export] private float moveSpeed;
 
-    [Export(PropertyHint.Range, "0,1")] private float turnRate;
+    [Export(PropertyHint.Range, "0,0.03")] private float turnRate;
+    [Export] private float rotationProjection;
+    [Export(PropertyHint.Range, "0,0.05")] private float factorMaxRotation;
+    [Export(PropertyHint.Range, "0,0.03")] private float maxRotation;
+
     [Export] private float projectionRotation;
     [Export] private float radialProjection;
-    [Export] private float maxRotation;
 
     private Node3D[] feet;
     private RayCast3D[] rayCasts;
@@ -106,8 +109,8 @@ public partial class ProceduralWalk : CharacterBody3D
         Vector3 forward = -Transform.Basis.Z;
         int direction = Mathf.Sign(currentRotation);
         // How quickly we're rotating, normalized
-        float rotationFactor = Remap(currentRotation, 0.0f, maxRotation, 0.0f, 1.0f);
-        float rotation = projectionRotation * direction;
+        float rotationFactor = Remap(currentRotation, 0.0f, factorMaxRotation, 0.0f, 1.0f);
+        float rotation = projectionRotation * direction * rotationFactor * rotationProjection;
 
         for (int i = 0; i <= rayCasts.Length - 1; i++)
         {
@@ -138,14 +141,14 @@ public partial class ProceduralWalk : CharacterBody3D
         {
             if (LeftLeg(raycastIndex))
             {
-                differentialApplied *= 1.0f - negative * rotationFactor;
+                differentialApplied *= 1.0f - (negative * rotationFactor);
             }
         }
         else
         {
             if (!LeftLeg(raycastIndex))
             {
-                differentialApplied *= 1.0f - negative * rotationFactor;
+                differentialApplied *= 1.0f - (negative * rotationFactor);
             }
         }
         return differentialApplied;
@@ -174,6 +177,7 @@ public partial class ProceduralWalk : CharacterBody3D
 
     private static float Remap(float value, float inMin, float inMax, float outMin, float outMax)
     {
+        value = Mathf.Clamp(value, inMin, inMax);
         return outMin + (value - inMin) * (outMax - outMin) / (inMax - inMin);
     }
 
