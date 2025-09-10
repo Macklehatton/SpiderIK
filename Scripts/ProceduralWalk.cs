@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using VectorExtensions;
 
 public partial class ProceduralWalk : CharacterBody3D
 {
@@ -18,25 +19,23 @@ public partial class ProceduralWalk : CharacterBody3D
     //[Export] private float footSpeed;
     [Export] private float forwardDifferential;
     [Export] private float radialDifferential;
+    [Export] private float footTargetRadialDistance;
 
     [ExportGroup("Speed")]
     [Export] private float moveSpeed;
-    [Export] private float radialProjectionMagnitude;
     [Export] private float cycleBySpeed;
 
     [ExportGroup("Rotation")]
-    [Export(PropertyHint.Range, "0,0.05")] private float turnSpeed;
-    [Export] private float rotationProjection;
-    [Export(PropertyHint.Range, "0,0.05")] private float factorMaxRotation;
-    [Export(PropertyHint.Range, "0,0.05")] private float maxRotation;
+    [Export(PropertyHint.Range, "0,0.1")] private float turnSpeed;
+    [Export(PropertyHint.Range, "0,0.1")] private float factorMaxRotation;
     [Export] private float cycleByRotationLow;
     [Export] private float cycleByRotationHigh;
     [Export] private float footSpeedByRotationLow;
     [Export] private float footSpeedByRotationHigh;
-    [Export] private float radialProjectionByRotation;
-
+    //[Export] private float radialProjectionByRotation;
     [Export] private float targetRotationByRotationLow;
     [Export] private float targetRotationByRotationHigh;
+
 
     private Node3D[] feet;
     private RayCast3D[] rayCasts;
@@ -55,12 +54,12 @@ public partial class ProceduralWalk : CharacterBody3D
     private float currentCycle;
     private float currentRotation;
     private float currentRotationFactor;
-    private float currentRadialMagnitude;
+    //private float currentRadialMagnitude;
 
     public override void _Ready()
     {
         // Giving my GPU a break
-        Engine.MaxFps = 60;
+        Engine.MaxFps = 120;
 
         feet = GetFeet();
         rayCasts = AddRayCasts(feet);
@@ -75,21 +74,15 @@ public partial class ProceduralWalk : CharacterBody3D
 
         legRoots = GetLegRoots();
 
-        strideDistanceSquared = strideDistance * strideDistance;
-
         // We don't want the foot IK targets moving with the character
         footContainer.CallDeferred("reparent", GetTree().Root);
     }
 
     public override void _PhysicsProcess(double delta)
     {
-        UpdateCycle((float)delta);
+        UpdateCycle();
 
         currentRotation = turnSpeed;
-        currentRotation = Mathf.Clamp(
-            currentRotation,
-            -maxRotation,
-            maxRotation);
         Rotate(Vector3.Up, currentRotation);
         Velocity = -Transform.Basis.Z * moveSpeed;
 
@@ -108,10 +101,12 @@ public partial class ProceduralWalk : CharacterBody3D
         }
     }
 
-    private void UpdateCycle(float delta)
+    private void UpdateCycle()
     {
         float rotationCycleInfluence = Mathf.Lerp(cycleByRotationLow, cycleByRotationHigh, currentRotationFactor);
-        currentCycle += (moveSpeed * cycleBySpeed + currentRotationFactor * rotationCycleInfluence) * delta;
+        float moveCycleInfluence = moveSpeed * cycleBySpeed;
+        float cycleDelta = moveCycleInfluence + rotationCycleInfluence;
+        currentCycle += cycleDelta;
 
         // Wrap
         if (currentCycle > 1.0f)
@@ -131,9 +126,7 @@ public partial class ProceduralWalk : CharacterBody3D
             targetRotationByRotationLow,
             targetRotationByRotationHigh,
             currentRotationFactor);
-        float rotation = rotationTargetInfluence * direction * currentRotationFactor * rotationProjection;
-
-        currentRadialMagnitude = Mathf.Lerp(radialProjectionMagnitude, radialProjectionMagnitude + radialProjectionByRotation, currentRotationFactor);
+        float rotation = rotationTargetInfluence * direction; // + currentRotationFactor * rotationProjection;
 
         for (int i = 0; i <= rayCasts.Length - 1; i++)
         {
@@ -144,19 +137,28 @@ public partial class ProceduralWalk : CharacterBody3D
             Vector3 legRootPosition = skeleton.GetBoneGlobalPose(legRoots[i]).Origin;
             legRootPosition = ToGlobal(legRootPosition);
 
-            Vector3 radialOffset = (legRootPosition - GlobalPosition).Normalized();
-            float adjustedRotation = ApplyRadialDifferential(rotation, radialDifferential, currentRotationFactor, i);
-            radialOffset = radialOffset.Rotated(Vector3.Up, adjustedRotation);
-            radialOffset = radialOffset * currentRadialMagnitude;
+            Vector3 offset = legRootPosition.PlanarPosition() - GlobalPosition.PlanarPosition();
+            Vector3 rotationalOffset = offset.Normalized();
+            rotationalOffset *= footTargetRadialDistance;
+
+            rotationalOffset = RotateAround(rotationalOffset, GlobalPosition, Vector3.Up, rotation);
 
             // Reduce forward offset of feet on the side that needs to move less
-            forwardOffset = ApplyDifferential(forwardOffset, forwardDifferential, currentRotationFactor, i);
+            //forwardOffset = ApplyDifferential(forwardOffset, forwardDifferential, currentRotationFactor, i);
 
-            rayCasts[i].GlobalPosition = legRootPosition + radialOffset + forwardOffset;
+            rayCasts[i].GlobalPosition = GlobalPosition + rotationalOffset + forwardOffset;
 
             DebugDraw3D.DrawSphere(rayCasts[i].GlobalPosition);
-            DebugDraw3D.DrawLine(legRootPosition, rayCasts[i].GlobalPosition);
+            DebugDraw3D.DrawLine(GlobalPosition, rayCasts[i].GlobalPosition);
         }
+    }
+
+    private Vector3 RotateAround(Vector3 point, Vector3 pivot, Vector3 axis, float rotation)
+    {
+        Vector3 result = point - pivot;
+        result = result.Rotated(axis, rotation);
+        result += pivot;
+        return result;
     }
 
     private float ApplyRadialDifferential(float rotation, float negative, float rotationFactor, int raycastIndex)
