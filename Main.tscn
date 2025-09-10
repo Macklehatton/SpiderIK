@@ -30,18 +30,21 @@ transform = Transform3D(-0.636076, -0.498564, 0.588932, 0, 0.763235, 0.646121, -
 size = 29.283
 
 [node name="MechanicalArachnid" parent="." instance=ExtResource("1_glv2v")]
-raycastForwardOffset = 1.25
-footSpeed = 0.1
 forwardDifferential = 0.0
 moveSpeed = 0.0
-turnSpeed = 0.003
+radialProjectionMagnitude = 6.0
+turnSpeed = 0.023
 rotationProjection = 1.25
 factorMaxRotation = 0.05
 maxRotation = 2.0
-footSpeedByRotation = 0.65
-radialProjectionByRotation = 0.95
-projectionRotation = 1.5
-radialProjectionMagnitude = 6.0
+cycleByRotationLow = 25.0
+cycleByRotationHigh = 5.0
+cycleBySpeed = 1.0
+footSpeedByRotationLow = 0.1
+footSpeedByRotationHigh = 6.0
+radialProjectionByRotation = 1.25
+targetRotationByRotationLow = 1.5
+targetRotationByRotationHigh = 1.25
 
 [node name="Camera3D" type="Camera3D" parent="MechanicalArachnid"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 12.135, 0)

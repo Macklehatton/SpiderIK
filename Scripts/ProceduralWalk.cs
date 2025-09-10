@@ -15,24 +15,28 @@ public partial class ProceduralWalk : CharacterBody3D
 
     [ExportGroup("")]
     [Export] private float strideDistance;
-    [Export] private float minCycleRate;
-    [Export] private float footSpeed;
+    //[Export] private float footSpeed;
     [Export] private float forwardDifferential;
     [Export] private float radialDifferential;
 
+    [ExportGroup("Speed")]
     [Export] private float moveSpeed;
+    [Export] private float radialProjectionMagnitude;
+    [Export] private float cycleBySpeed;
 
-    [Export(PropertyHint.Range, "0,0.03")] private float turnSpeed;
+    [ExportGroup("Rotation")]
+    [Export(PropertyHint.Range, "0,0.05")] private float turnSpeed;
     [Export] private float rotationProjection;
     [Export(PropertyHint.Range, "0,0.05")] private float factorMaxRotation;
-    [Export(PropertyHint.Range, "0,0.03")] private float maxRotation;
-    [Export] private float cycleByRotation;
-    [Export] private float cycleBySpeed;
-    [Export] private float footSpeedByRotation;
+    [Export(PropertyHint.Range, "0,0.05")] private float maxRotation;
+    [Export] private float cycleByRotationLow;
+    [Export] private float cycleByRotationHigh;
+    [Export] private float footSpeedByRotationLow;
+    [Export] private float footSpeedByRotationHigh;
     [Export] private float radialProjectionByRotation;
 
-    [Export] private float projectionRotation;
-    [Export] private float radialProjectionMagnitude;
+    [Export] private float targetRotationByRotationLow;
+    [Export] private float targetRotationByRotationHigh;
 
     private Node3D[] feet;
     private RayCast3D[] rayCasts;
@@ -106,7 +110,8 @@ public partial class ProceduralWalk : CharacterBody3D
 
     private void UpdateCycle(float delta)
     {
-        currentCycle += (minCycleRate + moveSpeed * cycleBySpeed + currentRotationFactor * cycleByRotation) * delta;
+        float rotationCycleInfluence = Mathf.Lerp(cycleByRotationLow, cycleByRotationHigh, currentRotationFactor);
+        currentCycle += (moveSpeed * cycleBySpeed + currentRotationFactor * rotationCycleInfluence) * delta;
 
         // Wrap
         if (currentCycle > 1.0f)
@@ -122,7 +127,11 @@ public partial class ProceduralWalk : CharacterBody3D
         int direction = Mathf.Sign(currentRotation);
         // How quickly we're rotating, normalized
         currentRotationFactor = Remap(currentRotation, 0.0f, factorMaxRotation, 0.0f, 1.0f);
-        float rotation = projectionRotation * direction * currentRotationFactor * rotationProjection;
+        float rotationTargetInfluence = Mathf.Lerp(
+            targetRotationByRotationLow,
+            targetRotationByRotationHigh,
+            currentRotationFactor);
+        float rotation = rotationTargetInfluence * direction * currentRotationFactor * rotationProjection;
 
         currentRadialMagnitude = Mathf.Lerp(radialProjectionMagnitude, radialProjectionMagnitude + radialProjectionByRotation, currentRotationFactor);
 
@@ -272,7 +281,9 @@ public partial class ProceduralWalk : CharacterBody3D
 
         // MoveToward isn't guaranteed to reach the target
         // It's a little easier to insert pauses with it
-        foot.GlobalPosition = foot.GlobalPosition.MoveToward(targetPosition, moveSpeed * footSpeed + currentRotationFactor * footSpeedByRotation);
+        float rotationFootSpeed = Mathf.Lerp(footSpeedByRotationLow, footSpeedByRotationHigh, currentRotation);
+        // movespeed
+        foot.GlobalPosition = foot.GlobalPosition.MoveToward(targetPosition, rotationFootSpeed);
         //foot.GlobalPosition = footOrigin.Slerp(targetPosition, currentCycle);
     }
 
