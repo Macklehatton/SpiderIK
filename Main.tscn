@@ -33,7 +33,6 @@ size = 29.283
 forwardDifferential = 0.0
 footTargetRadialDistance = 5.0
 moveSpeed = 0.0
-turnSpeed = 0.044
 factorMaxRotation = 0.1
 cycleByRotationLow = 0.07
 cycleByRotationHigh = 0.15

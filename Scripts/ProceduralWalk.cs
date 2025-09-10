@@ -39,6 +39,7 @@ public partial class ProceduralWalk : CharacterBody3D
 
     private Node3D[] feet;
     private RayCast3D[] rayCasts;
+    private Node3D raycastContainer;
     private int[] legRoots;
     // Feet that we currently prefer to move 
     // for a balanced walk
@@ -134,31 +135,14 @@ public partial class ProceduralWalk : CharacterBody3D
             float adjustedForwardOffset = Mathf.Lerp(maxForwardOffset, 0.0f, currentRotationFactor);
             Vector3 forwardOffset = forward * adjustedForwardOffset;
 
-            Vector3 legRootPosition = skeleton.GetBoneGlobalPose(legRoots[i]).Origin;
-            legRootPosition = ToGlobal(legRootPosition);
-
-            Vector3 offset = legRootPosition.PlanarPosition() - GlobalPosition.PlanarPosition();
-            Vector3 rotationalOffset = offset.Normalized();
-            rotationalOffset *= footTargetRadialDistance;
-
-            rotationalOffset = RotateAround(rotationalOffset, GlobalPosition, Vector3.Up, rotation);
+            raycastContainer.Rotation = new Vector3(0.0f, rotation, 0.0f);
 
             // Reduce forward offset of feet on the side that needs to move less
             //forwardOffset = ApplyDifferential(forwardOffset, forwardDifferential, currentRotationFactor, i);
 
-            rayCasts[i].GlobalPosition = GlobalPosition + rotationalOffset + forwardOffset;
-
             DebugDraw3D.DrawSphere(rayCasts[i].GlobalPosition);
             DebugDraw3D.DrawLine(GlobalPosition, rayCasts[i].GlobalPosition);
         }
-    }
-
-    private Vector3 RotateAround(Vector3 point, Vector3 pivot, Vector3 axis, float rotation)
-    {
-        Vector3 result = point - pivot;
-        result = result.Rotated(axis, rotation);
-        result += pivot;
-        return result;
     }
 
     private float ApplyRadialDifferential(float rotation, float negative, float rotationFactor, int raycastIndex)
@@ -314,13 +298,15 @@ public partial class ProceduralWalk : CharacterBody3D
     private RayCast3D[] AddRayCasts(Node3D[] feet)
     {
         RayCast3D[] rayCasts = new RayCast3D[feet.Length];
+        raycastContainer = new Node3D();
+        AddChild(raycastContainer);
 
         for (int i = 0; i <= feet.Length - 1; i++)
         {
             Node3D foot = feet[i];
 
             Node3D raycastOrigin = new Node3D();
-            AddChild(raycastOrigin);
+            raycastContainer.AddChild(raycastOrigin);
             raycastOrigin.Name = "RaycastOrigin_" + foot.Name;
 
             raycastOrigin.GlobalPosition = foot.GlobalPosition;
