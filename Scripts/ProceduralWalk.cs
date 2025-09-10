@@ -10,11 +10,12 @@ public partial class ProceduralWalk : CharacterBody3D
     [ExportGroup("Raycasts")]
     [Export] private float raycastDistance;
     [Export] private float raycastHeight;
-    [Export] private float raycastForwardOffset;
+    [Export] private float maxForwardOffset;
+    [Export] private float forwardOffsetBySpeed;
 
     [ExportGroup("")]
     [Export] private float strideDistance;
-    [Export] private float cycleRate;
+    [Export] private float minCycleRate;
     [Export] private float footSpeed;
     [Export] private float forwardDifferential;
     [Export] private float radialDifferential;
@@ -25,7 +26,8 @@ public partial class ProceduralWalk : CharacterBody3D
     [Export] private float rotationProjection;
     [Export(PropertyHint.Range, "0,0.05")] private float factorMaxRotation;
     [Export(PropertyHint.Range, "0,0.03")] private float maxRotation;
-    [Export] private float rotationCycleWeight;
+    [Export] private float cycleByRotation;
+    [Export] private float cycleBySpeed;
     [Export] private float footSpeedByRotation;
     [Export] private float radialProjectionByRotation;
 
@@ -104,7 +106,7 @@ public partial class ProceduralWalk : CharacterBody3D
 
     private void UpdateCycle(float delta)
     {
-        currentCycle += cycleRate * (moveSpeed + currentRotationFactor * rotationCycleWeight) * delta;
+        currentCycle += (minCycleRate + moveSpeed * cycleBySpeed + currentRotationFactor * cycleByRotation) * delta;
 
         // Wrap
         if (currentCycle > 1.0f)
@@ -127,7 +129,7 @@ public partial class ProceduralWalk : CharacterBody3D
         for (int i = 0; i <= rayCasts.Length - 1; i++)
         {
             // Adjust by rotation
-            float adjustedForwardOffset = Mathf.Lerp(raycastForwardOffset, 0.0f, currentRotationFactor);
+            float adjustedForwardOffset = Mathf.Lerp(maxForwardOffset, 0.0f, currentRotationFactor);
             Vector3 forwardOffset = forward * adjustedForwardOffset;
 
             Vector3 legRootPosition = skeleton.GetBoneGlobalPose(legRoots[i]).Origin;
