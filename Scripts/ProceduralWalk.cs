@@ -19,7 +19,7 @@ public partial class ProceduralWalk : CharacterBody3D
     //[Export] private float footSpeed;
     [Export] private float forwardDifferential;
     [Export] private float radialDifferential;
-    [Export] private float footTargetRadialDistance;
+    [Export] private float footTargetRadialOffset;
 
     [ExportGroup("Speed")]
     [Export] private float moveSpeed;
@@ -129,13 +129,19 @@ public partial class ProceduralWalk : CharacterBody3D
             currentRotationFactor);
         float rotation = rotationTargetInfluence * direction; // + currentRotationFactor * rotationProjection;
 
+        raycastContainer.Rotation = new Vector3(0.0f, rotation, 0.0f);
+
+
         for (int i = 0; i <= rayCasts.Length - 1; i++)
         {
+            //Node3D raycastOrigin = (Node3D)rayCasts[i].GetParent();
+            RayCast3D rayCast = rayCasts[i];
+            rayCast.Position = new Vector3(0.0f, 0.0f, footTargetRadialOffset);
+            rayCast.GlobalRotation = Vector3.Zero;
+
             // Adjust by rotation
             float adjustedForwardOffset = Mathf.Lerp(maxForwardOffset, 0.0f, currentRotationFactor);
             Vector3 forwardOffset = forward * adjustedForwardOffset;
-
-            raycastContainer.Rotation = new Vector3(0.0f, rotation, 0.0f);
 
             // Reduce forward offset of feet on the side that needs to move less
             //forwardOffset = ApplyDifferential(forwardOffset, forwardDifferential, currentRotationFactor, i);
@@ -311,6 +317,13 @@ public partial class ProceduralWalk : CharacterBody3D
 
             raycastOrigin.GlobalPosition = foot.GlobalPosition;
             raycastOrigin.GlobalPosition += new Vector3(0.0f, raycastHeight, 0.0f);
+
+            // Vector3 toBody =
+            //     GlobalPosition -
+            //     raycastOrigin.GlobalPosition;
+            // raycastOrigin.Rotation = toBody;
+            raycastOrigin.LookAt(GlobalPosition, Vector3.Up);
+
 
             RayCast3D rayCast = new RayCast3D();
             raycastOrigin.AddChild(rayCast);
