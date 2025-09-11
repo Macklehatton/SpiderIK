@@ -16,14 +16,14 @@ public partial class ProceduralWalk : CharacterBody3D
 
     [ExportGroup("")]
     [Export] private float strideDistance;
-    //[Export] private float footSpeed;
-    [Export] private float forwardDifferential;
-    [Export] private float radialDifferential;
-    [Export] private float footTargetRadialOffset;
+    //[Export] private float forwardDifferential;
+    //[Export] private float radialDifferential;
+    [Export] private float footTargetRadialProjection;
 
     [ExportGroup("Speed")]
     [Export] private float moveSpeed;
     [Export] private float cycleBySpeed;
+    [Export] private float footSpeedBySpeed;
 
     [ExportGroup("Rotation")]
     [Export(PropertyHint.Range, "0,0.1")] private float turnSpeed;
@@ -35,7 +35,8 @@ public partial class ProceduralWalk : CharacterBody3D
     //[Export] private float radialProjectionByRotation;
     [Export] private float targetRotationByRotationLow;
     [Export] private float targetRotationByRotationHigh;
-
+    [Export] private float forwardDifferentialByRotation;
+    [Export] private float radialDifferentialByRotation;
 
     private Node3D[] feet;
     private RayCast3D[] rayCasts;
@@ -121,6 +122,8 @@ public partial class ProceduralWalk : CharacterBody3D
     {
         Vector3 forward = -Transform.Basis.Z;
         int direction = Mathf.Sign(currentRotation);
+        bool turningLeft = direction > 0.0f;
+
         // How quickly we're rotating, normalized
         currentRotationFactor = Remap(currentRotation, 0.0f, factorMaxRotation, 0.0f, 1.0f);
         float rotationTargetInfluence = Mathf.Lerp(
@@ -130,64 +133,77 @@ public partial class ProceduralWalk : CharacterBody3D
         float rotation = rotationTargetInfluence * direction; // + currentRotationFactor * rotationProjection;
 
         raycastContainer.Rotation = new Vector3(0.0f, rotation, 0.0f);
-
+        float forwardOffset = forwardOffsetBySpeed * moveSpeed;
+        raycastContainer.Position = new Vector3(0.0f, 0.0f, -forwardOffset);
 
         for (int i = 0; i <= rayCasts.Length - 1; i++)
         {
-            //Node3D raycastOrigin = (Node3D)rayCasts[i].GetParent();
             RayCast3D rayCast = rayCasts[i];
-            rayCast.Position = new Vector3(0.0f, 0.0f, footTargetRadialOffset);
+            Node3D raycastOrigin = (Node3D)rayCast.GetParent();
+            Node3D raycastPivot = (Node3D)rayCast.GetParent().GetParent();
+            //float radialDifferential = GetRadialDifferential(rotation, radialDifferentialByRotation, direction, currentRotationFactor, i);
+            raycastOrigin.Position = raycastOrigin.Basis * new Vector3(0.0f, 0.0f, -footTargetRadialProjection);
+
+            raycastPivot.Rotation = Vector3.Zero;
+
+            // Radial diff
+            if (turningLeft)
+            {
+                if (!LeftLeg(i))
+                {
+                    raycastPivot.Rotation = new Vector3(0.0f, 0.5f, 0.0f);
+                }
+            }
+
             rayCast.GlobalRotation = Vector3.Zero;
 
-            // Adjust by rotation
-            float adjustedForwardOffset = Mathf.Lerp(maxForwardOffset, 0.0f, currentRotationFactor);
-            Vector3 forwardOffset = forward * adjustedForwardOffset;
-
             // Reduce forward offset of feet on the side that needs to move less
-            //forwardOffset = ApplyDifferential(forwardOffset, forwardDifferential, currentRotationFactor, i);
+            //float differentialWeight = GetDifferential(forwardDifferentialByRotation, currentRotationFactor, i);
+            //rayCast.GlobalPosition += forward * differentialWeight;
 
             DebugDraw3D.DrawSphere(rayCasts[i].GlobalPosition);
             DebugDraw3D.DrawLine(GlobalPosition, rayCasts[i].GlobalPosition);
         }
     }
 
-    private float ApplyRadialDifferential(float rotation, float negative, float rotationFactor, int raycastIndex)
+    private float GetRadialDifferential(float differential, int direction, float rotationFactor, int footIndex)
     {
-        float differentialApplied = rotation;
+        float radialDifferential = 0.0f;
 
-        if (rotationFactor > 0.0f)
+        if (direction > 0.0f)
         {
-            if (LeftLeg(raycastIndex))
+            if (LeftLeg(footIndex))
             {
-                differentialApplied *= 1.0f - (negative * rotationFactor);
+                radialDifferential = differential * rotationFactor;
             }
         }
         else
         {
-            if (!LeftLeg(raycastIndex))
+            if (!LeftLeg(footIndex))
             {
-                differentialApplied *= 1.0f - (negative * rotationFactor);
+                radialDifferential = differential * rotationFactor;
             }
         }
-        return differentialApplied;
+        return radialDifferential;
     }
 
-    private Vector3 ApplyDifferential(Vector3 vector, float negative, float rotationFactor, int raycastIndex)
+    private float GetDifferential(float differential, float rotationFactor, int raycastIndex)
     {
-        Vector3 differentialApplied = vector;
+        float differentialApplied = 0.0f;
 
         if (rotationFactor > 0.0f)
         {
-            if (LeftLeg(raycastIndex))
+            if (!LeftLeg(raycastIndex))
             {
-                differentialApplied *= 1.0f - negative;
+                differentialApplied = differential * rotationFactor;
             }
         }
         else
         {
-            if (!LeftLeg(raycastIndex))
+            if (LeftLeg(raycastIndex))
             {
-                differentialApplied *= 1.0f - negative;
+                differentialApplied = differential * rotationFactor;
+                //differentialApplied *= 1.0f - negative;
             }
         }
         return differentialApplied;
@@ -274,9 +290,9 @@ public partial class ProceduralWalk : CharacterBody3D
         // MoveToward isn't guaranteed to reach the target
         // It's a little easier to insert pauses with it
         float rotationFootSpeed = Mathf.Lerp(footSpeedByRotationLow, footSpeedByRotationHigh, currentRotation);
-        // movespeed
-        foot.GlobalPosition = foot.GlobalPosition.MoveToward(targetPosition, rotationFootSpeed);
-        //foot.GlobalPosition = footOrigin.Slerp(targetPosition, currentCycle);
+        float movementFootSpeed = footSpeedBySpeed * moveSpeed;
+        float currentFootSpeed = movementFootSpeed + rotationFootSpeed;
+        foot.GlobalPosition = foot.GlobalPosition.MoveToward(targetPosition, currentFootSpeed);
     }
 
     private int[] GetLegRoots()
@@ -311,19 +327,23 @@ public partial class ProceduralWalk : CharacterBody3D
         {
             Node3D foot = feet[i];
 
+            Node3D raycastPivot = new Node3D();
+            raycastContainer.AddChild(raycastPivot);
+            raycastPivot.Name = "RaycastPivot_" + foot.Name;
+
+
             Node3D raycastOrigin = new Node3D();
-            raycastContainer.AddChild(raycastOrigin);
+            raycastPivot.AddChild(raycastOrigin);
             raycastOrigin.Name = "RaycastOrigin_" + foot.Name;
 
             raycastOrigin.GlobalPosition = foot.GlobalPosition;
             raycastOrigin.GlobalPosition += new Vector3(0.0f, raycastHeight, 0.0f);
 
-            // Vector3 toBody =
-            //     GlobalPosition -
-            //     raycastOrigin.GlobalPosition;
-            // raycastOrigin.Rotation = toBody;
-            raycastOrigin.LookAt(GlobalPosition, Vector3.Up);
-
+            Vector3 lookDirection = GlobalPosition.PlanarPosition() - raycastOrigin.GlobalPosition.PlanarPosition();
+            lookDirection = lookDirection.Normalized();
+            float lookAngle = raycastOrigin.GlobalBasis.Z.SignedAngleTo(lookDirection, Vector3.Up);
+            raycastOrigin.Rotate(Vector3.Up, lookAngle);
+            raycastOrigin.GlobalPosition = raycastOrigin.Basis * new Vector3(0.0f, 0.0f, -footTargetRadialProjection);
 
             RayCast3D rayCast = new RayCast3D();
             raycastOrigin.AddChild(rayCast);
