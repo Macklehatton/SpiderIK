@@ -15,6 +15,7 @@ public partial class KeepInBounds : Node3D
     {
         if (body.IsInGroup("spider"))
         {
+            character.GlobalPosition = Vector3.Zero;
             character.ResetFeetFlag = true;
         }
     }

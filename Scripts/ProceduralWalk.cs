@@ -372,8 +372,6 @@ public partial class ProceduralWalk : CharacterBody3D
 
     public void ResetFeet()
     {
-        GlobalPosition = Vector3.Zero;
-
         raycastContainer.Position = Vector3.Zero;
         raycastContainer.Rotation = Vector3.Zero;
 
