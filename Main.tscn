@@ -32,15 +32,15 @@ size = 29.283
 [node name="MechanicalArachnid" parent="." instance=ExtResource("1_glv2v")]
 forwardOffsetBySpeed = 0.25
 footTargetRadialProjection = 4.5
-moveSpeed = 11.42
+moveSpeed = 0.0
 cycleBySpeed = 0.002
 footSpeedBySpeed = 0.05
+turnSpeed = -0.1
 factorMaxRotation = 0.1
 cycleByRotationLow = 0.07
 cycleByRotationHigh = 0.175
-footSpeedByRotationLow = 0.1
-footSpeedByRotationHigh = 7.0
-targetRotationByRotationHigh = 0.915
+footSpeedByRotation = 1.0
+targetRotationByRotation = 0.95
 radialDifferentialByRotation = 0.325
 
 [node name="Camera3D" type="Camera3D" parent="MechanicalArachnid"]

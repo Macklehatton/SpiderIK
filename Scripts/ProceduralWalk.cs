@@ -16,8 +16,6 @@ public partial class ProceduralWalk : CharacterBody3D
 
     [ExportGroup("")]
     [Export] private float strideDistance;
-    //[Export] private float forwardDifferential;
-    //[Export] private float radialDifferential;
     [Export] private float footTargetRadialProjection;
 
     [ExportGroup("Speed")]
@@ -26,15 +24,12 @@ public partial class ProceduralWalk : CharacterBody3D
     [Export] private float footSpeedBySpeed;
 
     [ExportGroup("Rotation")]
-    [Export(PropertyHint.Range, "0,0.1")] private float turnSpeed;
+    [Export(PropertyHint.Range, "-0.1,0.1")] private float turnSpeed;
     [Export(PropertyHint.Range, "0,0.1")] private float factorMaxRotation;
     [Export] private float cycleByRotationLow;
     [Export] private float cycleByRotationHigh;
-    [Export] private float footSpeedByRotationLow;
-    [Export] private float footSpeedByRotationHigh;
-    //[Export] private float radialProjectionByRotation;
-    [Export] private float targetRotationByRotationLow;
-    [Export] private float targetRotationByRotationHigh;
+    [Export] private float footSpeedByRotation;
+    [Export] private float targetRotationByRotation;
     [Export] private float forwardDifferentialByRotation;
     [Export] private float radialDifferentialByRotation;
 
@@ -125,12 +120,15 @@ public partial class ProceduralWalk : CharacterBody3D
         bool turningLeft = direction > 0.0f;
 
         // How quickly we're rotating, normalized
-        currentRotationFactor = Remap(currentRotation, 0.0f, factorMaxRotation, 0.0f, 1.0f);
+        currentRotationFactor = Remap(
+            Mathf.Abs(currentRotation),
+            0.0f, factorMaxRotation,
+            0.0f, 1.0f);
         float rotationTargetInfluence = Mathf.Lerp(
-            targetRotationByRotationLow,
-            targetRotationByRotationHigh,
+            0.0f,
+            targetRotationByRotation,
             currentRotationFactor);
-        float rotation = rotationTargetInfluence * direction; // + currentRotationFactor * rotationProjection;
+        float rotation = rotationTargetInfluence * direction;
 
         raycastContainer.Rotation = new Vector3(0.0f, rotation, 0.0f);
         float forwardOffset = forwardOffsetBySpeed * moveSpeed;
@@ -155,6 +153,14 @@ public partial class ProceduralWalk : CharacterBody3D
                     raycastPivot.Rotation = new Vector3(0.0f, radialDifferential, 0.0f);
                 }
             }
+            else
+            {
+                if (LeftLeg(i))
+                {
+                    raycastPivot.Rotation = new Vector3(0.0f, radialDifferential, 0.0f);
+                }
+            }
+
 
             rayCast.GlobalRotation = Vector3.Zero;
 
@@ -290,7 +296,7 @@ public partial class ProceduralWalk : CharacterBody3D
 
         // MoveToward isn't guaranteed to reach the target
         // It's a little easier to insert pauses with it
-        float rotationFootSpeed = Mathf.Lerp(footSpeedByRotationLow, footSpeedByRotationHigh, currentRotation);
+        float rotationFootSpeed = Mathf.Lerp(0.0f, footSpeedByRotation, currentRotationFactor);
         float movementFootSpeed = footSpeedBySpeed * moveSpeed;
         float currentFootSpeed = movementFootSpeed + rotationFootSpeed;
         foot.GlobalPosition = foot.GlobalPosition.MoveToward(targetPosition, currentFootSpeed);
