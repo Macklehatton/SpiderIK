@@ -8,7 +8,7 @@
 height = 2.39063
 radius = 3.25
 
-[node name="MechanicalArachnid" type="CharacterBody3D" node_paths=PackedStringArray("footContainer", "skeleton")]
+[node name="MechanicalArachnid" type="CharacterBody3D" node_paths=PackedStringArray("footContainer", "skeleton") groups=["spider"]]
 collision_layer = 2
 script = ExtResource("1_l0n85")
 footContainer = NodePath("MechanicalArachnidRig/FootContainer")
@@ -19,8 +19,9 @@ strideDistance = 5.0
 moveSpeed = 2.0
 factorMaxRotation = 0.03
 
-[node name="KeepInBounds" type="Node3D" parent="."]
+[node name="KeepInBounds" type="Node3D" parent="." node_paths=PackedStringArray("character")]
 script = ExtResource("2_dif34")
+character = NodePath("..")
 
 [node name="MechanicalArachnidRig" parent="." instance=ExtResource("1_i2uhj")]
 

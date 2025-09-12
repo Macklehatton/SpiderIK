@@ -22,3 +22,7 @@ settings/addon_root_folder="res://addons/debug_draw_3d"
 [dotnet]
 
 project/assembly_name="SpiderIK"
+
+[global_group]
+
+spider=""

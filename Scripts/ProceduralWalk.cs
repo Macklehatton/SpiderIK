@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Linq;
 using VectorExtensions;
 
 public partial class ProceduralWalk : CharacterBody3D
@@ -37,6 +38,7 @@ public partial class ProceduralWalk : CharacterBody3D
     private RayCast3D[] rayCasts;
     private Node3D raycastContainer;
     private int[] legRoots;
+    private int[] footBones;
     // Feet that we currently prefer to move 
     // for a balanced walk
     private bool[] inCycle;
@@ -70,6 +72,7 @@ public partial class ProceduralWalk : CharacterBody3D
         SetInitialTargets();
 
         legRoots = GetLegRoots();
+        footBones = GetFootBones();
 
         // We don't want the foot IK targets moving with the character
         footContainer.CallDeferred("reparent", GetTree().Root);
@@ -308,6 +311,41 @@ public partial class ProceduralWalk : CharacterBody3D
         return rootChildren;
     }
 
+    private int[] GetFootBones()
+    {
+        int[] footBones = new int[feet.Length];
+        for (int i = 0; i <= feet.Length - 1; i++)
+        {
+            int rootIndex = legRoots[i];
+            int endIndex = GetBoneEnd(rootIndex);
+            footBones[i] = endIndex;
+        }
+
+        return footBones;
+    }
+
+    private int GetBoneEnd(int index)
+    {
+        int endIndex = -1;
+        bool hasChild = true;
+        int currentIndex = index;
+
+        while (hasChild)
+        {
+            int[] children = skeleton.GetBoneChildren(currentIndex);
+            if (children.Length == 0)
+            {
+                hasChild = false;
+            }
+            else
+            {
+                currentIndex = children[0];
+            }
+        }
+
+        return endIndex;
+    }
+
     private Node3D[] GetFeet()
     {
         // Personal preference not to just use the Godot.Array
@@ -321,6 +359,17 @@ public partial class ProceduralWalk : CharacterBody3D
         }
 
         return feet;
+    }
+
+    private void ResetFeet()
+    {
+
+        for (int i = 0; i <= feet.Length - 1; i++)
+        {
+
+            //currentTargets
+            //feet[i].GlobalPosition
+        }
     }
 
 
