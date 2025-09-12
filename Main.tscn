@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://ccnba2mdvamym"]
+[gd_scene load_steps=10 format=3 uid="uid://ccnba2mdvamym"]
 
 [ext_resource type="PackedScene" uid="uid://du6kxaldswwyq" path="res://Prefabs/mechanical_arachnid.tscn" id="1_glv2v"]
 [ext_resource type="Texture2D" uid="uid://cbtx1yvpprivi" path="res://addons/kenney_prototype_textures/dark/texture_02.png" id="2_uu6xs"]
@@ -15,6 +15,9 @@ background_mode = 2
 sky = SubResource("Sky_uu6xs")
 tonemap_mode = 2
 glow_enabled = true
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_uu6xs"]
+size = Vector3(20, 10, 20)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r0du0"]
 albedo_texture = ExtResource("2_uu6xs")
@@ -64,6 +67,14 @@ environment = SubResource("Environment_r0du0")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
 shadow_enabled = true
+
+[node name="TestArea3D" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -26.7649)
+collision_layer = 3
+collision_mask = 3
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="TestArea3D"]
+shape = SubResource("BoxShape3D_uu6xs")
 
 [node name="Ground" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)

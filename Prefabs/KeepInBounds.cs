@@ -3,7 +3,7 @@ using System;
 
 public partial class KeepInBounds : Node3D
 {
-    [Export] public CharacterBody3D character;
+    [Export] public ProceduralWalk character;
     [Export] public Area3D bounds;
 
     public override void _Ready()
@@ -15,7 +15,7 @@ public partial class KeepInBounds : Node3D
     {
         if (body.IsInGroup("spider"))
         {
-            character.GlobalPosition = Vector3.Zero;
+            character.ResetFeetFlag = true;
         }
     }
 }

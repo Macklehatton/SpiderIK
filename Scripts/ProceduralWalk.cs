@@ -55,6 +55,8 @@ public partial class ProceduralWalk : CharacterBody3D
     private float currentRotationFactor;
     //private float currentRadialMagnitude;
 
+    public bool ResetFeetFlag { get; set; }
+
     public override void _Ready()
     {
         // Giving my GPU a break
@@ -80,6 +82,13 @@ public partial class ProceduralWalk : CharacterBody3D
 
     public override void _PhysicsProcess(double delta)
     {
+        if (ResetFeetFlag)
+        {
+            ResetFeet();
+            ResetFeetFlag = false;
+            return;
+        }
+
         UpdateCycle();
 
         currentRotation = turnSpeed;
@@ -361,17 +370,23 @@ public partial class ProceduralWalk : CharacterBody3D
         return feet;
     }
 
-    private void ResetFeet()
+    public void ResetFeet()
     {
+        GlobalPosition = Vector3.Zero;
 
-        for (int i = 0; i <= feet.Length - 1; i++)
+        raycastContainer.Position = Vector3.Zero;
+        raycastContainer.Rotation = Vector3.Zero;
+
+        for (int i = 0; i <= footBones.Length - 1; i++)
         {
+            rayCasts[i].ForceRaycastUpdate();
 
-            //currentTargets
-            //feet[i].GlobalPosition
+            Vector3 footGlobal = rayCasts[i].GetCollisionPoint();
+            footOrigins[i] = footGlobal;
+            currentTargets[i] = footGlobal;
+            feet[i].GlobalPosition = footGlobal;
         }
     }
-
 
     private RayCast3D[] AddRayCasts(Node3D[] feet)
     {
