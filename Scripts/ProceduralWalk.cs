@@ -141,17 +141,18 @@ public partial class ProceduralWalk : CharacterBody3D
             RayCast3D rayCast = rayCasts[i];
             Node3D raycastOrigin = (Node3D)rayCast.GetParent();
             Node3D raycastPivot = (Node3D)rayCast.GetParent().GetParent();
-            //float radialDifferential = GetRadialDifferential(rotation, radialDifferentialByRotation, direction, currentRotationFactor, i);
             raycastOrigin.Position = raycastOrigin.Basis * new Vector3(0.0f, 0.0f, -footTargetRadialProjection);
 
             raycastPivot.Rotation = Vector3.Zero;
+
+            float radialDifferential = radialDifferentialByRotation * currentRotationFactor * direction;
 
             // Radial diff
             if (turningLeft)
             {
                 if (!LeftLeg(i))
                 {
-                    raycastPivot.Rotation = new Vector3(0.0f, 0.5f, 0.0f);
+                    raycastPivot.Rotation = new Vector3(0.0f, radialDifferential, 0.0f);
                 }
             }
 
