@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://ccnba2mdvamym"]
+[gd_scene load_steps=9 format=3 uid="uid://ccnba2mdvamym"]
 
 [ext_resource type="PackedScene" uid="uid://du6kxaldswwyq" path="res://Prefabs/mechanical_arachnid.tscn" id="1_glv2v"]
 [ext_resource type="Texture2D" uid="uid://cbtx1yvpprivi" path="res://addons/kenney_prototype_textures/dark/texture_02.png" id="2_uu6xs"]
@@ -23,6 +23,9 @@ uv1_scale = Vector3(100, 100, 100)
 [sub_resource type="BoxShape3D" id="BoxShape3D_glv2v"]
 size = Vector3(500, 1.95, 500)
 
+[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_uu6xs"]
+data = PackedVector3Array(250, -25, -250, -237.5, -25, -237.5, 237.5, -25, -237.5, 237.5, 25, 237.5, 250, 25, -250, 250, 25, 250, 250, 25, 250, -237.5, 25, 237.5, 237.5, 25, 237.5, 237.5, 25, -237.5, 250, 25, -250, 237.5, 25, 237.5, 250, 25, 250, 250, 25, -250, 250, -25, -250, 250, 25, -250, 237.5, 25, -237.5, -250, 25, -250, 250, -25, -250, 250, 25, -250, -250, 25, -250, 250, -25, 250, 250, 25, 250, 250, -25, -250, 237.5, -25, 237.5, 250, -25, 250, 237.5, -25, -237.5, 250, 25, 250, 250, -25, 250, -250, -25, 250, 250, -25, 250, 237.5, -25, 237.5, -250, -25, 250, 237.5, -25, -237.5, 250, -25, 250, 250, -25, -250, -237.5, -25, -237.5, -250, -25, -250, -237.5, -25, 237.5, -250, 25, 250, -237.5, 25, 237.5, 250, 25, 250, -237.5, 25, 237.5, -250, 25, 250, -237.5, 25, -237.5, -250, -25, 250, -250, -25, -250, -250, 25, -250, -250, -25, -250, -237.5, -25, -237.5, 250, -25, -250, 250, -25, -250, -250, 25, -250, -250, -25, -250, -237.5, -25, 237.5, -250, -25, -250, -250, -25, 250, -250, -25, 250, 237.5, -25, 237.5, -237.5, -25, 237.5, -237.5, 25, -237.5, -250, 25, 250, -250, 25, -250, -250, 25, -250, 237.5, 25, -237.5, -237.5, 25, -237.5, -250, 25, -250, -250, 25, 250, -250, -25, 250, -250, 25, 250, 250, 25, 250, -250, -25, 250, -237.5, 25, -237.5, 237.5, 25, -237.5, -237.5, -25, -237.5, 237.5, 25, 237.5, 237.5, -25, 237.5, 237.5, -25, -237.5, -237.5, -25, 237.5, 237.5, -25, 237.5, -237.5, 25, 237.5, 237.5, 25, 237.5, 237.5, -25, -237.5, 237.5, 25, -237.5, 237.5, -25, -237.5, -237.5, -25, -237.5, 237.5, 25, -237.5, -237.5, -25, 237.5, -237.5, 25, 237.5, -237.5, 25, -237.5, 237.5, 25, 237.5, -237.5, 25, 237.5, 237.5, -25, 237.5, -237.5, -25, 237.5, -237.5, 25, -237.5, -237.5, -25, -237.5)
+
 [node name="Root" type="Node3D"]
 
 [node name="Camera3D" type="Camera3D" parent="."]
@@ -32,10 +35,9 @@ size = 29.283
 [node name="MechanicalArachnid" parent="." instance=ExtResource("1_glv2v")]
 forwardOffsetBySpeed = 0.25
 footTargetRadialProjection = 4.5
-moveSpeed = 0.0
+moveSpeed = 17.705
 cycleBySpeed = 0.002
 footSpeedBySpeed = 0.05
-turnSpeed = -0.1
 factorMaxRotation = 0.1
 cycleByRotationLow = 0.07
 cycleByRotationHigh = 0.175
@@ -60,12 +62,26 @@ environment = SubResource("Environment_r0du0")
 transform = Transform3D(-0.866023, -0.433016, 0.250001, 0, 0.499998, 0.866027, -0.500003, 0.749999, -0.43301, 0, 0, 0)
 shadow_enabled = true
 
-[node name="CSGBox3D" type="CSGBox3D" parent="."]
+[node name="Ground" type="CSGBox3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -1, 0)
 material_override = SubResource("StandardMaterial3D_r0du0")
 size = Vector3(500, 2, 500)
 
-[node name="StaticBody3D" type="StaticBody3D" parent="CSGBox3D"]
+[node name="StaticBody3D" type="StaticBody3D" parent="Ground"]
 
-[node name="CSGBakedCollisionShape3D" type="CollisionShape3D" parent="CSGBox3D/StaticBody3D"]
+[node name="CSGBakedCollisionShape3D" type="CollisionShape3D" parent="Ground/StaticBody3D"]
 shape = SubResource("BoxShape3D_glv2v")
+
+[node name="Bounds" type="Node3D" parent="."]
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Bounds"]
+
+[node name="BoundsCollider" type="CollisionShape3D" parent="Bounds/StaticBody3D"]
+shape = SubResource("ConcavePolygonShape3D_uu6xs")
+
+[node name="CSGBox3D2" type="CSGBox3D" parent="Bounds"]
+size = Vector3(500, 50, 500)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Bounds/CSGBox3D2"]
+operation = 2
+size = Vector3(475, 100, 475)

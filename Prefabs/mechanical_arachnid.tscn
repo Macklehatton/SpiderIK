@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://du6kxaldswwyq"]
+[gd_scene load_steps=5 format=3 uid="uid://du6kxaldswwyq"]
 
 [ext_resource type="PackedScene" uid="uid://dgixv1ydirgkn" path="res://Prefabs/mechanical_arachnid_rig.tscn" id="1_i2uhj"]
 [ext_resource type="Script" uid="uid://d0cb6qh74duvu" path="res://Scripts/ProceduralWalk.cs" id="1_l0n85"]
+[ext_resource type="Script" uid="uid://2n33y10okjb3" path="res://Prefabs/KeepInBounds.cs" id="2_dif34"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_i2uhj"]
 height = 2.39063
@@ -14,14 +15,12 @@ footContainer = NodePath("MechanicalArachnidRig/FootContainer")
 skeleton = NodePath("MechanicalArachnidRig/EDGE_ARM_LegsEdges_001/Skeleton3D")
 raycastDistance = 50.0
 raycastHeight = 5.0
-raycastForwardOffset = 2.0
 strideDistance = 5.0
-cycleRate = 0.6
-footSpeed = 0.2
-forwardDifferential = 0.5
 moveSpeed = 2.0
 factorMaxRotation = 0.03
-maxRotation = 0.03
+
+[node name="KeepInBounds" type="Node3D" parent="."]
+script = ExtResource("2_dif34")
 
 [node name="MechanicalArachnidRig" parent="." instance=ExtResource("1_i2uhj")]
 
