@@ -113,9 +113,13 @@ public partial class ProceduralWalk : CharacterBody3D
     {
         for (int i = 0; i <= rayCasts.Length - 1; i++)
         {
+            RayCast3D rayCast = rayCasts[i];
+            Node3D raycastOrigin = (Node3D)rayCast.GetParent();
+            Node3D raycastPivot = (Node3D)rayCast.GetParent().GetParent();
+
             DebugDraw3D.DrawSphere(currentTargets[i], 0.25f, Colors.PaleVioletRed);
-            DebugDraw3D.DrawSphere(rayCasts[i].GlobalPosition);
-            DebugDraw3D.DrawLine(GlobalPosition, rayCasts[i].GlobalPosition);
+            DebugDraw3D.DrawSphere(rayCast.GlobalPosition);
+            DebugDraw3D.DrawLine(raycastPivot.GlobalPosition, rayCast.GlobalPosition);
         }
     }
 

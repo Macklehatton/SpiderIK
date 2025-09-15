@@ -36,21 +36,10 @@ transform = Transform3D(-0.636076, -0.498564, 0.588932, 0, 0.763235, 0.646121, -
 size = 29.283
 
 [node name="MechanicalArachnid" parent="." instance=ExtResource("1_glv2v")]
-forwardOffsetBySpeed = 3.0
-footTargetRadialProjection = 4.25
-moveSpeed = 10.0
-cycleBySpeed = 0.03
-footSpeedBySpeed = 50.0
-turnSpeed = 0.071
-factorMaxRotation = 0.1
-cycleByRotationLow = 0.07
-cycleByRotationHigh = 0.175
-footSpeedByRotation = 1.0
-targetRotationByRotation = 0.65
-radialDifferentialByRotation = 0.6
-forwardOffsetReductionByRotation = 1.0
-maxHeight = 3.0
-maxStride = 2.5
+forwardOffsetBySpeed = 2.0
+targetRotationByRotation = 0.95
+radialDifferentialByRotation = 0.0
+forwardOffsetReductionByRotation = 0.225
 
 [node name="KeepInBounds" parent="MechanicalArachnid" index="0" node_paths=PackedStringArray("bounds")]
 bounds = NodePath("../../Bounds/Area3D")
