@@ -12,7 +12,6 @@ public partial class ProceduralWalk : CharacterBody3D
     [ExportGroup("Raycasts")]
     [Export] private float raycastDistance;
     [Export] private float raycastHeight;
-    [Export] private float maxForwardOffset;
     [Export] private float forwardOffsetBySpeed;
 
     [ExportGroup("")]
