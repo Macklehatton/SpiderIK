@@ -147,6 +147,10 @@ public partial class ProceduralWalk : CharacterBody3D
 
         raycastContainer.Rotation = new Vector3(0.0f, rotation, 0.0f);
         float forwardOffset = forwardOffsetBySpeed * currentMoveFactor;
+
+        // Reduce forward offset by rotation
+        forwardOffset *= 1.0f - currentRotationFactor;
+
         raycastContainer.Position = new Vector3(0.0f, 0.0f, -forwardOffset);
 
         for (int i = 0; i <= rayCasts.Length - 1; i++)
