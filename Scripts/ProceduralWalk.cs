@@ -1,6 +1,5 @@
 using Godot;
 using System;
-using System.Linq;
 using VectorExtensions;
 
 public partial class ProceduralWalk : CharacterBody3D
@@ -20,7 +19,8 @@ public partial class ProceduralWalk : CharacterBody3D
     [Export] private float footTargetRadialProjection;
 
     [ExportGroup("Speed")]
-    [Export] private float moveSpeed;
+    [Export(PropertyHint.Range, "0,10")] private float moveSpeed;
+    [Export(PropertyHint.Range, "0,10")] private float maxSpeed;
     [Export] private float cycleBySpeed;
     [Export] private float footSpeedBySpeed;
 
@@ -53,6 +53,7 @@ public partial class ProceduralWalk : CharacterBody3D
     private float currentCycle;
     private float currentRotation;
     private float currentRotationFactor;
+    private float currentMoveFactor;
     //private float currentRadialMagnitude;
 
     public bool ResetFeetFlag { get; set; }
@@ -113,7 +114,7 @@ public partial class ProceduralWalk : CharacterBody3D
     private void UpdateCycle()
     {
         float rotationCycleInfluence = Mathf.Lerp(cycleByRotationLow, cycleByRotationHigh, currentRotationFactor);
-        float moveCycleInfluence = moveSpeed * cycleBySpeed;
+        float moveCycleInfluence = currentMoveFactor * cycleBySpeed;
         float cycleDelta = moveCycleInfluence + rotationCycleInfluence;
         currentCycle += cycleDelta;
 
@@ -131,6 +132,8 @@ public partial class ProceduralWalk : CharacterBody3D
         int direction = Mathf.Sign(currentRotation);
         bool turningLeft = direction > 0.0f;
 
+        currentMoveFactor = Mathf.Abs(moveSpeed) / maxSpeed;
+
         // How quickly we're rotating, normalized
         currentRotationFactor = Remap(
             Mathf.Abs(currentRotation),
@@ -143,7 +146,7 @@ public partial class ProceduralWalk : CharacterBody3D
         float rotation = rotationTargetInfluence * direction;
 
         raycastContainer.Rotation = new Vector3(0.0f, rotation, 0.0f);
-        float forwardOffset = forwardOffsetBySpeed * moveSpeed;
+        float forwardOffset = forwardOffsetBySpeed * currentMoveFactor;
         raycastContainer.Position = new Vector3(0.0f, 0.0f, -forwardOffset);
 
         for (int i = 0; i <= rayCasts.Length - 1; i++)
@@ -309,7 +312,7 @@ public partial class ProceduralWalk : CharacterBody3D
         // MoveToward isn't guaranteed to reach the target
         // It's a little easier to insert pauses with it
         float rotationFootSpeed = Mathf.Lerp(0.0f, footSpeedByRotation, currentRotationFactor);
-        float movementFootSpeed = footSpeedBySpeed * moveSpeed;
+        float movementFootSpeed = footSpeedBySpeed * currentMoveFactor;
         float currentFootSpeed = movementFootSpeed + rotationFootSpeed;
         foot.GlobalPosition = foot.GlobalPosition.MoveToward(targetPosition, currentFootSpeed);
     }
