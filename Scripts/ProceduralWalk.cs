@@ -16,7 +16,6 @@ public partial class ProceduralWalk : CharacterBody3D
     [Export] private float forwardOffsetBySpeed;
 
     [ExportGroup("")]
-    [Export] private float strideDistance;
     [Export] private float footTargetRadialProjection;
 
     [ExportGroup("Speed")]
@@ -34,6 +33,12 @@ public partial class ProceduralWalk : CharacterBody3D
     [Export] private float targetRotationByRotation;
     [Export] private float forwardDifferentialByRotation;
     [Export] private float radialDifferentialByRotation;
+
+    [ExportGroup("Height")]
+    [Export] private bool enableStepHeight = true;
+    [Export] private float maxHeight;
+    [Export] private float maxStride;
+
 
     private Node3D[] feet;
     private RayCast3D[] rayCasts;
@@ -101,7 +106,7 @@ public partial class ProceduralWalk : CharacterBody3D
 
         MoveAndSlide();
         MoveFeet();
-        DrawDebugs();
+        //DrawDebugs();
     }
 
     private void DrawDebugs()
@@ -109,6 +114,8 @@ public partial class ProceduralWalk : CharacterBody3D
         for (int i = 0; i <= rayCasts.Length - 1; i++)
         {
             DebugDraw3D.DrawSphere(currentTargets[i], 0.25f, Colors.PaleVioletRed);
+            DebugDraw3D.DrawSphere(rayCasts[i].GlobalPosition);
+            DebugDraw3D.DrawLine(GlobalPosition, rayCasts[i].GlobalPosition);
         }
     }
 
@@ -151,7 +158,7 @@ public partial class ProceduralWalk : CharacterBody3D
         // Reduce forward offset by rotation
         forwardOffset *= 1.0f - currentRotationFactor;
 
-        //raycastContainer.Position = new Vector3(0.0f, 0.0f, forwardOffset * moveDirection);
+        raycastContainer.Position = new Vector3(0.0f, 0.0f, forwardOffset * moveDirection);
 
         for (int i = 0; i <= rayCasts.Length - 1; i++)
         {
@@ -166,9 +173,6 @@ public partial class ProceduralWalk : CharacterBody3D
 
             // Lock child rotation
             rayCast.GlobalRotation = Vector3.Zero;
-
-            DebugDraw3D.DrawSphere(rayCasts[i].GlobalPosition);
-            DebugDraw3D.DrawLine(GlobalPosition, rayCasts[i].GlobalPosition);
         }
     }
 
@@ -201,7 +205,6 @@ public partial class ProceduralWalk : CharacterBody3D
             {
                 raycastPivot.Rotation = new Vector3(0.0f, radialDifferential, 0.0f);
             }
-            Debug.WriteLine("Left back");
         }
         else if (!movingForward && !turningLeft)
         {
@@ -209,7 +212,6 @@ public partial class ProceduralWalk : CharacterBody3D
             {
                 raycastPivot.Rotation = new Vector3(0.0f, radialDifferential, 0.0f);
             }
-            Debug.WriteLine("Right back");
         }
     }
 
@@ -287,16 +289,42 @@ public partial class ProceduralWalk : CharacterBody3D
         }
 
         Vector3 footOrigin = footOrigins[footIndex];
-        Vector3 targetPosition = currentTargets[footIndex];
+        Vector3 destination = currentTargets[footIndex];
+
+        float distance = footOrigin.DistanceTo(destination);
+
+        if (distance == 0.0f)
+        {
+            return;
+        }
+
+        if (maxStride == 0.0f)
+        {
+            GD.PushWarning("heightStrideInfluenceHigh cannot be zero.");
+            return;
+        }
+
+        float cycleOffset = Mathf.Sin(currentCycle * Mathf.Pi);
+        float strideFactor = distance / maxStride;
+        strideFactor = Mathf.Clamp(strideFactor, 0.0f, 1.0f);
+
+        float targetHeight = Mathf.Lerp(0.0f, maxHeight * strideFactor, cycleOffset);
+
+        float currentHeight = targetHeight * Mathf.Sin(currentCycle * Mathf.Pi);
+
+        Vector3 targetPosition = new Vector3(destination.X, currentHeight, destination.Z);
 
         Node3D foot = feet[footIndex];
 
-        // MoveToward isn't guaranteed to reach the target
-        // It's a little easier to insert pauses with it
-        float rotationFootSpeed = Mathf.Lerp(0.0f, footSpeedByRotation, currentRotationFactor);
-        float movementFootSpeed = footSpeedBySpeed * currentMoveFactor;
-        float currentFootSpeed = movementFootSpeed + rotationFootSpeed;
-        foot.GlobalPosition = foot.GlobalPosition.MoveToward(targetPosition, currentFootSpeed);
+        foot.GlobalPosition = footOrigin.Lerp(targetPosition, currentCycle);
+
+        // // MoveToward isn't guaranteed to reach the target
+        // // It's a little easier to insert pauses with it
+        // // It's useful for debugging cycle rate
+        // float rotationFootSpeed = Mathf.Lerp(0.0f, footSpeedByRotation, currentRotationFactor);
+        // float movementFootSpeed = footSpeedBySpeed * currentMoveFactor;
+        // float currentFootSpeed = movementFootSpeed + rotationFootSpeed;
+        // foot.GlobalPosition = foot.GlobalPosition.MoveToward(targetPosition, currentFootSpeed);
     }
 
     private int[] GetLegRoots()

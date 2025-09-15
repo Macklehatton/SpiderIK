@@ -15,7 +15,6 @@ footContainer = NodePath("MechanicalArachnidRig/FootContainer")
 skeleton = NodePath("MechanicalArachnidRig/EDGE_ARM_LegsEdges_001/Skeleton3D")
 raycastDistance = 50.0
 raycastHeight = 5.0
-strideDistance = 5.0
 maxSpeed = 10.0
 factorMaxRotation = 0.03
 

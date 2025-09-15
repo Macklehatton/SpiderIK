@@ -31,36 +31,48 @@ data = PackedVector3Array(250, -25, -250, -237.5, -25, -237.5, 237.5, -25, -237.
 
 [node name="Root" type="Node3D"]
 
-[node name="Camera3D" type="Camera3D" parent="."]
+[node name="AerialCamera" type="Camera3D" parent="."]
 transform = Transform3D(-0.636076, -0.498564, 0.588932, 0, 0.763235, 0.646121, -0.771626, 0.410982, -0.485476, 11.7486, 18.0173, -20.3672)
 size = 29.283
 
 [node name="MechanicalArachnid" parent="." instance=ExtResource("1_glv2v")]
-forwardOffsetBySpeed = 2.0
+forwardOffsetBySpeed = 3.0
 footTargetRadialProjection = 4.5
-moveSpeed = 2.93
+moveSpeed = 10.0
 cycleBySpeed = 0.03
-footSpeedBySpeed = 0.5
-turnSpeed = 0.008
+footSpeedBySpeed = 50.0
+turnSpeed = 0.1
 factorMaxRotation = 0.1
 cycleByRotationLow = 0.07
 cycleByRotationHigh = 0.175
 footSpeedByRotation = 1.0
 targetRotationByRotation = 0.5
 radialDifferentialByRotation = 0.5
+maxHeight = 3.0
+maxStride = 2.5
 
 [node name="KeepInBounds" parent="MechanicalArachnid" index="0" node_paths=PackedStringArray("bounds")]
 bounds = NodePath("../../Bounds/Area3D")
 
-[node name="Camera3D" type="Camera3D" parent="MechanicalArachnid"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 12.135, 0)
-projection = 1
-current = true
-size = 20.0
-
 [node name="CSGBox3D" type="CSGBox3D" parent="MechanicalArachnid"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.88957, -0.185486)
 size = Vector3(1, 1, 7.75818)
+
+[node name="TopCamera" type="Camera3D" parent="MechanicalArachnid"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 12.135, 0)
+projection = 1
+current = true
+size = 12.0
+
+[node name="SideCamera" type="Camera3D" parent="MechanicalArachnid"]
+transform = Transform3D(0.595468, 0, 0.803379, 0, 1, 0, -0.803379, 0, 0.595468, 6.34524, 2.46237, 5.50257)
+projection = 1
+size = 9.216
+
+[node name="ThirdPersonCamera" type="Camera3D" parent="MechanicalArachnid"]
+transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 7.644, 12.69, 7.189)
+projection = 1
+size = 12.175
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_r0du0")
