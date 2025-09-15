@@ -159,6 +159,7 @@ public partial class ProceduralWalk : CharacterBody3D
         float forwardOffset = forwardOffsetBySpeed * currentMoveFactor;
 
         // Reduce forward offset by rotation
+        forwardOffset *= Mathf.Lerp(1.0f, 0.0f, currentRotationFactor * forwardOffsetReductionByRotation);
         forwardOffset -= forwardOffsetReductionByRotation * currentRotationFactor;
         forwardOffset = Mathf.Max(forwardOffset, 0.0f);
 
@@ -304,17 +305,22 @@ public partial class ProceduralWalk : CharacterBody3D
 
         if (maxStride == 0.0f)
         {
-            GD.PushWarning("heightStrideInfluenceHigh cannot be zero.");
+            GD.PushWarning("maxStride cannot be zero.");
             return;
         }
 
-        float cycleOffset = Mathf.Sin(currentCycle * Mathf.Pi);
-        float strideFactor = distance / maxStride;
-        strideFactor = Mathf.Clamp(strideFactor, 0.0f, 1.0f);
+        float currentHeight = destination.Y;
 
-        float targetHeight = Mathf.Lerp(0.0f, maxHeight * strideFactor, cycleOffset);
+        if (enableStepHeight)
+        {
+            float cycleOffset = Mathf.Sin(currentCycle * Mathf.Pi);
+            float strideFactor = distance / maxStride;
+            strideFactor = Mathf.Clamp(strideFactor, 0.0f, 1.0f);
 
-        float currentHeight = targetHeight * Mathf.Sin(currentCycle * Mathf.Pi);
+            float targetHeight = Mathf.Lerp(0.0f, maxHeight * strideFactor, cycleOffset);
+
+            currentHeight = targetHeight * Mathf.Sin(currentCycle * Mathf.Pi);
+        }
 
         Vector3 targetPosition = new Vector3(destination.X, currentHeight, destination.Z);
 
