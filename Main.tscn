@@ -38,7 +38,7 @@ size = 29.283
 [node name="MechanicalArachnid" parent="." instance=ExtResource("1_glv2v")]
 forwardOffsetBySpeed = 2.0
 footTargetRadialProjection = 4.5
-moveSpeed = 1.847
+moveSpeed = 4.341
 maxSpeed = 10.0
 cycleBySpeed = 0.03
 footSpeedBySpeed = 0.5
