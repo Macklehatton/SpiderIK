@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Diagnostics;
 using VectorExtensions;
 
 public partial class ProceduralWalk : CharacterBody3D
@@ -19,7 +20,7 @@ public partial class ProceduralWalk : CharacterBody3D
     [Export] private float footTargetRadialProjection;
 
     [ExportGroup("Speed")]
-    [Export(PropertyHint.Range, "0,10")] private float moveSpeed;
+    [Export(PropertyHint.Range, "-10,10")] private float moveSpeed;
     [Export(PropertyHint.Range, "0,10")] private float maxSpeed;
     [Export] private float cycleBySpeed;
     [Export] private float footSpeedBySpeed;
@@ -128,9 +129,8 @@ public partial class ProceduralWalk : CharacterBody3D
 
     private void UpdateRaycastProjections()
     {
-        Vector3 forward = -Transform.Basis.Z;
-        int direction = Mathf.Sign(currentRotation);
-        bool turningLeft = direction > 0.0f;
+        int moveDirection = Mathf.Sign((Velocity * Transform.Basis).Z);
+        int turnDirection = Mathf.Sign(currentRotation);
 
         currentMoveFactor = Mathf.Abs(moveSpeed) / maxSpeed;
 
@@ -143,7 +143,7 @@ public partial class ProceduralWalk : CharacterBody3D
             0.0f,
             targetRotationByRotation,
             currentRotationFactor);
-        float rotation = rotationTargetInfluence * direction;
+        float rotation = rotationTargetInfluence * turnDirection;
 
         raycastContainer.Rotation = new Vector3(0.0f, rotation, 0.0f);
         float forwardOffset = forwardOffsetBySpeed * currentMoveFactor;
@@ -151,88 +151,66 @@ public partial class ProceduralWalk : CharacterBody3D
         // Reduce forward offset by rotation
         forwardOffset *= 1.0f - currentRotationFactor;
 
-        raycastContainer.Position = new Vector3(0.0f, 0.0f, -forwardOffset);
+        //raycastContainer.Position = new Vector3(0.0f, 0.0f, forwardOffset * moveDirection);
 
         for (int i = 0; i <= rayCasts.Length - 1; i++)
         {
             RayCast3D rayCast = rayCasts[i];
             Node3D raycastOrigin = (Node3D)rayCast.GetParent();
             Node3D raycastPivot = (Node3D)rayCast.GetParent().GetParent();
+
+            // Radial projection. Lets us set a wider/narrower stance on the fly
             raycastOrigin.Position = raycastOrigin.Basis * new Vector3(0.0f, 0.0f, -footTargetRadialProjection);
 
-            raycastPivot.Rotation = Vector3.Zero;
+            ApplyRadialDifferential(raycastPivot, turnDirection, moveDirection, i);
 
-            float radialDifferential = radialDifferentialByRotation * currentRotationFactor * direction;
-
-            // Radial diff
-            if (turningLeft)
-            {
-                if (!LeftLeg(i))
-                {
-                    raycastPivot.Rotation = new Vector3(0.0f, radialDifferential, 0.0f);
-                }
-            }
-            else
-            {
-                if (LeftLeg(i))
-                {
-                    raycastPivot.Rotation = new Vector3(0.0f, radialDifferential, 0.0f);
-                }
-            }
-
-
+            // Lock child rotation
             rayCast.GlobalRotation = Vector3.Zero;
-
-            // Reduce forward offset of feet on the side that needs to move less
-            //float differentialWeight = GetDifferential(forwardDifferentialByRotation, currentRotationFactor, i);
-            //rayCast.GlobalPosition += forward * differentialWeight;
 
             DebugDraw3D.DrawSphere(rayCasts[i].GlobalPosition);
             DebugDraw3D.DrawLine(GlobalPosition, rayCasts[i].GlobalPosition);
         }
     }
 
-    private float GetRadialDifferential(float differential, int direction, float rotationFactor, int footIndex)
+    private void ApplyRadialDifferential(Node3D raycastPivot, int turnDirection, int moveDirection, int legIndex)
     {
-        float radialDifferential = 0.0f;
+        raycastPivot.Rotation = Vector3.Zero;
+        float radialDifferential = radialDifferentialByRotation * currentRotationFactor * turnDirection;
 
-        if (direction > 0.0f)
-        {
-            if (LeftLeg(footIndex))
-            {
-                radialDifferential = differential * rotationFactor;
-            }
-        }
-        else
-        {
-            if (!LeftLeg(footIndex))
-            {
-                radialDifferential = differential * rotationFactor;
-            }
-        }
-        return radialDifferential;
-    }
+        bool turningLeft = turnDirection > 0.0f;
+        bool movingForward = moveDirection < 0.0f;
 
-    private float GetDifferential(float differential, float rotationFactor, int raycastIndex)
-    {
-        float differentialApplied = 0.0f;
-
-        if (rotationFactor > 0.0f)
+        // Radial diff
+        if (movingForward && turningLeft)
         {
-            if (!LeftLeg(raycastIndex))
+            if (!LeftLeg(legIndex))
             {
-                differentialApplied = differential * rotationFactor;
+                raycastPivot.Rotation = new Vector3(0.0f, radialDifferential, 0.0f);
             }
         }
-        else
+        else if (movingForward && !turningLeft)
         {
-            if (LeftLeg(raycastIndex))
+            if (LeftLeg(legIndex))
             {
-                differentialApplied = differential * rotationFactor;
-                //differentialApplied *= 1.0f - negative;
+                raycastPivot.Rotation = new Vector3(0.0f, radialDifferential, 0.0f);
             }
         }
-        return differentialApplied;
+        else if (!movingForward && turningLeft)
+        {
+            if (LeftLeg(legIndex))
+            {
+                raycastPivot.Rotation = new Vector3(0.0f, radialDifferential, 0.0f);
+            }
+            Debug.WriteLine("Left back");
+        }
+        else if (!movingForward && !turningLeft)
+        {
+            if (!LeftLeg(legIndex))
+            {
+                raycastPivot.Rotation = new Vector3(0.0f, radialDifferential, 0.0f);
+            }
+            Debug.WriteLine("Right back");
+        }
     }
 
     private static float Remap(float value, float inMin, float inMax, float outMin, float outMax)
