@@ -31,8 +31,9 @@ public partial class ProceduralWalk : CharacterBody3D
     [Export] private float cycleByRotationHigh;
     [Export] private float footSpeedByRotation;
     [Export] private float targetRotationByRotation;
-    [Export] private float forwardDifferentialByRotation;
     [Export] private float radialDifferentialByRotation;
+
+    [Export] private float forwardOffsetReductionByRotation;
 
     [ExportGroup("Height")]
     [Export] private bool enableStepHeight = true;
@@ -106,7 +107,7 @@ public partial class ProceduralWalk : CharacterBody3D
 
         MoveAndSlide();
         MoveFeet();
-        //DrawDebugs();
+        DrawDebugs();
     }
 
     private void DrawDebugs()
@@ -136,7 +137,9 @@ public partial class ProceduralWalk : CharacterBody3D
 
     private void UpdateRaycastProjections()
     {
-        int moveDirection = Mathf.Sign((Velocity * Transform.Basis).Z);
+        Vector3 relativeVelocity = Velocity * Transform.Basis;
+        //Vector3 relativeVelocity = Velocity.Rotated(Vector3.Up, GlobalRotation.Y);
+        int moveDirection = Mathf.Sign(relativeVelocity.Z);
         int turnDirection = Mathf.Sign(currentRotation);
 
         currentMoveFactor = Mathf.Abs(moveSpeed) / maxSpeed;
@@ -156,9 +159,10 @@ public partial class ProceduralWalk : CharacterBody3D
         float forwardOffset = forwardOffsetBySpeed * currentMoveFactor;
 
         // Reduce forward offset by rotation
-        forwardOffset *= 1.0f - currentRotationFactor;
+        forwardOffset -= forwardOffsetReductionByRotation * currentRotationFactor;
+        forwardOffset = Mathf.Max(forwardOffset, 0.0f);
 
-        raycastContainer.Position = new Vector3(0.0f, 0.0f, forwardOffset * moveDirection);
+        raycastContainer.Position = raycastContainer.Basis.Z * moveDirection * forwardOffset;
 
         for (int i = 0; i <= rayCasts.Length - 1; i++)
         {
