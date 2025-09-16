@@ -1,8 +1,16 @@
-[gd_scene load_steps=5 format=3 uid="uid://du6kxaldswwyq"]
+[gd_scene load_steps=7 format=3 uid="uid://du6kxaldswwyq"]
 
 [ext_resource type="PackedScene" uid="uid://dgixv1ydirgkn" path="res://Prefabs/mechanical_arachnid_rig.tscn" id="1_i2uhj"]
 [ext_resource type="Script" uid="uid://d0cb6qh74duvu" path="res://Scripts/ProceduralWalk.cs" id="1_l0n85"]
 [ext_resource type="Script" uid="uid://2n33y10okjb3" path="res://Prefabs/KeepInBounds.cs" id="2_dif34"]
+
+[sub_resource type="Curve" id="Curve_dif34"]
+_data = [Vector2(0, 0), 0.0, 1.0, 0, 1, Vector2(1, 1), 1.0, 0.0, 1, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_3mqb4"]
+_data = [Vector2(0, 0), 0.0, 1.0, 0, 1, Vector2(1, 1), 1.0, 0.0, 1, 0]
+point_count = 2
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_i2uhj"]
 height = 2.39063
@@ -15,10 +23,10 @@ footContainer = NodePath("MechanicalArachnidRig/FootContainer")
 skeleton = NodePath("MechanicalArachnidRig/EDGE_ARM_LegsEdges_001/Skeleton3D")
 raycastDistance = 50.0
 raycastHeight = 5.0
-forwardOffsetBySpeed = 3.0
+forwardOffsetBySpeed = SubResource("Curve_dif34")
 footTargetRadialProjection = 4.25
 maxSpeed = 10.0
-cycleBySpeed = 0.03
+cycleBySpeed = SubResource("Curve_3mqb4")
 footSpeedBySpeed = 50.0
 factorMaxRotation = 0.1
 cycleByRotationLow = 0.07

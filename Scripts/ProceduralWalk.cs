@@ -12,15 +12,19 @@ public partial class ProceduralWalk : CharacterBody3D
     [ExportGroup("Raycasts")]
     [Export] private float raycastDistance;
     [Export] private float raycastHeight;
-    [Export] private float forwardOffsetBySpeed;
+    // [Export] private float forwardOffsetBySpeedLow;
+    // [Export] private float forwardOffsetBySpeedHigh;
+    [Export] private Curve forwardOffsetBySpeed;
 
     [ExportGroup("")]
     [Export] private float footTargetRadialProjection;
 
     [ExportGroup("Speed")]
-    [Export(PropertyHint.Range, "-10,10")] private float moveSpeed;
-    [Export(PropertyHint.Range, "0,10")] private float maxSpeed;
-    [Export] private float cycleBySpeed;
+    [Export(PropertyHint.Range, "-10,50")] private float moveSpeed;
+    [Export(PropertyHint.Range, "0,50")] private float maxSpeed;
+    // [Export] private float cycleBySpeedLow;
+    // [Export] private float cycleBySpeedHigh;
+    [Export] private Curve cycleBySpeed;
     [Export] private float footSpeedBySpeed;
 
     [ExportGroup("Rotation")]
@@ -126,8 +130,10 @@ public partial class ProceduralWalk : CharacterBody3D
     private void UpdateCycle()
     {
         float rotationCycleInfluence = Mathf.Lerp(cycleByRotationLow, cycleByRotationHigh, currentRotationFactor);
-        float moveCycleInfluence = currentMoveFactor * cycleBySpeed;
-        float cycleDelta = moveCycleInfluence + rotationCycleInfluence;
+
+        //float moveCycleInfluence = Mathf.Lerp(cycleBySpeedLow, cycleBySpeedHigh, currentMoveFactor);
+        float moveCycleInfluence = cycleBySpeed.Sample(currentMoveFactor);
+        float cycleDelta = moveCycleInfluence; // + rotationCycleInfluence;
         currentCycle += cycleDelta;
 
         // Wrap
@@ -159,7 +165,8 @@ public partial class ProceduralWalk : CharacterBody3D
         float rotation = rotationTargetInfluence * turnDirection;
 
         raycastContainer.Rotation = new Vector3(0.0f, rotation, 0.0f);
-        float forwardOffset = forwardOffsetBySpeed * currentMoveFactor;
+        float forwardOffset = forwardOffsetBySpeed.Sample(currentMoveFactor);
+        //float forwardOffset = Mathf.Lerp(forwardOffsetBySpeedLow, forwardOffsetBySpeedHigh, currentMoveFactor);
 
         // Reduce forward offset by rotation
         forwardOffset *= Mathf.Lerp(1.0f, 0.0f, currentRotationFactor * forwardOffsetReductionByRotation);
@@ -460,6 +467,12 @@ public partial class ProceduralWalk : CharacterBody3D
             {
                 currentTargets[i] = rayCasts[i].GetCollisionPoint();
                 footOrigins[i] = feet[i].GlobalPosition;
+            }
+            else
+            {
+                // Snap the rest of the way to destination
+                // Fixes not reaching target at high cycle speeds
+                //feet[i].GlobalPosition = rayCasts[i].GetCollisionPoint();
             }
         }
     }
