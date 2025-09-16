@@ -5,11 +5,11 @@
 
 [sub_resource type="Curve" id="Curve_uu6xs"]
 _limits = [0.0, 6.0, 0.0, 1.0]
-_data = [Vector2(0, 0), 0.0, 120.565, 0, 1, Vector2(0.0125786, 1.51654), 0.357271, 0.357271, 0, 0, Vector2(0.501048, 3.1748), 0.357271, 1.96948, 0, 1, Vector2(1, 4.15748), 1.91061, 0.0, 0, 0]
+_data = [Vector2(0, 0), 0.0, 113.241, 0, 1, Vector2(0.0125786, 1.42441), 9.45035, 9.45035, 0, 0, Vector2(0.501048, 3.85039), 0.406891, 1.35402, 0, 1, Vector2(1, 4.52598), 1.91061, 0.0, 0, 0]
 point_count = 4
 
 [sub_resource type="Curve" id="Curve_r0du0"]
-_data = [Vector2(0, 0), 0.0, 0.948861, 0, 1, Vector2(0.0398323, 0.0377953), 0.948861, 0.391958, 1, 1, Vector2(1, 0.411417), 0.386545, 0.0, 1, 0]
+_data = [Vector2(0, 0), 0.0, 0.948861, 0, 1, Vector2(0.0398323, 0.0377953), 0.948861, 0.255861, 1, 1, Vector2(1, 0.283465), 0.255861, 0.0, 1, 0]
 point_count = 3
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_glv2v"]
@@ -46,7 +46,7 @@ size = 29.283
 
 [node name="MechanicalArachnid" parent="." instance=ExtResource("1_glv2v")]
 forwardOffsetBySpeed = SubResource("Curve_uu6xs")
-moveSpeed = 32.952
+moveSpeed = 50.0
 maxSpeed = 50.0
 cycleBySpeed = SubResource("Curve_r0du0")
 footSpeedBySpeed = 100.0

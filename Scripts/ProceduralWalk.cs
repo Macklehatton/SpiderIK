@@ -472,7 +472,7 @@ public partial class ProceduralWalk : CharacterBody3D
             {
                 // Snap the rest of the way to destination
                 // Fixes not reaching target at high cycle speeds
-                //feet[i].GlobalPosition = rayCasts[i].GetCollisionPoint();
+                feet[i].GlobalPosition = currentTargets[i];
             }
         }
     }
