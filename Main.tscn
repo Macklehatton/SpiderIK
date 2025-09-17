@@ -1,21 +1,30 @@
-[gd_scene load_steps=13 format=3 uid="uid://ccnba2mdvamym"]
+[gd_scene load_steps=15 format=3 uid="uid://ccnba2mdvamym"]
 
 [ext_resource type="PackedScene" uid="uid://du6kxaldswwyq" path="res://Prefabs/mechanical_arachnid.tscn" id="1_glv2v"]
 [ext_resource type="Texture2D" uid="uid://cbtx1yvpprivi" path="res://addons/kenney_prototype_textures/dark/texture_02.png" id="2_uu6xs"]
 
-[sub_resource type="Curve" id="Curve_uu6xs"]
-_limits = [0.0, 6.0, 0.0, 1.0]
-_data = [Vector2(0, 0), 0.0, 113.241, 0, 1, Vector2(0.0125786, 1.42441), 9.45035, 9.45035, 0, 0, Vector2(0.501048, 3.85039), 0.406891, 1.35402, 0, 1, Vector2(1, 4.52598), 1.91061, 0.0, 0, 0]
-point_count = 4
+[sub_resource type="Curve" id="Curve_3dxm6"]
+_limits = [0.0, 5.0, 0.0, 1.0]
+_data = [Vector2(0, 0), 0.0, 4.5, 0, 1, Vector2(1, 4.5), 4.5, 0.0, 1, 0]
+point_count = 2
 
 [sub_resource type="Curve" id="Curve_r0du0"]
-_data = [Vector2(0, 0), 0.0, 0.948861, 0, 1, Vector2(0.0398323, 0.0377953), 0.948861, 0.255861, 1, 1, Vector2(1, 0.283465), 0.255861, 0.0, 1, 0]
+_limits = [0.0, 0.4, 0.0, 1.0]
+_data = [Vector2(0, 0), 0.0, 0.75, 0, 1, Vector2(0.04, 0.03), 0.75, 0.28125, 1, 1, Vector2(1, 0.3), 0.28125, 0.0, 1, 0]
 point_count = 3
 
 [sub_resource type="Curve" id="Curve_cm0pq"]
 _limits = [0.0, 0.25, 0.0, 1.0]
 _data = [Vector2(0, 0), 0.0, 2.52079, 0, 1, Vector2(0.0545073, 0.137402), 0.0663407, 0.0189461, 0, 1, Vector2(1, 0.155315), 0.0, 0.0, 0, 0]
 point_count = 3
+
+[sub_resource type="Curve" id="Curve_uu6xs"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 1, Vector2(1, 0), 0.0, 0.0, 1, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_fos0i"]
+_data = [Vector2(0, 1), 0.0, -1.0, 0, 1, Vector2(1, 0), -1.0, 0.0, 1, 0]
+point_count = 2
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_glv2v"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -50,7 +59,9 @@ transform = Transform3D(-0.636076, -0.498564, 0.588932, 0, 0.763235, 0.646121, -
 size = 29.283
 
 [node name="MechanicalArachnid" parent="." instance=ExtResource("1_glv2v")]
-forwardOffsetBySpeed = SubResource("Curve_uu6xs")
+velocityOffsetBySpeed = SubResource("Curve_3dxm6")
+debugOffsetRaycastContainer = Vector3(-1.335, 0, -4.23)
+debugRotateRaycastContainer = -0.345
 moveSpeed = 50.0
 maxSpeed = 50.0
 cycleBySpeed = SubResource("Curve_r0du0")
@@ -58,14 +69,18 @@ footSpeedBySpeed = 100.0
 turnSpeed = 0.1
 cycleByRotation = SubResource("Curve_cm0pq")
 targetRotationByRotation = 0.95
-forwardOffsetReductionByRotation = 0.58
+velocityDifferentialByRotation = SubResource("Curve_uu6xs")
+velocityOffsetReductionByRotation = SubResource("Curve_fos0i")
 
 [node name="KeepInBounds" parent="MechanicalArachnid" index="0" node_paths=PackedStringArray("bounds")]
 bounds = NodePath("../../Bounds/Area3D")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="MechanicalArachnid"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.88957, -0.185486)
-size = Vector3(1, 1, 7.75818)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.65, 0)
+size = Vector3(1, 1, 6)
+
+[node name="CSGSphere3D" type="CSGSphere3D" parent="MechanicalArachnid/CSGBox3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3)
 
 [node name="TopCamera" type="Camera3D" parent="MechanicalArachnid"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 12.135, 0)
@@ -78,8 +93,11 @@ transform = Transform3D(0.595468, 0, 0.803379, 0, 1, 0, -0.803379, 0, 0.595468, 
 projection = 1
 size = 9.216
 
-[node name="ThirdPersonCamera" type="Camera3D" parent="MechanicalArachnid"]
-transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 7.644, 12.69, 7.189)
+[node name="ThirdPersonCameraPivot" type="Node3D" parent="MechanicalArachnid"]
+transform = Transform3D(-0.875465, 0, -0.483282, 0, 1, 0, 0.483282, 0, -0.875465, 0, 0, 0)
+
+[node name="ThirdPersonCamera" type="Camera3D" parent="MechanicalArachnid/ThirdPersonCameraPivot"]
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 12.69, 7.189)
 size = 12.175
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
