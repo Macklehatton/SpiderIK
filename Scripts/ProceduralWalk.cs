@@ -12,8 +12,6 @@ public partial class ProceduralWalk : CharacterBody3D
     [ExportGroup("Raycasts")]
     [Export] private float raycastDistance;
     [Export] private float raycastHeight;
-    // [Export] private float forwardOffsetBySpeedLow;
-    // [Export] private float forwardOffsetBySpeedHigh;
     [Export] private Curve forwardOffsetBySpeed;
 
     [ExportGroup("")]
@@ -22,16 +20,12 @@ public partial class ProceduralWalk : CharacterBody3D
     [ExportGroup("Speed")]
     [Export(PropertyHint.Range, "-10,50")] private float moveSpeed;
     [Export(PropertyHint.Range, "0,50")] private float maxSpeed;
-    // [Export] private float cycleBySpeedLow;
-    // [Export] private float cycleBySpeedHigh;
     [Export] private Curve cycleBySpeed;
     [Export] private float footSpeedBySpeed;
 
     [ExportGroup("Rotation")]
     [Export(PropertyHint.Range, "-0.1,0.1")] private float turnSpeed;
     [Export(PropertyHint.Range, "0,0.1")] private float factorMaxRotation;
-    //[Export] private float cycleByRotationLow;
-    //[Export] private float cycleByRotationHigh;
     [Export] private Curve cycleByRotation;
     [Export] private float footSpeedByRotation;
     [Export] private float targetRotationByRotation;
@@ -65,7 +59,6 @@ public partial class ProceduralWalk : CharacterBody3D
     private float currentRotation;
     private float currentRotationFactor;
     private float currentMoveFactor;
-    //private float currentRadialMagnitude;
 
     public bool ResetFeetFlag { get; set; }
 
@@ -130,7 +123,6 @@ public partial class ProceduralWalk : CharacterBody3D
 
     private void UpdateCycle()
     {
-        //float rotationCycleInfluence = Mathf.Lerp(cycleByRotationLow, cycleByRotationHigh, currentRotationFactor);
         float rotationCycleInfluence = cycleByRotation.Sample(currentRotationFactor);
         float moveCycleInfluence = cycleBySpeed.Sample(currentMoveFactor);
         float cycleDelta = moveCycleInfluence + rotationCycleInfluence;
