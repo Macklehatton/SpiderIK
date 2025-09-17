@@ -13,8 +13,9 @@ _data = [Vector2(0, 0), 0.0, 0.948861, 0, 1, Vector2(0.0398323, 0.0377953), 0.94
 point_count = 3
 
 [sub_resource type="Curve" id="Curve_cm0pq"]
-_data = [Vector2(0, 0), 0.0, 1.0, 0, 1, Vector2(1, 1), 1.0, 0.0, 1, 0]
-point_count = 2
+_limits = [0.0, 0.25, 0.0, 1.0]
+_data = [Vector2(0, 0), 0.0, 2.52079, 0, 1, Vector2(0.0545073, 0.137402), 0.0663407, 0.0189461, 0, 1, Vector2(1, 0.155315), 0.0, 0.0, 0, 0]
+point_count = 3
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_glv2v"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -50,13 +51,14 @@ size = 29.283
 
 [node name="MechanicalArachnid" parent="." instance=ExtResource("1_glv2v")]
 forwardOffsetBySpeed = SubResource("Curve_uu6xs")
+moveSpeed = 50.0
 maxSpeed = 50.0
 cycleBySpeed = SubResource("Curve_r0du0")
 footSpeedBySpeed = 100.0
+turnSpeed = 0.1
 cycleByRotation = SubResource("Curve_cm0pq")
 targetRotationByRotation = 0.95
-radialDifferentialByRotation = 0.0
-forwardOffsetReductionByRotation = 0.225
+forwardOffsetReductionByRotation = 0.58
 
 [node name="KeepInBounds" parent="MechanicalArachnid" index="0" node_paths=PackedStringArray("bounds")]
 bounds = NodePath("../../Bounds/Area3D")

@@ -31,8 +31,6 @@ footSpeedBySpeed = 50.0
 factorMaxRotation = 0.1
 footSpeedByRotation = 1.0
 targetRotationByRotation = 0.65
-radialDifferentialByRotation = 0.6
-forwardOffsetReductionByRotation = 1.0
 maxHeight = 3.0
 maxStride = 2.5
 

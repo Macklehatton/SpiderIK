@@ -16,6 +16,7 @@ public partial class ProceduralWalk : CharacterBody3D
 
     [ExportGroup("")]
     [Export] private float footTargetRadialProjection;
+    [Export] private float cycleMixFactor;
 
     [ExportGroup("Speed")]
     [Export(PropertyHint.Range, "-10,50")] private float moveSpeed;
@@ -125,7 +126,10 @@ public partial class ProceduralWalk : CharacterBody3D
     {
         float rotationCycleInfluence = cycleByRotation.Sample(currentRotationFactor);
         float moveCycleInfluence = cycleBySpeed.Sample(currentMoveFactor);
-        float cycleDelta = moveCycleInfluence + rotationCycleInfluence;
+        // Mix infleunces
+        float cycleDelta =
+            Mathf.Max(moveCycleInfluence, rotationCycleInfluence) +
+            Mathf.Min(moveCycleInfluence, rotationCycleInfluence) * cycleMixFactor;
         currentCycle += cycleDelta;
 
         // Wrap
