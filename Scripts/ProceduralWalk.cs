@@ -30,8 +30,9 @@ public partial class ProceduralWalk : CharacterBody3D
     [ExportGroup("Rotation")]
     [Export(PropertyHint.Range, "-0.1,0.1")] private float turnSpeed;
     [Export(PropertyHint.Range, "0,0.1")] private float factorMaxRotation;
-    [Export] private float cycleByRotationLow;
-    [Export] private float cycleByRotationHigh;
+    //[Export] private float cycleByRotationLow;
+    //[Export] private float cycleByRotationHigh;
+    [Export] private Curve cycleByRotation;
     [Export] private float footSpeedByRotation;
     [Export] private float targetRotationByRotation;
     [Export] private float radialDifferentialByRotation;
@@ -129,9 +130,10 @@ public partial class ProceduralWalk : CharacterBody3D
 
     private void UpdateCycle()
     {
-        float rotationCycleInfluence = Mathf.Lerp(cycleByRotationLow, cycleByRotationHigh, currentRotationFactor);
+        //float rotationCycleInfluence = Mathf.Lerp(cycleByRotationLow, cycleByRotationHigh, currentRotationFactor);
+        float rotationCycleInfluence = cycleByRotation.Sample(currentRotationFactor);
         float moveCycleInfluence = cycleBySpeed.Sample(currentMoveFactor);
-        float cycleDelta = moveCycleInfluence; // + rotationCycleInfluence;
+        float cycleDelta = moveCycleInfluence + rotationCycleInfluence;
         currentCycle += cycleDelta;
 
         // Wrap

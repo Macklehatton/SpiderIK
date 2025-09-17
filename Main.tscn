@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://ccnba2mdvamym"]
+[gd_scene load_steps=13 format=3 uid="uid://ccnba2mdvamym"]
 
 [ext_resource type="PackedScene" uid="uid://du6kxaldswwyq" path="res://Prefabs/mechanical_arachnid.tscn" id="1_glv2v"]
 [ext_resource type="Texture2D" uid="uid://cbtx1yvpprivi" path="res://addons/kenney_prototype_textures/dark/texture_02.png" id="2_uu6xs"]
@@ -11,6 +11,10 @@ point_count = 4
 [sub_resource type="Curve" id="Curve_r0du0"]
 _data = [Vector2(0, 0), 0.0, 0.948861, 0, 1, Vector2(0.0398323, 0.0377953), 0.948861, 0.255861, 1, 1, Vector2(1, 0.283465), 0.255861, 0.0, 1, 0]
 point_count = 3
+
+[sub_resource type="Curve" id="Curve_cm0pq"]
+_data = [Vector2(0, 0), 0.0, 1.0, 0, 1, Vector2(1, 1), 1.0, 0.0, 1, 0]
+point_count = 2
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_glv2v"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -46,10 +50,10 @@ size = 29.283
 
 [node name="MechanicalArachnid" parent="." instance=ExtResource("1_glv2v")]
 forwardOffsetBySpeed = SubResource("Curve_uu6xs")
-moveSpeed = 50.0
 maxSpeed = 50.0
 cycleBySpeed = SubResource("Curve_r0du0")
 footSpeedBySpeed = 100.0
+cycleByRotation = SubResource("Curve_cm0pq")
 targetRotationByRotation = 0.95
 radialDifferentialByRotation = 0.0
 forwardOffsetReductionByRotation = 0.225
