@@ -130,8 +130,6 @@ public partial class ProceduralWalk : CharacterBody3D
     private void UpdateCycle()
     {
         float rotationCycleInfluence = Mathf.Lerp(cycleByRotationLow, cycleByRotationHigh, currentRotationFactor);
-
-        //float moveCycleInfluence = Mathf.Lerp(cycleBySpeedLow, cycleBySpeedHigh, currentMoveFactor);
         float moveCycleInfluence = cycleBySpeed.Sample(currentMoveFactor);
         float cycleDelta = moveCycleInfluence; // + rotationCycleInfluence;
         currentCycle += cycleDelta;
@@ -147,7 +145,6 @@ public partial class ProceduralWalk : CharacterBody3D
     private void UpdateRaycastProjections()
     {
         Vector3 relativeVelocity = Velocity * Transform.Basis;
-        //Vector3 relativeVelocity = Velocity.Rotated(Vector3.Up, GlobalRotation.Y);
         int moveDirection = Mathf.Sign(relativeVelocity.Z);
         int turnDirection = Mathf.Sign(currentRotation);
 
@@ -166,7 +163,6 @@ public partial class ProceduralWalk : CharacterBody3D
 
         raycastContainer.Rotation = new Vector3(0.0f, rotation, 0.0f);
         float forwardOffset = forwardOffsetBySpeed.Sample(currentMoveFactor);
-        //float forwardOffset = Mathf.Lerp(forwardOffsetBySpeedLow, forwardOffsetBySpeedHigh, currentMoveFactor);
 
         // Reduce forward offset by rotation
         forwardOffset *= Mathf.Lerp(1.0f, 0.0f, currentRotationFactor * forwardOffsetReductionByRotation);
