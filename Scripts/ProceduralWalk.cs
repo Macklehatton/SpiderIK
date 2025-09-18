@@ -8,6 +8,7 @@ public partial class ProceduralWalk : CharacterBody3D
     [ExportGroup("References")]
     [Export] private Node3D footContainer;
     [Export] private Skeleton3D skeleton;
+    [Export] private Node3D projection;
 
     [ExportGroup("Raycasts")]
     [Export] private float raycastDistance;
@@ -17,6 +18,8 @@ public partial class ProceduralWalk : CharacterBody3D
     [Export] private Vector3 debugOffsetRaycastContainerLocal;
     [Export] private Vector3 debugOffsetRaycastContainer;
     [Export] private float debugRotateRaycastContainer;
+    [Export] private float projectionFactor;
+    [Export] private int projectionIterations;
 
     [ExportGroup("")]
     [Export] private float footTargetRadialProjection;
@@ -98,6 +101,8 @@ public partial class ProceduralWalk : CharacterBody3D
 
         // We don't want the foot IK targets moving with the character
         footContainer.CallDeferred("reparent", GetTree().Root);
+
+        projection.CallDeferred("reparent", GetTree().Root);
     }
 
     public override void _PhysicsProcess(double delta)
@@ -134,6 +139,28 @@ public partial class ProceduralWalk : CharacterBody3D
             DebugDraw3D.DrawSphere(rayCast.GlobalPosition);
             DebugDraw3D.DrawLine(raycastPivot.GlobalPosition, rayCast.GlobalPosition);
         }
+
+        projection.GlobalPosition = GlobalPosition;
+        projection.GlobalRotation = GlobalRotation;
+
+        projection.ForceUpdateTransform();
+
+        Vector3 projectedGlobal = GlobalPosition;
+        Vector3 projectedForward = -projection.Basis.Z * Velocity.Length() / 60.0f;
+        float projectedRotation = 0.0f;
+
+        int iterations = 0;
+
+        while (iterations < projectionIterations)
+        {
+            iterations += 1;
+            projectedRotation += currentRotation;
+            projectedForward = projectedForward.Rotated(Vector3.Up, currentRotation);
+            projectedGlobal += projectedForward;
+        }
+
+        projection.GlobalPosition = projectedGlobal;
+        projection.Rotate(Vector3.Up, projectedRotation);
     }
 
     private void UpdateCycle()
