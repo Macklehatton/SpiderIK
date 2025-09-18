@@ -12,7 +12,6 @@ public partial class ProceduralWalk : CharacterBody3D
     [ExportGroup("Raycasts")]
     [Export] private float raycastDistance;
     [Export] private float raycastHeight;
-    [Export] private Curve velocityOffsetBySpeed;
 
     [ExportGroup("Debug")]
     [Export] private Vector3 debugOffsetRaycastContainerLocal;
@@ -22,24 +21,32 @@ public partial class ProceduralWalk : CharacterBody3D
     [ExportGroup("")]
     [Export] private float footTargetRadialProjection;
     [Export] private float cycleMixFactor;
+    [Export] private Curve cycleBySpeedRotation;
 
     [ExportGroup("Speed")]
     [Export(PropertyHint.Range, "-10,50")] private float moveSpeed;
     [Export(PropertyHint.Range, "0,50")] private float maxSpeed;
     [Export] private Curve cycleBySpeed;
     [Export] private float footSpeedBySpeed;
+    [Export] private Curve rotationReductionBySpeed;
+    [Export] private Curve projectionOffsetBySpeed;
+    [Export] private Curve relativeOffsetBySpeed;
+
+    [Export] private Curve relativeOffsetZBySpeedRotation;
+    [Export] private Curve relativeOffsetXBySpeedRotation;
+
+    [Export] private Curve projectionOffsetReductionBySpeedRotation;
+
 
     [ExportGroup("Rotation")]
     [Export(PropertyHint.Range, "-0.1,0.1")] private float turnSpeed;
     [Export(PropertyHint.Range, "0,0.1")] private float factorMaxRotation;
     [Export] private Curve cycleByRotation;
     [Export] private float footSpeedByRotation;
-    [Export] private float targetRotationByRotation;
+    [Export] private Curve targetRotationByRotation;
     [Export] private float radialDifferentialByRotation;
-    [Export] private Curve velocityDifferentialByRotation;
-
-    //[Export] private float velocityOffsetReductionByRotation;
-    [Export] private Curve velocityOffsetReductionByRotation;
+    [Export] private Curve projectionDifferentialByRotation;
+    [Export] private Curve projectionOffsetReductionByRotation;
 
     [ExportGroup("Height")]
     [Export] private bool enableStepHeight = true;
@@ -137,6 +144,9 @@ public partial class ProceduralWalk : CharacterBody3D
         float cycleDelta =
             Mathf.Max(moveCycleInfluence, rotationCycleInfluence) +
             Mathf.Min(moveCycleInfluence, rotationCycleInfluence) * cycleMixFactor;
+
+        float mixedInfluence = cycleBySpeedRotation.Sample(Mathf.Sqrt(currentMoveFactor * currentRotationFactor));
+        cycleDelta *= 1.0f + mixedInfluence;
         currentCycle += cycleDelta;
 
         // Wrap
@@ -154,30 +164,31 @@ public partial class ProceduralWalk : CharacterBody3D
         int turnDirection = Mathf.Sign(currentRotation);
 
         currentMoveFactor = Mathf.Abs(moveSpeed) / maxSpeed;
-
         currentRotationFactor = Mathf.Abs(currentRotation) / factorMaxRotation;
 
-        // // How quickly we're rotating, normalized
-        // currentRotationFactor = Remap(
-        //     Mathf.Abs(currentRotation),
-        //     0.0f, factorMaxRotation,
-        //     0.0f, 1.0f);
-        float rotationTargetInfluence = Mathf.Lerp(
-            0.0f,
-            targetRotationByRotation,
-            currentRotationFactor);
-        float rotation = rotationTargetInfluence * turnDirection;
-
+        float rotation = targetRotationByRotation.Sample(currentRotationFactor);
+        rotation *= rotationReductionBySpeed.Sample(currentMoveFactor);
         rotation += debugRotateRaycastContainer;
+        rotation *= turnDirection;
 
         raycastContainer.Rotation = new Vector3(0.0f, rotation, 0.0f);
-        float velocityOffset = velocityOffsetBySpeed.Sample(currentMoveFactor);
+        float projectionOffset = projectionOffsetBySpeed.Sample(currentMoveFactor);
 
-        // Reduce velocity offset by rotation
-        float reduction = velocityOffsetReductionByRotation.Sample(currentRotationFactor);
-        velocityOffset *= reduction;
+        float relativeOffsetZ = relativeOffsetBySpeed.Sample(currentMoveFactor);
 
-        raycastContainer.Position = raycastContainer.Basis.Z * moveDirection * velocityOffset;
+        float relativeOffsetX = relativeOffsetXBySpeedRotation.Sample(Mathf.Sqrt(currentMoveFactor * currentRotationFactor)) * turnDirection;
+        relativeOffsetZ += relativeOffsetZBySpeedRotation.Sample(Mathf.Sqrt(currentMoveFactor * currentRotationFactor));
+        Vector3 relativeOffset = new Vector3(relativeOffsetX * turnDirection, 0.0f, relativeOffsetZ * moveDirection);
+
+        // Reduce projection offset by rotation
+        projectionOffset *= projectionOffsetReductionByRotation.Sample(currentRotationFactor);
+
+        projectionOffset *=
+            projectionOffsetReductionBySpeedRotation.Sample(
+                Mathf.Sqrt(currentMoveFactor * currentRotationFactor));
+
+        raycastContainer.Position = raycastContainer.Basis.Z * moveDirection * projectionOffset;
+        raycastContainer.Position += relativeOffset;
 
         // Debug
         raycastContainer.Position += raycastContainer.Basis.Z * debugOffsetRaycastContainerLocal.Z;
@@ -194,7 +205,7 @@ public partial class ProceduralWalk : CharacterBody3D
             raycastOrigin.Position = raycastOrigin.Basis * new Vector3(0.0f, 0.0f, -footTargetRadialProjection);
 
             ApplyRadialDifferential(raycastPivot, turnDirection, moveDirection, i);
-            ApplyVelocityDifferential(raycastPivot, turnDirection, moveDirection, i);
+            ApplyProjectionDifferential(raycastPivot, turnDirection, moveDirection, i);
 
             // Lock child rotation
             rayCast.GlobalRotation = Vector3.Zero;
@@ -240,11 +251,10 @@ public partial class ProceduralWalk : CharacterBody3D
         }
     }
 
-    private void ApplyVelocityDifferential(Node3D raycastPivot, int turnDirection, int moveDirection, int legIndex)
+    private void ApplyProjectionDifferential(Node3D raycastPivot, int turnDirection, int moveDirection, int legIndex)
     {
         raycastPivot.Position = Vector3.Zero;
-        float velocityDifferential = velocityDifferentialByRotation.Sample(currentRotation) * turnDirection;
-        //float velocityDifferential = velocityDifferentialByRotation * currentRotationFactor * turnDirection;
+        float projectionDifferential = projectionDifferentialByRotation.Sample(currentRotation) * turnDirection;
 
         bool turningLeft = turnDirection > 0.0f;
         bool movingForward = moveDirection < 0.0f;
@@ -254,7 +264,7 @@ public partial class ProceduralWalk : CharacterBody3D
         {
             if (LeftLeg(legIndex))
             {
-                raycastPivot.Position = raycastPivot.Basis.Z * velocityDifferential;
+                raycastPivot.Position = raycastPivot.Basis.Z * projectionDifferential;
             }
         }
         else if (movingForward && !turningLeft)
