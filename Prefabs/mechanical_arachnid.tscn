@@ -9,12 +9,12 @@ _limits = [0.0, 0.4, 0.0, 1.0]
 _data = [Vector2(0, 0), 0.0, 0.75, 0, 1, Vector2(0.04, 0.03), 0.75, 0.28125, 1, 1, Vector2(1, 0.3), 0.28125, 0.0, 1, 0]
 point_count = 3
 
-[sub_resource type="Curve" id="Curve_mjfux"]
-
 [sub_resource type="Curve" id="Curve_1wv5r"]
 _limits = [0.0, 0.25, 0.0, 1.0]
 _data = [Vector2(0, 0), 0.0, 2.52079, 0, 1, Vector2(0.0545073, 0.137402), 0.0311395, 0.0311395, 0, 0, Vector2(1, 0.155315), 0.0, 0.0, 0, 0]
 point_count = 3
+
+[sub_resource type="Curve" id="Curve_mjfux"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_i2uhj"]
 height = 2.39063
@@ -30,13 +30,13 @@ raycastHeight = 5.0
 footTargetRadialProjection = 4.25
 maxSpeed = 10.0
 cycleBySpeed = SubResource("Curve_3mqb4")
-footSpeedBySpeed = 50.0
-rotationReductionBySpeed = SubResource("Curve_mjfux")
 factorMaxRotation = 0.1
 cycleByRotation = SubResource("Curve_1wv5r")
-footSpeedByRotation = 1.0
+rotationReductionBySpeed = SubResource("Curve_mjfux")
 maxHeight = 3.0
 maxStride = 2.5
+footSpeedBySpeed = 50.0
+footSpeedByRotation = 1.0
 
 [node name="KeepInBounds" type="Node3D" parent="." node_paths=PackedStringArray("character")]
 script = ExtResource("2_dif34")

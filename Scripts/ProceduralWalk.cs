@@ -18,43 +18,47 @@ public partial class ProceduralWalk : CharacterBody3D
     [Export] private Vector3 debugOffsetRaycastContainerLocal;
     [Export] private Vector3 debugOffsetRaycastContainer;
     [Export] private float debugRotateRaycastContainer;
-    [Export] private float projectionFactor;
     [Export] private int projectionIterations;
 
     [ExportGroup("")]
     [Export] private float footTargetRadialProjection;
-    [Export] private float cycleMixFactor;
+    [Export] private float cycleAddFactor;
     [Export] private Curve cycleBySpeedRotation;
 
-    [ExportGroup("Speed")]
+    [ExportGroup("Projection Translation")]
     [Export(PropertyHint.Range, "-10,50")] private float moveSpeed;
     [Export(PropertyHint.Range, "0,50")] private float maxSpeed;
     [Export] private Curve cycleBySpeed;
-    [Export] private float footSpeedBySpeed;
-    [Export] private Curve rotationReductionBySpeed;
     [Export] private Curve projectionOffsetBySpeed;
     [Export] private Curve relativeOffsetBySpeed;
 
     [Export] private Curve relativeOffsetZBySpeedRotation;
     [Export] private Curve relativeOffsetXBySpeedRotation;
 
+    [Export] private Curve projectionOffsetReductionByRotation;
     [Export] private Curve projectionOffsetReductionBySpeedRotation;
 
 
-    [ExportGroup("Rotation")]
+    [ExportGroup("Projection Rotation")]
     [Export(PropertyHint.Range, "-0.1,0.1")] private float turnSpeed;
     [Export(PropertyHint.Range, "0,0.1")] private float factorMaxRotation;
     [Export] private Curve cycleByRotation;
-    [Export] private float footSpeedByRotation;
+    [Export] private Curve rotationCycleInfluenceReductionBySpeed;
+
     [Export] private Curve targetRotationByRotation;
+    [Export] private Curve rotationReductionBySpeed;
     [Export] private float radialDifferentialByRotation;
     [Export] private Curve projectionDifferentialByRotation;
-    [Export] private Curve projectionOffsetReductionByRotation;
 
     [ExportGroup("Height")]
     [Export] private bool enableStepHeight = true;
     [Export] private float maxHeight;
     [Export] private float maxStride;
+
+    [ExportGroup("Foot Speed")]
+    [Export] private float footSpeedBySpeed;
+    [Export] private float footSpeedByRotation;
+
 
 
     private Node3D[] feet;
@@ -120,17 +124,18 @@ public partial class ProceduralWalk : CharacterBody3D
         Rotate(Vector3.Up, currentRotation);
         Velocity = -Transform.Basis.Z * moveSpeed;
 
-        UpdateProjection();
-
-        UpdateRaycastProjections();
-
         MoveAndSlide();
         MoveFeet();
+
+        UpdateProjection();
+        UpdateRaycastProjections();
         DrawDebugs();
     }
 
     private void DrawDebugs()
     {
+        DebugDraw3D.DrawSphere(projection.GlobalPosition, 0.75f, Colors.AliceBlue);
+
         for (int i = 0; i <= rayCasts.Length - 1; i++)
         {
             RayCast3D rayCast = rayCasts[i];
@@ -140,6 +145,30 @@ public partial class ProceduralWalk : CharacterBody3D
             DebugDraw3D.DrawSphere(currentTargets[i], 0.25f, Colors.PaleVioletRed);
             DebugDraw3D.DrawSphere(rayCast.GlobalPosition);
             DebugDraw3D.DrawLine(raycastPivot.GlobalPosition, rayCast.GlobalPosition);
+        }
+    }
+
+    private void UpdateCycle()
+    {
+        float cycleDelta = 0.0f;
+        cycleDelta += cycleBySpeedRotation.Sample(Mathf.Sqrt(currentMoveFactor * currentRotationFactor));
+
+        float rotationCycleInfluence = cycleByRotation.Sample(currentRotationFactor);
+        rotationCycleInfluence *= rotationCycleInfluenceReductionBySpeed.Sample(currentMoveFactor);
+        float moveCycleInfluence = cycleBySpeed.Sample(currentMoveFactor);
+
+        // Take highest
+        cycleDelta += Mathf.Max(moveCycleInfluence, rotationCycleInfluence);
+        // Add other by factor
+        cycleDelta += Mathf.Min(moveCycleInfluence, rotationCycleInfluence) * cycleAddFactor;
+
+        currentCycle += cycleDelta;
+
+        // Wrap
+        if (currentCycle > 1.0f)
+        {
+            currentCycle = currentCycle - 1.0f;
+            SwapInCycle();
         }
     }
 
@@ -166,27 +195,6 @@ public partial class ProceduralWalk : CharacterBody3D
         projection.Rotate(Vector3.Up, projectedRotation);
     }
 
-    private void UpdateCycle()
-    {
-        float rotationCycleInfluence = cycleByRotation.Sample(currentRotationFactor);
-        float moveCycleInfluence = cycleBySpeed.Sample(currentMoveFactor);
-        // Mix infleunces
-        float cycleDelta =
-            Mathf.Max(moveCycleInfluence, rotationCycleInfluence) +
-            Mathf.Min(moveCycleInfluence, rotationCycleInfluence) * cycleMixFactor;
-
-        float mixedInfluence = cycleBySpeedRotation.Sample(Mathf.Sqrt(currentMoveFactor * currentRotationFactor));
-        cycleDelta *= 1.0f + mixedInfluence;
-        currentCycle += cycleDelta;
-
-        // Wrap
-        if (currentCycle > 1.0f)
-        {
-            currentCycle = currentCycle - 1.0f;
-            SwapInCycle();
-        }
-    }
-
     private void UpdateRaycastProjections()
     {
         Vector3 relativeVelocity = Velocity * Transform.Basis;
@@ -196,48 +204,67 @@ public partial class ProceduralWalk : CharacterBody3D
         currentMoveFactor = Mathf.Abs(moveSpeed) / maxSpeed;
         currentRotationFactor = Mathf.Abs(currentRotation) / factorMaxRotation;
 
-        float rotation = targetRotationByRotation.Sample(currentRotationFactor);
-        rotation *= rotationReductionBySpeed.Sample(currentMoveFactor);
-        rotation += debugRotateRaycastContainer;
-        rotation *= turnDirection;
-
-        raycastContainer.Rotation = new Vector3(0.0f, rotation, 0.0f);
-        float projectionOffset = projectionOffsetBySpeed.Sample(currentMoveFactor);
-
-        float relativeOffsetZ = relativeOffsetBySpeed.Sample(currentMoveFactor);
-
-        float relativeOffsetX = relativeOffsetXBySpeedRotation.Sample(Mathf.Sqrt(currentMoveFactor * currentRotationFactor)) * turnDirection;
-        relativeOffsetZ += relativeOffsetZBySpeedRotation.Sample(Mathf.Sqrt(currentMoveFactor * currentRotationFactor));
-        Vector3 relativeOffset = new Vector3(relativeOffsetX * turnDirection, 0.0f, relativeOffsetZ * moveDirection);
-
-        // Reduce projection offset by rotation
-        projectionOffset *= projectionOffsetReductionByRotation.Sample(currentRotationFactor);
-
-        projectionOffset *=
-            projectionOffsetReductionBySpeedRotation.Sample(
-                Mathf.Sqrt(currentMoveFactor * currentRotationFactor));
-
-        raycastContainer.Position = raycastContainer.Basis.Z * moveDirection * projectionOffset;
-        raycastContainer.Position += relativeOffset;
+        UpdateRaycastRotation(turnDirection);
+        UpdateRaycastPosition(moveDirection, turnDirection);
+        UpdateIndividualRaycasts();
 
         // Debug
         raycastContainer.Position += raycastContainer.Basis.Z * debugOffsetRaycastContainerLocal.Z;
         raycastContainer.Position += raycastContainer.Basis.X * debugOffsetRaycastContainerLocal.X;
         raycastContainer.Position += debugOffsetRaycastContainer;
+    }
 
+    private void UpdateRaycastRotation(int turnDirection)
+    {
+        raycastContainer.GlobalRotation = projection.GlobalRotation;
+
+        float rotation = targetRotationByRotation.Sample(currentRotationFactor);
+        rotation *= rotationReductionBySpeed.Sample(currentMoveFactor);
+        rotation += debugRotateRaycastContainer;
+        rotation *= turnDirection;
+
+        raycastContainer.Rotate(Vector3.Up, rotation);
+    }
+
+    private void UpdateRaycastPosition(int moveDirection, int turnDirection)
+    {
+        raycastContainer.GlobalPosition = projection.GlobalPosition;
+
+        float projectionOffset = projectionOffsetBySpeed.Sample(currentMoveFactor);
+
+        projectionOffset *= projectionOffsetReductionByRotation.Sample(currentRotationFactor);
+
+        raycastContainer.GlobalPosition += raycastContainer.GlobalBasis.Z * moveDirection * projectionOffset;
+
+        // float relativeOffsetZ = relativeOffsetBySpeed.Sample(currentMoveFactor);
+
+        // float relativeOffsetX = relativeOffsetXBySpeedRotation.Sample(Mathf.Sqrt(currentMoveFactor * currentRotationFactor)) * turnDirection;
+        // relativeOffsetZ += relativeOffsetZBySpeedRotation.Sample(Mathf.Sqrt(currentMoveFactor * currentRotationFactor));
+        // Vector3 relativeOffset = new Vector3(relativeOffsetX * turnDirection, 0.0f, relativeOffsetZ * moveDirection);
+
+
+        // projectionOffset *=
+        //     projectionOffsetReductionBySpeedRotation.Sample(
+        //         Mathf.Sqrt(currentMoveFactor * currentRotationFactor));
+
+        // raycastContainer.Position += relativeOffset;
+    }
+
+    private void UpdateIndividualRaycasts()
+    {
         for (int i = 0; i <= rayCasts.Length - 1; i++)
         {
             RayCast3D rayCast = rayCasts[i];
             Node3D raycastOrigin = (Node3D)rayCast.GetParent();
             Node3D raycastPivot = (Node3D)rayCast.GetParent().GetParent();
 
-            // Radial projection. Lets us set a wider/narrower stance on the fly
-            raycastOrigin.Position = raycastOrigin.Basis * new Vector3(0.0f, 0.0f, -footTargetRadialProjection);
+            // // Radial projection. Lets us set a wider/narrower stance on the fly
+            // raycastOrigin.Position = raycastOrigin.Basis * new Vector3(0.0f, 0.0f, -footTargetRadialProjection);
 
-            ApplyRadialDifferential(raycastPivot, turnDirection, moveDirection, i);
-            ApplyProjectionDifferential(raycastPivot, turnDirection, moveDirection, i);
+            // ApplyRadialDifferential(raycastPivot, turnDirection, moveDirection, i);
+            // ApplyProjectionDifferential(raycastPivot, turnDirection, moveDirection, i);
 
-            // Lock child rotation
+            // Lock child rotation to ensure it's pointing down
             rayCast.GlobalRotation = Vector3.Zero;
         }
     }
@@ -317,13 +344,6 @@ public partial class ProceduralWalk : CharacterBody3D
 
             }
         }
-    }
-
-
-    private static float Remap(float value, float inMin, float inMax, float outMin, float outMax)
-    {
-        value = Mathf.Clamp(value, inMin, inMax);
-        return outMin + (value - inMin) * (outMax - outMin) / (inMax - inMin);
     }
 
     private void MoveFeet()

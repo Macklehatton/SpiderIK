@@ -1,10 +1,10 @@
-[gd_scene load_steps=22 format=3 uid="uid://ccnba2mdvamym"]
+[gd_scene load_steps=23 format=3 uid="uid://ccnba2mdvamym"]
 
 [ext_resource type="PackedScene" uid="uid://du6kxaldswwyq" path="res://Prefabs/mechanical_arachnid.tscn" id="1_glv2v"]
 [ext_resource type="Texture2D" uid="uid://cbtx1yvpprivi" path="res://addons/kenney_prototype_textures/dark/texture_02.png" id="2_uu6xs"]
 
 [sub_resource type="Curve" id="Curve_c6i3y"]
-_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 1, Vector2(1, 0), 0.0, 0.0, 1, 0]
 point_count = 2
 
 [sub_resource type="Curve" id="Curve_r0du0"]
@@ -12,13 +12,9 @@ _limits = [0.0, 0.4, 0.0, 1.0]
 _data = [Vector2(0, 0), 0.0, 0.75, 0, 1, Vector2(0.04, 0.03), 0.75, 0.302083, 1, 1, Vector2(1, 0.32), 0.302083, 0.0, 1, 0]
 point_count = 3
 
-[sub_resource type="Curve" id="Curve_03owx"]
-_data = [Vector2(0, 1), 0.0, -0.520349, 0, 1, Vector2(1, 0.472835), -0.53074, 0.0, 1, 0]
-point_count = 2
-
 [sub_resource type="Curve" id="Curve_cm0pq"]
-_limits = [0.0, 4.5, 0.0, 1.0]
-_data = [Vector2(0, 0), 0.0, 75.0, 0, 1, Vector2(0.02, 1.5), 20.7164, 13.1615, 0, 1, Vector2(0.15, 3.211), 13.1615, 8.05052, 1, 1, Vector2(0.25188, 4.03118), 0.0, 0.0, 0, 0, Vector2(1, 4.25), 0.354995, 0.0, 0, 0]
+_limits = [0.0, 2.5, 0.0, 1.0]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.02, 1.65), 0.0, 5.37073, 0, 0, Vector2(0.3, 2.4), 0.0, 0.0, 0, 0, Vector2(0.5, 1.65), 0.0, 0.0, 0, 0, Vector2(1, 0), -3.3, 0.0, 1, 0]
 point_count = 5
 
 [sub_resource type="Curve" id="Curve_fos0i"]
@@ -29,25 +25,32 @@ point_count = 5
 _data = [Vector2(0, 0), 0.0, 0.0123575, 0, 1, Vector2(0.281955, 0.00348425), 0.0, 0.0, 0, 0, Vector2(0.74812, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.778049), -0.88118, 0.0, 1, 0]
 point_count = 4
 
+[sub_resource type="Curve" id="Curve_trn2v"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 1, 0]
+point_count = 2
+
 [sub_resource type="Curve" id="Curve_5vvyt"]
-_data = [Vector2(0, 1), 0.0, -10.6718, 0, 0, Vector2(0.246, 0.175), 0.0, 0.0, 0, 0, Vector2(0.419173, 0.248084), 0.918003, 0.918003, 0, 0, Vector2(0.748, 1), 0.803252, 0.0, 0, 1, Vector2(1, 1), 0.0, 0.0, 0, 0]
-point_count = 5
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0]
+point_count = 1
 
 [sub_resource type="Curve" id="Curve_uu6xs"]
 _limits = [0.0, 0.25, 0.0, 1.0]
 _data = [Vector2(0, 0), 0.0, 0.746193, 0, 1, Vector2(0.197, 0.147), 0.746193, 0.0473225, 1, 1, Vector2(1, 0.185), 0.0473225, 0.0, 1, 0]
 point_count = 3
 
+[sub_resource type="Curve" id="Curve_c2ibq"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0]
+point_count = 1
+
 [sub_resource type="Curve" id="Curve_20pc6"]
-_limits = [0.0, 1.2, 0.0, 1.0]
-_data = [Vector2(0, 0), 0.0, 0.9, 0, 1, Vector2(1, 0.9), 0.9, 0.0, 1, 0]
+_data = [Vector2(0, 0), 0.0, 0.315, 0, 1, Vector2(1, 0.315), 0.315, 0.0, 1, 0]
 point_count = 2
+
+[sub_resource type="Curve" id="Curve_03owx"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 1, Vector2(0.5, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.3), -1.4, 0.0, 1, 0]
+point_count = 3
 
 [sub_resource type="Curve" id="Curve_lgr22"]
-
-[sub_resource type="Curve" id="Curve_trn2v"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 1, 0]
-point_count = 2
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_glv2v"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -85,21 +88,22 @@ size = 29.283
 projection = NodePath("Projection")
 projectionIterations = 5
 cycleBySpeedRotation = SubResource("Curve_c6i3y")
-moveSpeed = 50.0
+moveSpeed = 1.696
 maxSpeed = 50.0
 cycleBySpeed = SubResource("Curve_r0du0")
-footSpeedBySpeed = 100.0
-rotationReductionBySpeed = SubResource("Curve_03owx")
 projectionOffsetBySpeed = SubResource("Curve_cm0pq")
 relativeOffsetBySpeed = SubResource("Curve_fos0i")
 relativeOffsetZBySpeedRotation = SubResource("Curve_3dxm6")
 relativeOffsetXBySpeedRotation = SubResource("Curve_wkp8b")
+projectionOffsetReductionByRotation = SubResource("Curve_trn2v")
 projectionOffsetReductionBySpeedRotation = SubResource("Curve_5vvyt")
 turnSpeed = 0.1
 cycleByRotation = SubResource("Curve_uu6xs")
+rotationCycleInfluenceReductionBySpeed = SubResource("Curve_c2ibq")
 targetRotationByRotation = SubResource("Curve_20pc6")
+rotationReductionBySpeed = SubResource("Curve_03owx")
 projectionDifferentialByRotation = SubResource("Curve_lgr22")
-projectionOffsetReductionByRotation = SubResource("Curve_trn2v")
+footSpeedBySpeed = 100.0
 
 [node name="KeepInBounds" parent="MechanicalArachnid" index="0" node_paths=PackedStringArray("bounds")]
 bounds = NodePath("../../Bounds/Area3D")
@@ -136,10 +140,10 @@ size = Vector3(1, 1, 6)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3)
 
 [node name="TopCamera" type="Camera3D" parent="MechanicalArachnid"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 12.135, 0)
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 15, 0)
 projection = 1
 current = true
-size = 15.529
+size = 19.063
 
 [node name="SideCamera" type="Camera3D" parent="MechanicalArachnid"]
 transform = Transform3D(0.595468, 0, 0.803379, 0, 1, 0, -0.803379, 0, 0.595468, 6.34524, 2.46237, 5.50257)
