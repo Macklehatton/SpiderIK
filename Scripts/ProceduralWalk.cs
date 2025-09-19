@@ -120,6 +120,8 @@ public partial class ProceduralWalk : CharacterBody3D
         Rotate(Vector3.Up, currentRotation);
         Velocity = -Transform.Basis.Z * moveSpeed;
 
+        UpdateProjection();
+
         UpdateRaycastProjections();
 
         MoveAndSlide();
@@ -139,11 +141,12 @@ public partial class ProceduralWalk : CharacterBody3D
             DebugDraw3D.DrawSphere(rayCast.GlobalPosition);
             DebugDraw3D.DrawLine(raycastPivot.GlobalPosition, rayCast.GlobalPosition);
         }
+    }
 
+    private void UpdateProjection()
+    {
         projection.GlobalPosition = GlobalPosition;
         projection.GlobalRotation = GlobalRotation;
-
-        projection.ForceUpdateTransform();
 
         Vector3 projectedGlobal = GlobalPosition;
         Vector3 projectedForward = -projection.Basis.Z * Velocity.Length() / 60.0f;

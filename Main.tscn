@@ -83,7 +83,7 @@ size = 29.283
 
 [node name="MechanicalArachnid" parent="." node_paths=PackedStringArray("projection") instance=ExtResource("1_glv2v")]
 projection = NodePath("Projection")
-projectionIterations = 3
+projectionIterations = 5
 cycleBySpeedRotation = SubResource("Curve_c6i3y")
 moveSpeed = 50.0
 maxSpeed = 50.0
