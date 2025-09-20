@@ -18,12 +18,17 @@ public partial class ProceduralWalk : CharacterBody3D
     [Export] private Vector3 debugOffsetRaycastContainerLocal;
     [Export] private Vector3 debugOffsetRaycastContainer;
     [Export] private float debugRotateRaycastContainer;
-    [Export] private int projectionIterations;
 
     [ExportGroup("")]
     [Export] private float footTargetRadialProjection;
     [Export] private float cycleAddFactor;
     [Export] private Curve cycleBySpeedRotation;
+
+    [ExportGroup("Projection")]
+    [Export] private int projectionIterations;
+    [Export] private float projectionTranslationSample;
+    [Export] private float projectionRotationSample;
+    [Export] private Curve translationSampleBySpeed;
 
     [ExportGroup("Projection Translation")]
     [Export(PropertyHint.Range, "-10,50")] private float moveSpeed;
@@ -59,7 +64,8 @@ public partial class ProceduralWalk : CharacterBody3D
     [Export] private float footSpeedBySpeed;
     [Export] private float footSpeedByRotation;
 
-
+    private Curve3D projectionCurve;
+    private Curve projectionCurveRotation;
 
     private Node3D[] feet;
     private RayCast3D[] rayCasts;
@@ -107,6 +113,14 @@ public partial class ProceduralWalk : CharacterBody3D
         footContainer.CallDeferred("reparent", GetTree().Root);
 
         projection.CallDeferred("reparent", GetTree().Root);
+
+        projectionCurve = new Curve3D();
+
+        projectionCurveRotation = new Curve();
+        projectionCurveRotation.MinDomain = 0.0f;
+        projectionCurveRotation.MaxDomain = 1.0f;
+        projectionCurveRotation.MinValue = 2.0f * -Mathf.Pi;
+        projectionCurveRotation.MaxValue = 2.0f * Mathf.Pi;
     }
 
     public override void _PhysicsProcess(double delta)
@@ -146,6 +160,12 @@ public partial class ProceduralWalk : CharacterBody3D
             DebugDraw3D.DrawSphere(rayCast.GlobalPosition);
             DebugDraw3D.DrawLine(raycastPivot.GlobalPosition, rayCast.GlobalPosition);
         }
+
+        for (int i = 0; i < projectionCurve.PointCount; i++)
+        {
+            Vector3 pointPosition = projectionCurve.GetPointPosition(i);
+            DebugDraw3D.DrawSphere(pointPosition, 0.25f, Colors.Red);
+        }
     }
 
     private void UpdateCycle()
@@ -174,25 +194,36 @@ public partial class ProceduralWalk : CharacterBody3D
 
     private void UpdateProjection()
     {
+        // 0-10 inclusive
+        projectionCurve.PointCount = projectionIterations + 1;
+        projectionCurveRotation.ClearPoints();
+
         projection.GlobalPosition = GlobalPosition;
         projection.GlobalRotation = GlobalRotation;
 
         Vector3 projectedGlobal = GlobalPosition;
-        Vector3 projectedForward = -projection.Basis.Z * Velocity.Length() / 60.0f;
-        float projectedRotation = 0.0f;
+        Vector3 projectedForward = -projection.Basis.Z * Velocity.Length() / Engine.PhysicsTicksPerSecond;
+        float projectedRotation = projection.GlobalRotation.Y;
 
-        int iterations = 0;
+        int iteration = 0;
 
-        while (iterations < projectionIterations)
+        while (iteration <= projectionIterations)
         {
-            iterations += 1;
             projectedRotation += currentRotation;
             projectedForward = projectedForward.Rotated(Vector3.Up, currentRotation);
             projectedGlobal += projectedForward;
+
+            projectionCurve.SetPointPosition(iteration, projectedGlobal);
+            Vector2 rotationCurvePoint = new Vector2((float)iteration / (float)projectionIterations, projectedRotation);
+            projectionCurveRotation.AddPoint(rotationCurvePoint);
+
+            iteration += 1;
         }
 
+        projectionCurveRotation.Bake();
+
         projection.GlobalPosition = projectedGlobal;
-        projection.Rotate(Vector3.Up, projectedRotation);
+        projection.GlobalRotation = new Vector3(0.0f, projectedRotation, 0.0f);
     }
 
     private void UpdateRaycastProjections()
@@ -216,7 +247,15 @@ public partial class ProceduralWalk : CharacterBody3D
 
     private void UpdateRaycastRotation(int turnDirection)
     {
-        raycastContainer.GlobalRotation = projection.GlobalRotation;
+        //raycastContainer.GlobalRotation = projection.GlobalRotation;
+
+        raycastContainer.GlobalRotation =
+            new Vector3(
+                0.0f,
+                projectionCurveRotation.Sample(projectionRotationSample),
+                0.0f);
+
+        return;
 
         float rotation = targetRotationByRotation.Sample(currentRotationFactor);
         rotation *= rotationReductionBySpeed.Sample(currentMoveFactor);
@@ -228,7 +267,8 @@ public partial class ProceduralWalk : CharacterBody3D
 
     private void UpdateRaycastPosition(int moveDirection, int turnDirection)
     {
-        raycastContainer.GlobalPosition = projection.GlobalPosition;
+        raycastContainer.GlobalPosition = projectionCurve.SampleBaked(projectionTranslationSample * projectionCurve.GetBakedLength());
+        return;
 
         float projectionOffset = projectionOffsetBySpeed.Sample(currentMoveFactor);
 
