@@ -29,6 +29,11 @@ public partial class ProceduralWalk : CharacterBody3D
     [Export] private float projectionTranslationSample;
     [Export] private float projectionRotationSample;
     [Export] private Curve translationSampleBySpeed;
+    [Export] private float strideCycleFactor;
+    [Export] private float maxLongestStrideDistance;
+
+    [Export] private Curve projectionTranslationSampleByStride;
+    [Export] private Curve projectionRotationSampleByStride;
 
     [ExportGroup("Projection Translation")]
     [Export(PropertyHint.Range, "-10,50")] private float moveSpeed;
@@ -88,6 +93,9 @@ public partial class ProceduralWalk : CharacterBody3D
     private float currentRotationFactor;
     private float currentMoveFactor;
 
+    private float longestStrideDistance;
+    private float currentStrideFactor;
+
     public bool ResetFeetFlag { get; set; }
 
     public override void _Ready()
@@ -121,6 +129,8 @@ public partial class ProceduralWalk : CharacterBody3D
         projectionCurveRotation.MaxDomain = 1.0f;
         projectionCurveRotation.MinValue = 2.0f * -Mathf.Pi;
         projectionCurveRotation.MaxValue = 2.0f * Mathf.Pi;
+
+        longestStrideDistance = 1.0f;
     }
 
     public override void _PhysicsProcess(double delta)
@@ -171,16 +181,18 @@ public partial class ProceduralWalk : CharacterBody3D
     private void UpdateCycle()
     {
         float cycleDelta = 0.0f;
-        cycleDelta += cycleBySpeedRotation.Sample(Mathf.Sqrt(currentMoveFactor * currentRotationFactor));
+        cycleDelta += longestStrideDistance * strideCycleFactor;
 
-        float rotationCycleInfluence = cycleByRotation.Sample(currentRotationFactor);
-        rotationCycleInfluence *= rotationCycleInfluenceReductionBySpeed.Sample(currentMoveFactor);
-        float moveCycleInfluence = cycleBySpeed.Sample(currentMoveFactor);
+        // cycleDelta += cycleBySpeedRotation.Sample(Mathf.Sqrt(currentMoveFactor * currentRotationFactor));
 
-        // Take highest
-        cycleDelta += Mathf.Max(moveCycleInfluence, rotationCycleInfluence);
-        // Add other by factor
-        cycleDelta += Mathf.Min(moveCycleInfluence, rotationCycleInfluence) * cycleAddFactor;
+        // float rotationCycleInfluence = cycleByRotation.Sample(currentRotationFactor);
+        // rotationCycleInfluence *= rotationCycleInfluenceReductionBySpeed.Sample(currentMoveFactor);
+        // float moveCycleInfluence = cycleBySpeed.Sample(currentMoveFactor);
+
+        // // Take highest
+        // cycleDelta += Mathf.Max(moveCycleInfluence, rotationCycleInfluence);
+        // // Add other by factor
+        // cycleDelta += Mathf.Min(moveCycleInfluence, rotationCycleInfluence) * cycleAddFactor;
 
         currentCycle += cycleDelta;
 
@@ -248,33 +260,39 @@ public partial class ProceduralWalk : CharacterBody3D
     private void UpdateRaycastRotation(int turnDirection)
     {
         //raycastContainer.GlobalRotation = projection.GlobalRotation;
+        float sample = projectionRotationSample;
+        sample *= projectionRotationSampleByStride.Sample(currentStrideFactor);
+        float rotation = projectionCurveRotation.Sample(sample);
 
         raycastContainer.GlobalRotation =
             new Vector3(
                 0.0f,
-                projectionCurveRotation.Sample(projectionRotationSample),
+                rotation,
                 0.0f);
 
         return;
 
-        float rotation = targetRotationByRotation.Sample(currentRotationFactor);
-        rotation *= rotationReductionBySpeed.Sample(currentMoveFactor);
-        rotation += debugRotateRaycastContainer;
-        rotation *= turnDirection;
+        // float rotation = targetRotationByRotation.Sample(currentRotationFactor);
+        // rotation *= rotationReductionBySpeed.Sample(currentMoveFactor);
+        // rotation += debugRotateRaycastContainer;
+        // rotation *= turnDirection;
 
-        raycastContainer.Rotate(Vector3.Up, rotation);
+        // raycastContainer.Rotate(Vector3.Up, rotation);
     }
 
     private void UpdateRaycastPosition(int moveDirection, int turnDirection)
     {
-        raycastContainer.GlobalPosition = projectionCurve.SampleBaked(projectionTranslationSample * projectionCurve.GetBakedLength());
+        float sample = projectionTranslationSample * projectionCurve.GetBakedLength();
+        sample *= projectionRotationSampleByStride.Sample(currentStrideFactor);
+        raycastContainer.GlobalPosition = projectionCurve.SampleBaked(sample);
+
         return;
 
-        float projectionOffset = projectionOffsetBySpeed.Sample(currentMoveFactor);
+        // float projectionOffset = projectionOffsetBySpeed.Sample(currentMoveFactor);
 
-        projectionOffset *= projectionOffsetReductionByRotation.Sample(currentRotationFactor);
+        // projectionOffset *= projectionOffsetReductionByRotation.Sample(currentRotationFactor);
 
-        raycastContainer.GlobalPosition += raycastContainer.GlobalBasis.Z * moveDirection * projectionOffset;
+        // raycastContainer.GlobalPosition += raycastContainer.GlobalBasis.Z * moveDirection * projectionOffset;
 
         // float relativeOffsetZ = relativeOffsetBySpeed.Sample(currentMoveFactor);
 
@@ -555,6 +573,8 @@ public partial class ProceduralWalk : CharacterBody3D
 
     public void ResetFeet()
     {
+        longestStrideDistance = maxLongestStrideDistance;
+
         raycastContainer.Position = Vector3.Zero;
         raycastContainer.Rotation = Vector3.Zero;
 
@@ -609,6 +629,8 @@ public partial class ProceduralWalk : CharacterBody3D
 
     private void SwapInCycle()
     {
+        longestStrideDistance = maxLongestStrideDistance;
+
         for (int i = 0; i <= inCycle.Length - 1; i++)
         {
             inCycle[i] = !inCycle[i];
@@ -617,6 +639,12 @@ public partial class ProceduralWalk : CharacterBody3D
             {
                 currentTargets[i] = rayCasts[i].GetCollisionPoint();
                 footOrigins[i] = feet[i].GlobalPosition;
+
+                float distance = footOrigins[i].DistanceSquaredTo(currentTargets[i]);
+                if (distance > longestStrideDistance)
+                {
+                    longestStrideDistance = distance;
+                }
             }
             else
             {
@@ -625,6 +653,9 @@ public partial class ProceduralWalk : CharacterBody3D
                 feet[i].GlobalPosition = currentTargets[i];
             }
         }
+
+        longestStrideDistance = Mathf.Sqrt(longestStrideDistance);
+        currentStrideFactor = longestStrideDistance / maxLongestStrideDistance;
     }
 
     private void SetAlternateFeet()
