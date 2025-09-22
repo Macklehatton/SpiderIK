@@ -282,9 +282,18 @@ public partial class ProceduralWalk : CharacterBody3D
 
     private void UpdateRaycastPosition(int moveDirection, int turnDirection)
     {
-        float sample = projectionTranslationSample * projectionCurve.GetBakedLength();
-        sample *= projectionRotationSampleByStride.Sample(currentStrideFactor);
-        raycastContainer.GlobalPosition = projectionCurve.SampleBaked(sample);
+        // We get an error if we sample a zero length curve
+        if (!Mathf.IsEqualApprox(currentMoveFactor, 0.0f))
+        {
+            float sample = projectionTranslationSample * projectionCurve.GetBakedLength();
+            sample *= projectionRotationSampleByStride.Sample(currentStrideFactor);
+            sample *= translationSampleBySpeed.Sample(currentMoveFactor);
+            raycastContainer.GlobalPosition = projectionCurve.SampleBaked(sample);
+        }
+        else
+        {
+            raycastContainer.GlobalPosition = GlobalPosition;
+        }
 
         return;
 

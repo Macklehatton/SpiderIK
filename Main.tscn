@@ -1,10 +1,14 @@
-[gd_scene load_steps=26 format=3 uid="uid://ccnba2mdvamym"]
+[gd_scene load_steps=27 format=3 uid="uid://ccnba2mdvamym"]
 
 [ext_resource type="PackedScene" uid="uid://du6kxaldswwyq" path="res://Prefabs/mechanical_arachnid.tscn" id="1_glv2v"]
 [ext_resource type="Texture2D" uid="uid://cbtx1yvpprivi" path="res://addons/kenney_prototype_textures/dark/texture_02.png" id="2_uu6xs"]
 
 [sub_resource type="Curve" id="Curve_c6i3y"]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 1, Vector2(1, 0), 0.0, 0.0, 1, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_sc1dx"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 1, Vector2(1, 1), 0.0, 0.0, 1, 0]
 point_count = 2
 
 [sub_resource type="Curve" id="Curve_j4qnp"]
@@ -103,13 +107,14 @@ size = 29.283
 projection = NodePath("Projection")
 cycleBySpeedRotation = SubResource("Curve_c6i3y")
 projectionIterations = 10
-projectionTranslationSample = 0.4
-projectionRotationSample = 0.4
+projectionTranslationSample = 1.0
+projectionRotationSample = 0.65
+translationSampleBySpeed = SubResource("Curve_sc1dx")
 strideCycleFactor = 0.05
 maxLongestStrideDistance = 6.5
 projectionTranslationSampleByStride = SubResource("Curve_j4qnp")
 projectionRotationSampleByStride = SubResource("Curve_fpfj3")
-moveSpeed = 50.0
+moveSpeed = 7.505
 maxSpeed = 50.0
 cycleBySpeed = SubResource("Curve_r0du0")
 projectionOffsetBySpeed = SubResource("Curve_cm0pq")
@@ -154,6 +159,7 @@ transform = Transform3D(-0.614802, -0.291926, -0.732665, -4.10946e-08, -0.928975
 
 [node name="CSGBox3D" type="CSGBox3D" parent="MechanicalArachnid"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.65, 0)
+visible = false
 size = Vector3(1, 1, 6)
 
 [node name="CSGSphere3D" type="CSGSphere3D" parent="MechanicalArachnid/CSGBox3D"]
