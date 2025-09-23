@@ -14,11 +14,6 @@ public partial class ProceduralWalk : CharacterBody3D
     [Export] private float raycastDistance;
     [Export] private float raycastHeight;
 
-    [ExportGroup("Debug")]
-    [Export] private Vector3 debugOffsetRaycastContainerLocal;
-    [Export] private Vector3 debugOffsetRaycastContainer;
-    [Export] private float debugRotateRaycastContainer;
-
     [ExportGroup("")]
     [Export] private float footTargetRadialProjection;
 
@@ -27,6 +22,8 @@ public partial class ProceduralWalk : CharacterBody3D
 
     [Export] private float strideCycleFactor;
     [Export] private float maxLongestStrideDistance;
+    [Export] private Curve rotationBySpeedRotation;
+    [Export] private Curve translationBySpeedRotation;
 
     [ExportSubgroup("Projection Translation")]
     [Export(PropertyHint.Range, "-10,50")] private float moveSpeed;
@@ -41,14 +38,14 @@ public partial class ProceduralWalk : CharacterBody3D
     [Export] private float projectionRotationSample;
     [Export] private Curve rotationReductionBySpeed;
 
-
     [ExportGroup("Height")]
     [Export] private bool enableStepHeight = true;
     [Export] private float maxHeight;
     [Export] private float maxStride;
 
-    [Export] private Curve rotationBySpeedRotation;
-    [Export] private Curve translationBySpeedRotation;
+    [ExportGroup("Debug")]
+    [Export] private bool enableDebugs;
+    [Export] private float debugRaycastRotation;
 
     private Curve3D projectionCurve;
     private Curve projectionCurveRotation;
@@ -134,11 +131,17 @@ public partial class ProceduralWalk : CharacterBody3D
 
         UpdateProjection();
         UpdateRaycastProjections();
-        DrawDebugs();
+
+        HandleDebug();
     }
 
-    private void DrawDebugs()
+    private void HandleDebug()
     {
+        if (!enableDebugs)
+        {
+            return;
+        }
+
         DebugDraw3D.DrawSphere(projection.GlobalPosition, 0.75f, Colors.AliceBlue);
 
         for (int i = 0; i <= rayCasts.Length - 1; i++)
@@ -222,28 +225,23 @@ public partial class ProceduralWalk : CharacterBody3D
         UpdateRaycastPosition(moveDirection, turnDirection);
         UpdateIndividualRaycasts();
 
-        // Debug
-        raycastContainer.Position += raycastContainer.Basis.Z * debugOffsetRaycastContainerLocal.Z;
-        raycastContainer.Position += raycastContainer.Basis.X * debugOffsetRaycastContainerLocal.X;
-        raycastContainer.Position += debugOffsetRaycastContainer;
-
-        raycastContainer.Rotate(Vector3.Up, debugRotateRaycastContainer);
+        raycastContainer.Rotate(Vector3.Up, debugRaycastRotation);
     }
 
     private void UpdateRaycastRotation(int turnDirection)
     {
-        //raycastContainer.GlobalRotation = projection.GlobalRotation;
         float sample = projectionRotationSample;
-        //sample *= projectionRotationSampleByStride.Sample(currentStrideFactor);
 
-        // Debug
         if (!Mathf.IsEqualApprox(currentMoveFactor, 0.0f))
         {
             sample *= rotationReductionBySpeed.Sample(currentMoveFactor);
             sample *= rotationBySpeedRotation.Sample(speedRotationFactor);
 
-            Vector3 rotationPosition = projectionCurve.SampleBaked(sample * projectionCurve.GetBakedLength());
-            DebugDraw3D.DrawSphere(rotationPosition, 0.5f, Colors.MistyRose);
+            if (enableDebugs)
+            {
+                Vector3 rotationPosition = projectionCurve.SampleBaked(sample * projectionCurve.GetBakedLength());
+                DebugDraw3D.DrawSphere(rotationPosition, 0.5f, Colors.MistyRose);
+            }
         }
 
         float rotation = projectionCurveRotation.Sample(sample);
@@ -261,7 +259,6 @@ public partial class ProceduralWalk : CharacterBody3D
         if (!Mathf.IsEqualApprox(currentMoveFactor, 0.0f))
         {
             float sample = projectionTranslationSample * projectionCurve.GetBakedLength();
-            //sample *= projectionRotationSampleByStride.Sample(currentStrideFactor);
             sample *= translationBySpeed.Sample(currentMoveFactor);
 
             if (!Mathf.IsEqualApprox(currentRotationFactor, 0.0f))
