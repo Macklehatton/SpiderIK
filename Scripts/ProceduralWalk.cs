@@ -21,8 +21,6 @@ public partial class ProceduralWalk : CharacterBody3D
 
     [ExportGroup("")]
     [Export] private float footTargetRadialProjection;
-    [Export] private float cycleAddFactor;
-    [Export] private Curve cycleBySpeedRotation;
 
     [ExportGroup("Projection")]
     [Export] private int projectionIterations;
@@ -38,36 +36,16 @@ public partial class ProceduralWalk : CharacterBody3D
     [ExportGroup("Projection Translation")]
     [Export(PropertyHint.Range, "-10,50")] private float moveSpeed;
     [Export(PropertyHint.Range, "0,50")] private float maxSpeed;
-    [Export] private Curve cycleBySpeed;
-    [Export] private Curve projectionOffsetBySpeed;
-    [Export] private Curve relativeOffsetBySpeed;
-
-    [Export] private Curve relativeOffsetZBySpeedRotation;
-    [Export] private Curve relativeOffsetXBySpeedRotation;
-
-    [Export] private Curve projectionOffsetReductionByRotation;
-    [Export] private Curve projectionOffsetReductionBySpeedRotation;
-
 
     [ExportGroup("Projection Rotation")]
     [Export(PropertyHint.Range, "-0.1,0.1")] private float turnSpeed;
     [Export(PropertyHint.Range, "0,0.1")] private float factorMaxRotation;
-    [Export] private Curve cycleByRotation;
-    [Export] private Curve rotationCycleInfluenceReductionBySpeed;
-
-    [Export] private Curve targetRotationByRotation;
-    [Export] private Curve rotationReductionBySpeed;
-    [Export] private float radialDifferentialByRotation;
-    [Export] private Curve projectionDifferentialByRotation;
 
     [ExportGroup("Height")]
     [Export] private bool enableStepHeight = true;
     [Export] private float maxHeight;
     [Export] private float maxStride;
 
-    [ExportGroup("Foot Speed")]
-    [Export] private float footSpeedBySpeed;
-    [Export] private float footSpeedByRotation;
 
     private Curve3D projectionCurve;
     private Curve projectionCurveRotation;
@@ -85,7 +63,6 @@ public partial class ProceduralWalk : CharacterBody3D
     private Vector3[] currentTargets;
     private Vector3[] footOrigins;
 
-    private bool offFoot;
     private float strideDistanceSquared;
 
     private float currentCycle;
@@ -183,17 +160,6 @@ public partial class ProceduralWalk : CharacterBody3D
         float cycleDelta = 0.0f;
         cycleDelta += longestStrideDistance * strideCycleFactor;
 
-        // cycleDelta += cycleBySpeedRotation.Sample(Mathf.Sqrt(currentMoveFactor * currentRotationFactor));
-
-        // float rotationCycleInfluence = cycleByRotation.Sample(currentRotationFactor);
-        // rotationCycleInfluence *= rotationCycleInfluenceReductionBySpeed.Sample(currentMoveFactor);
-        // float moveCycleInfluence = cycleBySpeed.Sample(currentMoveFactor);
-
-        // // Take highest
-        // cycleDelta += Mathf.Max(moveCycleInfluence, rotationCycleInfluence);
-        // // Add other by factor
-        // cycleDelta += Mathf.Min(moveCycleInfluence, rotationCycleInfluence) * cycleAddFactor;
-
         currentCycle += cycleDelta;
 
         // Wrap
@@ -269,15 +235,6 @@ public partial class ProceduralWalk : CharacterBody3D
                 0.0f,
                 rotation,
                 0.0f);
-
-        return;
-
-        // float rotation = targetRotationByRotation.Sample(currentRotationFactor);
-        // rotation *= rotationReductionBySpeed.Sample(currentMoveFactor);
-        // rotation += debugRotateRaycastContainer;
-        // rotation *= turnDirection;
-
-        // raycastContainer.Rotate(Vector3.Up, rotation);
     }
 
     private void UpdateRaycastPosition(int moveDirection, int turnDirection)
@@ -294,27 +251,6 @@ public partial class ProceduralWalk : CharacterBody3D
         {
             raycastContainer.GlobalPosition = GlobalPosition;
         }
-
-        return;
-
-        // float projectionOffset = projectionOffsetBySpeed.Sample(currentMoveFactor);
-
-        // projectionOffset *= projectionOffsetReductionByRotation.Sample(currentRotationFactor);
-
-        // raycastContainer.GlobalPosition += raycastContainer.GlobalBasis.Z * moveDirection * projectionOffset;
-
-        // float relativeOffsetZ = relativeOffsetBySpeed.Sample(currentMoveFactor);
-
-        // float relativeOffsetX = relativeOffsetXBySpeedRotation.Sample(Mathf.Sqrt(currentMoveFactor * currentRotationFactor)) * turnDirection;
-        // relativeOffsetZ += relativeOffsetZBySpeedRotation.Sample(Mathf.Sqrt(currentMoveFactor * currentRotationFactor));
-        // Vector3 relativeOffset = new Vector3(relativeOffsetX * turnDirection, 0.0f, relativeOffsetZ * moveDirection);
-
-
-        // projectionOffset *=
-        //     projectionOffsetReductionBySpeedRotation.Sample(
-        //         Mathf.Sqrt(currentMoveFactor * currentRotationFactor));
-
-        // raycastContainer.Position += relativeOffset;
     }
 
     private void UpdateIndividualRaycasts()
@@ -336,82 +272,82 @@ public partial class ProceduralWalk : CharacterBody3D
         }
     }
 
-    private void ApplyRadialDifferential(Node3D raycastPivot, int turnDirection, int moveDirection, int legIndex)
-    {
-        raycastPivot.Rotation = Vector3.Zero;
-        float radialDifferential = radialDifferentialByRotation * currentRotationFactor * turnDirection;
+    // private void ApplyRadialDifferential(Node3D raycastPivot, int turnDirection, int moveDirection, int legIndex)
+    // {
+    //     raycastPivot.Rotation = Vector3.Zero;
+    //     float radialDifferential = radialDifferentialByRotation * currentRotationFactor * turnDirection;
 
-        bool turningLeft = turnDirection > 0.0f;
-        bool movingForward = moveDirection < 0.0f;
+    //     bool turningLeft = turnDirection > 0.0f;
+    //     bool movingForward = moveDirection < 0.0f;
 
-        // Radial diff
-        if (movingForward && turningLeft)
-        {
-            if (!LeftLeg(legIndex))
-            {
-                raycastPivot.Rotation = new Vector3(0.0f, radialDifferential, 0.0f);
-            }
-        }
-        else if (movingForward && !turningLeft)
-        {
-            if (LeftLeg(legIndex))
-            {
-                raycastPivot.Rotation = new Vector3(0.0f, radialDifferential, 0.0f);
-            }
-        }
-        else if (!movingForward && turningLeft)
-        {
-            if (LeftLeg(legIndex))
-            {
-                raycastPivot.Rotation = new Vector3(0.0f, radialDifferential, 0.0f);
-            }
-        }
-        else if (!movingForward && !turningLeft)
-        {
-            if (!LeftLeg(legIndex))
-            {
-                raycastPivot.Rotation = new Vector3(0.0f, radialDifferential, 0.0f);
-            }
-        }
-    }
+    //     // Radial diff
+    //     if (movingForward && turningLeft)
+    //     {
+    //         if (!LeftLeg(legIndex))
+    //         {
+    //             raycastPivot.Rotation = new Vector3(0.0f, radialDifferential, 0.0f);
+    //         }
+    //     }
+    //     else if (movingForward && !turningLeft)
+    //     {
+    //         if (LeftLeg(legIndex))
+    //         {
+    //             raycastPivot.Rotation = new Vector3(0.0f, radialDifferential, 0.0f);
+    //         }
+    //     }
+    //     else if (!movingForward && turningLeft)
+    //     {
+    //         if (LeftLeg(legIndex))
+    //         {
+    //             raycastPivot.Rotation = new Vector3(0.0f, radialDifferential, 0.0f);
+    //         }
+    //     }
+    //     else if (!movingForward && !turningLeft)
+    //     {
+    //         if (!LeftLeg(legIndex))
+    //         {
+    //             raycastPivot.Rotation = new Vector3(0.0f, radialDifferential, 0.0f);
+    //         }
+    //     }
+    // }
 
-    private void ApplyProjectionDifferential(Node3D raycastPivot, int turnDirection, int moveDirection, int legIndex)
-    {
-        raycastPivot.Position = Vector3.Zero;
-        float projectionDifferential = projectionDifferentialByRotation.Sample(currentRotation) * turnDirection;
+    // private void ApplyProjectionDifferential(Node3D raycastPivot, int turnDirection, int moveDirection, int legIndex)
+    // {
+    //     raycastPivot.Position = Vector3.Zero;
+    //     float projectionDifferential = projectionDifferentialByRotation.Sample(currentRotation) * turnDirection;
 
-        bool turningLeft = turnDirection > 0.0f;
-        bool movingForward = moveDirection < 0.0f;
+    //     bool turningLeft = turnDirection > 0.0f;
+    //     bool movingForward = moveDirection < 0.0f;
 
-        // Radial diff
-        if (movingForward && turningLeft)
-        {
-            if (LeftLeg(legIndex))
-            {
-                raycastPivot.Position = raycastPivot.Basis.Z * projectionDifferential;
-            }
-        }
-        else if (movingForward && !turningLeft)
-        {
-            if (LeftLeg(legIndex))
-            {
-            }
-        }
-        else if (!movingForward && turningLeft)
-        {
-            if (LeftLeg(legIndex))
-            {
+    //     // Radial diff
+    //     if (movingForward && turningLeft)
+    //     {
+    //         if (LeftLeg(legIndex))
+    //         {
+    //             raycastPivot.Position = raycastPivot.Basis.Z * projectionDifferential;
+    //         }
+    //     }
+    //     else if (movingForward && !turningLeft)
+    //     {
+    //         if (LeftLeg(legIndex))
+    //         {
+    //         }
+    //     }
+    //     else if (!movingForward && turningLeft)
+    //     {
+    //         if (LeftLeg(legIndex))
+    //         {
 
-            }
-        }
-        else if (!movingForward && !turningLeft)
-        {
-            if (!LeftLeg(legIndex))
-            {
+    //         }
+    //     }
+    //     else if (!movingForward && !turningLeft)
+    //     {
+    //         if (!LeftLeg(legIndex))
+    //         {
 
-            }
-        }
-    }
+    //         }
+    //     }
+    // }
 
     private void MoveFeet()
     {
