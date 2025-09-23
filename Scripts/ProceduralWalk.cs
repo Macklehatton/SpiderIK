@@ -24,28 +24,31 @@ public partial class ProceduralWalk : CharacterBody3D
 
     [ExportGroup("Projection")]
     [Export] private int projectionIterations;
-    [Export] private float projectionTranslationSample;
-    [Export] private float projectionRotationSample;
-    [Export] private Curve translationSampleBySpeed;
+
     [Export] private float strideCycleFactor;
     [Export] private float maxLongestStrideDistance;
 
-    [Export] private Curve projectionTranslationSampleByStride;
-    [Export] private Curve projectionRotationSampleByStride;
-
-    [ExportGroup("Projection Translation")]
+    [ExportSubgroup("Projection Translation")]
     [Export(PropertyHint.Range, "-10,50")] private float moveSpeed;
     [Export(PropertyHint.Range, "0,50")] private float maxSpeed;
+    [Export] private float projectionTranslationSample;
+    [Export] private Curve translationBySpeed;
+    [Export] private Curve translationReductionByRotation;
 
-    [ExportGroup("Projection Rotation")]
+    [ExportSubgroup("Projection Rotation")]
     [Export(PropertyHint.Range, "-0.1,0.1")] private float turnSpeed;
     [Export(PropertyHint.Range, "0,0.1")] private float factorMaxRotation;
+    [Export] private float projectionRotationSample;
+    [Export] private Curve rotationReductionBySpeed;
+
 
     [ExportGroup("Height")]
     [Export] private bool enableStepHeight = true;
     [Export] private float maxHeight;
     [Export] private float maxStride;
 
+    [Export] private Curve rotationBySpeedRotation;
+    [Export] private Curve translationBySpeedRotation;
 
     private Curve3D projectionCurve;
     private Curve projectionCurveRotation;
@@ -69,6 +72,7 @@ public partial class ProceduralWalk : CharacterBody3D
     private float currentRotation;
     private float currentRotationFactor;
     private float currentMoveFactor;
+    private float speedRotationFactor;
 
     private float longestStrideDistance;
     private float currentStrideFactor;
@@ -212,6 +216,7 @@ public partial class ProceduralWalk : CharacterBody3D
 
         currentMoveFactor = Mathf.Abs(moveSpeed) / maxSpeed;
         currentRotationFactor = Mathf.Abs(currentRotation) / factorMaxRotation;
+        speedRotationFactor = Mathf.Sqrt(currentMoveFactor * currentRotationFactor);
 
         UpdateRaycastRotation(turnDirection);
         UpdateRaycastPosition(moveDirection, turnDirection);
@@ -221,13 +226,26 @@ public partial class ProceduralWalk : CharacterBody3D
         raycastContainer.Position += raycastContainer.Basis.Z * debugOffsetRaycastContainerLocal.Z;
         raycastContainer.Position += raycastContainer.Basis.X * debugOffsetRaycastContainerLocal.X;
         raycastContainer.Position += debugOffsetRaycastContainer;
+
+        raycastContainer.Rotate(Vector3.Up, debugRotateRaycastContainer);
     }
 
     private void UpdateRaycastRotation(int turnDirection)
     {
         //raycastContainer.GlobalRotation = projection.GlobalRotation;
         float sample = projectionRotationSample;
-        sample *= projectionRotationSampleByStride.Sample(currentStrideFactor);
+        //sample *= projectionRotationSampleByStride.Sample(currentStrideFactor);
+
+        // Debug
+        if (!Mathf.IsEqualApprox(currentMoveFactor, 0.0f))
+        {
+            sample *= rotationReductionBySpeed.Sample(currentMoveFactor);
+            sample *= rotationBySpeedRotation.Sample(speedRotationFactor);
+
+            Vector3 rotationPosition = projectionCurve.SampleBaked(sample * projectionCurve.GetBakedLength());
+            DebugDraw3D.DrawSphere(rotationPosition, 0.5f, Colors.MistyRose);
+        }
+
         float rotation = projectionCurveRotation.Sample(sample);
 
         raycastContainer.GlobalRotation =
@@ -243,8 +261,15 @@ public partial class ProceduralWalk : CharacterBody3D
         if (!Mathf.IsEqualApprox(currentMoveFactor, 0.0f))
         {
             float sample = projectionTranslationSample * projectionCurve.GetBakedLength();
-            sample *= projectionRotationSampleByStride.Sample(currentStrideFactor);
-            sample *= translationSampleBySpeed.Sample(currentMoveFactor);
+            //sample *= projectionRotationSampleByStride.Sample(currentStrideFactor);
+            sample *= translationBySpeed.Sample(currentMoveFactor);
+
+            if (!Mathf.IsEqualApprox(currentRotationFactor, 0.0f))
+            {
+                sample *= translationReductionByRotation.Sample(currentRotationFactor);
+                sample *= translationBySpeedRotation.Sample(speedRotationFactor);
+            }
+
             raycastContainer.GlobalPosition = projectionCurve.SampleBaked(sample);
         }
         else
@@ -261,93 +286,13 @@ public partial class ProceduralWalk : CharacterBody3D
             Node3D raycastOrigin = (Node3D)rayCast.GetParent();
             Node3D raycastPivot = (Node3D)rayCast.GetParent().GetParent();
 
-            // // Radial projection. Lets us set a wider/narrower stance on the fly
-            // raycastOrigin.Position = raycastOrigin.Basis * new Vector3(0.0f, 0.0f, -footTargetRadialProjection);
-
-            // ApplyRadialDifferential(raycastPivot, turnDirection, moveDirection, i);
-            // ApplyProjectionDifferential(raycastPivot, turnDirection, moveDirection, i);
+            // Radial projection. Lets us set a wider/narrower stance on the fly
+            raycastOrigin.Position = raycastOrigin.Basis * new Vector3(0.0f, 0.0f, -footTargetRadialProjection);
 
             // Lock child rotation to ensure it's pointing down
             rayCast.GlobalRotation = Vector3.Zero;
         }
     }
-
-    // private void ApplyRadialDifferential(Node3D raycastPivot, int turnDirection, int moveDirection, int legIndex)
-    // {
-    //     raycastPivot.Rotation = Vector3.Zero;
-    //     float radialDifferential = radialDifferentialByRotation * currentRotationFactor * turnDirection;
-
-    //     bool turningLeft = turnDirection > 0.0f;
-    //     bool movingForward = moveDirection < 0.0f;
-
-    //     // Radial diff
-    //     if (movingForward && turningLeft)
-    //     {
-    //         if (!LeftLeg(legIndex))
-    //         {
-    //             raycastPivot.Rotation = new Vector3(0.0f, radialDifferential, 0.0f);
-    //         }
-    //     }
-    //     else if (movingForward && !turningLeft)
-    //     {
-    //         if (LeftLeg(legIndex))
-    //         {
-    //             raycastPivot.Rotation = new Vector3(0.0f, radialDifferential, 0.0f);
-    //         }
-    //     }
-    //     else if (!movingForward && turningLeft)
-    //     {
-    //         if (LeftLeg(legIndex))
-    //         {
-    //             raycastPivot.Rotation = new Vector3(0.0f, radialDifferential, 0.0f);
-    //         }
-    //     }
-    //     else if (!movingForward && !turningLeft)
-    //     {
-    //         if (!LeftLeg(legIndex))
-    //         {
-    //             raycastPivot.Rotation = new Vector3(0.0f, radialDifferential, 0.0f);
-    //         }
-    //     }
-    // }
-
-    // private void ApplyProjectionDifferential(Node3D raycastPivot, int turnDirection, int moveDirection, int legIndex)
-    // {
-    //     raycastPivot.Position = Vector3.Zero;
-    //     float projectionDifferential = projectionDifferentialByRotation.Sample(currentRotation) * turnDirection;
-
-    //     bool turningLeft = turnDirection > 0.0f;
-    //     bool movingForward = moveDirection < 0.0f;
-
-    //     // Radial diff
-    //     if (movingForward && turningLeft)
-    //     {
-    //         if (LeftLeg(legIndex))
-    //         {
-    //             raycastPivot.Position = raycastPivot.Basis.Z * projectionDifferential;
-    //         }
-    //     }
-    //     else if (movingForward && !turningLeft)
-    //     {
-    //         if (LeftLeg(legIndex))
-    //         {
-    //         }
-    //     }
-    //     else if (!movingForward && turningLeft)
-    //     {
-    //         if (LeftLeg(legIndex))
-    //         {
-
-    //         }
-    //     }
-    //     else if (!movingForward && !turningLeft)
-    //     {
-    //         if (!LeftLeg(legIndex))
-    //         {
-
-    //         }
-    //     }
-    // }
 
     private void MoveFeet()
     {

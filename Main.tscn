@@ -1,68 +1,27 @@
-[gd_scene load_steps=27 format=3 uid="uid://ccnba2mdvamym"]
+[gd_scene load_steps=15 format=3 uid="uid://ccnba2mdvamym"]
 
 [ext_resource type="PackedScene" uid="uid://du6kxaldswwyq" path="res://Prefabs/mechanical_arachnid.tscn" id="1_glv2v"]
 [ext_resource type="Texture2D" uid="uid://cbtx1yvpprivi" path="res://addons/kenney_prototype_textures/dark/texture_02.png" id="2_uu6xs"]
 
-[sub_resource type="Curve" id="Curve_c6i3y"]
-_data = [Vector2(0, 0), 0.0, 0.0, 0, 1, Vector2(1, 0), 0.0, 0.0, 1, 0]
-point_count = 2
-
 [sub_resource type="Curve" id="Curve_sc1dx"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 1, Vector2(1, 1), 0.0, 0.0, 1, 0]
-point_count = 2
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 1, Vector2(0.25, 1), 0.0, -2.40976, 1, 0, Vector2(0.5, 0.68), -1.28, -0.744, 1, 1, Vector2(0.75, 0.494), -0.185631, -0.316, 0, 1, Vector2(1, 0.415), -0.316, 0.0, 1, 0]
+point_count = 5
 
-[sub_resource type="Curve" id="Curve_j4qnp"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0]
-point_count = 1
-
-[sub_resource type="Curve" id="Curve_fpfj3"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+[sub_resource type="Curve" id="Curve_uu6xs"]
+_data = [Vector2(0, 1), 0.0, -0.114952, 0, 0, Vector2(1, 0.795), -0.156, 0.0, 0, 0]
 point_count = 2
 
 [sub_resource type="Curve" id="Curve_r0du0"]
-_limits = [0.0, 0.4, 0.0, 1.0]
-_data = [Vector2(0, 0), 0.0, 0.75, 0, 1, Vector2(0.04, 0.03), 0.75, 0.302083, 1, 1, Vector2(1, 0.32), 0.302083, 0.0, 1, 0]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 1, Vector2(0.5, 1), 0.0, 0.0, 1, 0, Vector2(1, 0.67), -0.66, 0.0, 1, 0]
 point_count = 3
 
 [sub_resource type="Curve" id="Curve_cm0pq"]
-_limits = [0.0, 2.5, 0.0, 1.0]
-_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.02, 1.65), 0.0, 5.37073, 0, 0, Vector2(0.3, 2.4), 0.0, 0.0, 0, 0, Vector2(0.5, 1.65), 0.0, 0.0, 0, 0, Vector2(1, 0), -3.3, 0.0, 1, 0]
-point_count = 5
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0]
+point_count = 1
 
 [sub_resource type="Curve" id="Curve_fos0i"]
-
-[sub_resource type="Curve" id="Curve_3dxm6"]
-
-[sub_resource type="Curve" id="Curve_wkp8b"]
-_data = [Vector2(0, 0), 0.0, 0.0123575, 0, 1, Vector2(0.281955, 0.00348425), 0.0, 0.0, 0, 0, Vector2(0.74812, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.778049), -0.88118, 0.0, 1, 0]
-point_count = 4
-
-[sub_resource type="Curve" id="Curve_trn2v"]
-_data = [Vector2(0, 1), 0.0, -0.5, 0, 1, Vector2(1, 0.5), -0.5, 0.0, 1, 0]
-point_count = 2
-
-[sub_resource type="Curve" id="Curve_5vvyt"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0]
+_data = [Vector2(1e-05, 1), 0.0, 0.0, 0, 0]
 point_count = 1
-
-[sub_resource type="Curve" id="Curve_uu6xs"]
-_limits = [0.0, 0.25, 0.0, 1.0]
-_data = [Vector2(0, 0), 0.0, 0.746193, 0, 1, Vector2(0.197, 0.147), 0.746193, 0.0473225, 1, 1, Vector2(1, 0.185), 0.0473225, 0.0, 1, 0]
-point_count = 3
-
-[sub_resource type="Curve" id="Curve_c2ibq"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0]
-point_count = 1
-
-[sub_resource type="Curve" id="Curve_20pc6"]
-_data = [Vector2(0, 0), 0.0, 0.315, 0, 1, Vector2(1, 0.315), 0.315, 0.0, 1, 0]
-point_count = 2
-
-[sub_resource type="Curve" id="Curve_03owx"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 1, Vector2(0.5, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.3), -1.4, 0.0, 1, 0]
-point_count = 3
-
-[sub_resource type="Curve" id="Curve_lgr22"]
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_glv2v"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -90,13 +49,6 @@ size = Vector3(500, 1.95, 500)
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_uu6xs"]
 data = PackedVector3Array(250, -25, -250, -237.5, -25, -237.5, 237.5, -25, -237.5, 237.5, 25, 237.5, 250, 25, -250, 250, 25, 250, 250, 25, 250, -237.5, 25, 237.5, 237.5, 25, 237.5, 237.5, 25, -237.5, 250, 25, -250, 237.5, 25, 237.5, 250, 25, 250, 250, 25, -250, 250, -25, -250, 250, 25, -250, 237.5, 25, -237.5, -250, 25, -250, 250, -25, -250, 250, 25, -250, -250, 25, -250, 250, -25, 250, 250, 25, 250, 250, -25, -250, 237.5, -25, 237.5, 250, -25, 250, 237.5, -25, -237.5, 250, 25, 250, 250, -25, 250, -250, -25, 250, 250, -25, 250, 237.5, -25, 237.5, -250, -25, 250, 237.5, -25, -237.5, 250, -25, 250, 250, -25, -250, -237.5, -25, -237.5, -250, -25, -250, -237.5, -25, 237.5, -250, 25, 250, -237.5, 25, 237.5, 250, 25, 250, -237.5, 25, 237.5, -250, 25, 250, -237.5, 25, -237.5, -250, -25, 250, -250, -25, -250, -250, 25, -250, -250, -25, -250, -237.5, -25, -237.5, 250, -25, -250, 250, -25, -250, -250, 25, -250, -250, -25, -250, -237.5, -25, 237.5, -250, -25, -250, -250, -25, 250, -250, -25, 250, 237.5, -25, 237.5, -237.5, -25, 237.5, -237.5, 25, -237.5, -250, 25, 250, -250, 25, -250, -250, 25, -250, 237.5, 25, -237.5, -237.5, 25, -237.5, -250, 25, -250, -250, 25, 250, -250, -25, 250, -250, 25, 250, 250, 25, 250, -250, -25, 250, -237.5, 25, -237.5, 237.5, 25, -237.5, -237.5, -25, -237.5, 237.5, 25, 237.5, 237.5, -25, 237.5, 237.5, -25, -237.5, -237.5, -25, 237.5, 237.5, -25, 237.5, -237.5, 25, 237.5, 237.5, 25, 237.5, 237.5, -25, -237.5, 237.5, 25, -237.5, 237.5, -25, -237.5, -237.5, -25, -237.5, 237.5, 25, -237.5, -237.5, -25, 237.5, -237.5, 25, 237.5, -237.5, 25, -237.5, 237.5, 25, 237.5, -237.5, 25, 237.5, 237.5, -25, 237.5, -237.5, -25, 237.5, -237.5, 25, -237.5, -237.5, -25, -237.5)
 
-[sub_resource type="Curve3D" id="Curve3D_uu6xs"]
-_data = {
-"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 5.035),
-"tilts": PackedFloat32Array(0, 0)
-}
-point_count = 2
-
 [node name="Root" type="Node3D"]
 
 [node name="AerialCamera" type="Camera3D" parent="."]
@@ -105,30 +57,19 @@ size = 29.283
 
 [node name="MechanicalArachnid" parent="." node_paths=PackedStringArray("projection") instance=ExtResource("1_glv2v")]
 projection = NodePath("Projection")
-cycleBySpeedRotation = SubResource("Curve_c6i3y")
 projectionIterations = 10
-projectionTranslationSample = 1.0
-projectionRotationSample = 0.65
-translationSampleBySpeed = SubResource("Curve_sc1dx")
-strideCycleFactor = 0.05
+strideCycleFactor = 0.055
 maxLongestStrideDistance = 6.5
-projectionTranslationSampleByStride = SubResource("Curve_j4qnp")
-projectionRotationSampleByStride = SubResource("Curve_fpfj3")
-moveSpeed = 7.505
+moveSpeed = 25.0
 maxSpeed = 50.0
-cycleBySpeed = SubResource("Curve_r0du0")
-projectionOffsetBySpeed = SubResource("Curve_cm0pq")
-relativeOffsetBySpeed = SubResource("Curve_fos0i")
-relativeOffsetZBySpeedRotation = SubResource("Curve_3dxm6")
-relativeOffsetXBySpeedRotation = SubResource("Curve_wkp8b")
-projectionOffsetReductionByRotation = SubResource("Curve_trn2v")
-projectionOffsetReductionBySpeedRotation = SubResource("Curve_5vvyt")
-cycleByRotation = SubResource("Curve_uu6xs")
-rotationCycleInfluenceReductionBySpeed = SubResource("Curve_c2ibq")
-targetRotationByRotation = SubResource("Curve_20pc6")
-rotationReductionBySpeed = SubResource("Curve_03owx")
-projectionDifferentialByRotation = SubResource("Curve_lgr22")
-footSpeedBySpeed = 100.0
+projectionTranslationSample = 1.0
+translationBySpeed = SubResource("Curve_sc1dx")
+translationReductionByRotation = SubResource("Curve_uu6xs")
+turnSpeed = 0.1
+projectionRotationSample = 0.65
+rotationReductionBySpeed = SubResource("Curve_r0du0")
+rotationBySpeedRotation = SubResource("Curve_cm0pq")
+translationBySpeedRotation = SubResource("Curve_fos0i")
 
 [node name="KeepInBounds" parent="MechanicalArachnid" index="0" node_paths=PackedStringArray("bounds")]
 bounds = NodePath("../../Bounds/Area3D")
@@ -231,9 +172,6 @@ size = Vector3(500, 50, 500)
 [node name="CSGBox3D3" type="CSGBox3D" parent="Bounds/CSGBox3D2"]
 operation = 2
 size = Vector3(475, 100, 475)
-
-[node name="Path3D" type="Path3D" parent="."]
-curve = SubResource("Curve3D_uu6xs")
 
 [editable path="MechanicalArachnid"]
 [editable path="MechanicalArachnid/MechanicalArachnidRig"]
