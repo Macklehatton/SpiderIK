@@ -291,7 +291,7 @@ public partial class ProceduralWalk : CharacterBody3D
             Node3D raycastPivot = (Node3D)rayCast.GetParent().GetParent();
 
             // Radial projection. Lets us set a wider/narrower stance on the fly
-            raycastOrigin.Position = raycastOrigin.Basis * new Vector3(0.0f, 0.0f, -footTargetRadialProjection);
+            raycastOrigin.Position = raycastOrigin.Basis * new Vector3(0.0f, raycastHeight, -footTargetRadialProjection);
 
             // Lock child rotation to ensure it's pointing down
             rayCast.GlobalRotation = Vector3.Zero;
