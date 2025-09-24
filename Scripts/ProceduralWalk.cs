@@ -258,28 +258,34 @@ public partial class ProceduralWalk : CharacterBody3D
     private void UpdateRaycastPosition(int moveDirection)
     {
         // We get an error if we sample a zero length curve
-        if (!Mathf.IsEqualApprox(currentMoveFactor, 0.0f))
-        {
-            float sample = projectionTranslationSample * projectionCurve.GetBakedLength();
-            sample *= translationBySpeed.Sample(currentMoveFactor);
-
-            if (!Mathf.IsEqualApprox(currentRotationFactor, 0.0f))
-            {
-                sample *= translationReductionByRotation.Sample(currentRotationFactor);
-                sample *= translationBySpeedRotation.Sample(speedRotationFactor);
-            }
-
-            raycastContainer.GlobalPosition = projectionCurve.SampleBaked(sample);
-
-            Vector3 addTranslation = moveDirection * projection.Basis.Z;
-            addTranslation = addTranslation.Normalized();
-            addTranslation *= addTranslationBySpeed.Sample(currentMoveFactor);
-            raycastContainer.GlobalPosition += addTranslation;
-        }
-        else
+        if (projectionCurve.GetPointPosition(0) ==
+            projectionCurve.GetPointPosition(projectionCurve.PointCount - 1))
         {
             raycastContainer.GlobalPosition = GlobalPosition;
+            return;
         }
+
+        if (Mathf.IsEqualApprox(currentMoveFactor, 0.0f))
+        {
+            raycastContainer.GlobalPosition = GlobalPosition;
+            return;
+        }
+
+        float sample = projectionTranslationSample * projectionCurve.GetBakedLength();
+        sample *= translationBySpeed.Sample(currentMoveFactor);
+
+        if (!Mathf.IsEqualApprox(currentRotationFactor, 0.0f))
+        {
+            sample *= translationReductionByRotation.Sample(currentRotationFactor);
+            sample *= translationBySpeedRotation.Sample(speedRotationFactor);
+        }
+
+        raycastContainer.GlobalPosition = projectionCurve.SampleBaked(sample);
+
+        Vector3 addTranslation = moveDirection * projection.Basis.Z;
+        addTranslation = addTranslation.Normalized();
+        addTranslation *= addTranslationBySpeed.Sample(currentMoveFactor);
+        raycastContainer.GlobalPosition += addTranslation;
     }
 
     private void UpdateIndividualRaycasts()
