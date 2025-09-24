@@ -1,7 +1,7 @@
 [gd_scene load_steps=15 format=3 uid="uid://ccnba2mdvamym"]
 
 [ext_resource type="PackedScene" uid="uid://du6kxaldswwyq" path="res://Prefabs/mechanical_arachnid.tscn" id="1_glv2v"]
-[ext_resource type="Texture2D" uid="uid://cbtx1yvpprivi" path="res://addons/kenney_prototype_textures/dark/texture_02.png" id="2_uu6xs"]
+[ext_resource type="Texture2D" uid="uid://ef4gue7tekom" path="res://addons/kenney_prototype_textures/dark/texture_01.png" id="2_uu6xs"]
 
 [sub_resource type="Curve" id="Curve_cm0pq"]
 _data = [Vector2(0, 1), 0.0, 0.0924543, 0, 0, Vector2(1, 0.825), -0.175, 0.0, 1, 0]
@@ -41,7 +41,7 @@ size = Vector3(20, 10, 20)
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r0du0"]
 albedo_texture = ExtResource("2_uu6xs")
-uv1_scale = Vector3(100, 100, 100)
+uv1_scale = Vector3(50, 50, 50)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_glv2v"]
 size = Vector3(500, 1.95, 500)
@@ -62,6 +62,7 @@ strideCycleFactor = 0.055
 maxLongestStrideDistance = 6.5
 rotationBySpeedRotation = SubResource("Curve_cm0pq")
 translationBySpeedRotation = SubResource("Curve_fos0i")
+moveSpeed = 1.33
 maxSpeed = 50.0
 projectionTranslationSample = 1.0
 translationBySpeed = SubResource("Curve_sc1dx")
@@ -107,7 +108,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3)
 [node name="TopCamera" type="Camera3D" parent="MechanicalArachnid"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 15, 0)
 projection = 1
-current = true
 size = 19.063
 
 [node name="SideCamera" type="Camera3D" parent="MechanicalArachnid"]
@@ -120,6 +120,7 @@ transform = Transform3D(-0.875465, 0, -0.483282, 0, 1, 0, 0.483282, 0, -0.875465
 
 [node name="ThirdPersonCamera" type="Camera3D" parent="MechanicalArachnid/ThirdPersonCameraPivot"]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 12.69, 7.189)
+current = true
 size = 12.175
 
 [node name="Projection" type="CSGBox3D" parent="MechanicalArachnid"]
