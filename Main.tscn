@@ -62,7 +62,6 @@ strideCycleFactor = 0.055
 maxLongestStrideDistance = 6.5
 rotationBySpeedRotation = SubResource("Curve_cm0pq")
 translationBySpeedRotation = SubResource("Curve_fos0i")
-moveSpeed = 1.33
 maxSpeed = 50.0
 projectionTranslationSample = 1.0
 translationBySpeed = SubResource("Curve_sc1dx")

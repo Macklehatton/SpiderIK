@@ -102,11 +102,13 @@ public partial class ProceduralWalk : CharacterBody3D
 
         projectionCurve = new Curve3D();
 
-        projectionCurveRotation = new Curve();
-        projectionCurveRotation.MinDomain = 0.0f;
-        projectionCurveRotation.MaxDomain = 1.0f;
-        projectionCurveRotation.MinValue = 2.0f * -Mathf.Pi;
-        projectionCurveRotation.MaxValue = 2.0f * Mathf.Pi;
+        projectionCurveRotation = new Curve()
+        {
+            MinDomain = 0.0f,
+            MaxDomain = 1.0f,
+            MinValue = 2.0f * -Mathf.Pi,
+            MaxValue = 2.0f * Mathf.Pi
+        };
 
         longestStrideDistance = 1.0f;
     }
@@ -148,7 +150,7 @@ public partial class ProceduralWalk : CharacterBody3D
         {
             RayCast3D rayCast = rayCasts[i];
             Node3D raycastOrigin = (Node3D)rayCast.GetParent();
-            Node3D raycastPivot = (Node3D)rayCast.GetParent().GetParent();
+            Node3D raycastPivot = (Node3D)raycastOrigin.GetParent();
 
             DebugDraw3D.DrawSphere(currentTargets[i], 0.25f, Colors.PaleVioletRed);
             DebugDraw3D.DrawSphere(rayCast.GlobalPosition);
@@ -179,6 +181,10 @@ public partial class ProceduralWalk : CharacterBody3D
 
     private void UpdateProjection()
     {
+        Vector3 relativeVelocity = Velocity * Transform.Basis;
+        int moveDirection = Mathf.Sign(relativeVelocity.Z);
+        int turnDirection = Mathf.Sign(currentRotation);
+
         // 0-10 inclusive
         projectionCurve.PointCount = projectionIterations + 1;
         projectionCurveRotation.ClearPoints();
@@ -199,7 +205,7 @@ public partial class ProceduralWalk : CharacterBody3D
             projectedGlobal += projectedForward;
 
             projectionCurve.SetPointPosition(iteration, projectedGlobal);
-            Vector2 rotationCurvePoint = new Vector2((float)iteration / (float)projectionIterations, projectedRotation);
+            Vector2 rotationCurvePoint = new Vector2(iteration / projectionIterations, projectedRotation);
             projectionCurveRotation.AddPoint(rotationCurvePoint);
 
             iteration += 1;
@@ -213,22 +219,20 @@ public partial class ProceduralWalk : CharacterBody3D
 
     private void UpdateRaycastProjections()
     {
-        Vector3 relativeVelocity = Velocity * Transform.Basis;
-        int moveDirection = Mathf.Sign(relativeVelocity.Z);
-        int turnDirection = Mathf.Sign(currentRotation);
+
 
         currentMoveFactor = Mathf.Abs(moveSpeed) / maxSpeed;
         currentRotationFactor = Mathf.Abs(currentRotation) / factorMaxRotation;
         speedRotationFactor = Mathf.Sqrt(currentMoveFactor * currentRotationFactor);
 
-        UpdateRaycastRotation(turnDirection);
-        UpdateRaycastPosition(moveDirection, turnDirection);
+        UpdateRaycastRotation();
+        UpdateRaycastPosition();
         UpdateIndividualRaycasts();
 
         raycastContainer.Rotate(Vector3.Up, debugRaycastRotation);
     }
 
-    private void UpdateRaycastRotation(int turnDirection)
+    private void UpdateRaycastRotation()
     {
         float sample = projectionRotationSample;
 
@@ -253,7 +257,7 @@ public partial class ProceduralWalk : CharacterBody3D
                 0.0f);
     }
 
-    private void UpdateRaycastPosition(int moveDirection, int turnDirection)
+    private void UpdateRaycastPosition()
     {
         // We get an error if we sample a zero length curve
         if (!Mathf.IsEqualApprox(currentMoveFactor, 0.0f))
