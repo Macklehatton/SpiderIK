@@ -16,7 +16,7 @@ _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.5, 0.814), -0.199344, -0.19934
 point_count = 4
 
 [sub_resource type="Curve" id="Curve_3dxm6"]
-_data = [Vector2(0, 0.4), 0.0, 0.0, 0, 0, Vector2(0.144737, 0), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 0.4), 0.0, 0.0, 0, 0, Vector2(0.105, 0), -7.97073, 0.0, 0, 0]
 point_count = 2
 
 [sub_resource type="Curve" id="Curve_r0du0"]
@@ -65,7 +65,7 @@ minStepDistanceSquared = 1.2
 strideCycleFactor = 0.055
 maxLongestStrideDistance = 6.5
 projectionIterations = 10
-moveSpeed = 0.783
+moveSpeed = 0.1
 maxSpeed = 50.0
 projectionTranslationSample = 1.0
 translationBySpeed = SubResource("Curve_sc1dx")
@@ -75,6 +75,7 @@ addTranslationBySpeed = SubResource("Curve_3dxm6")
 projectionRotationSample = 0.65
 rotationReductionBySpeed = SubResource("Curve_r0du0")
 rotationBySpeedRotation = SubResource("Curve_cm0pq")
+enableDebugs = true
 
 [node name="KeepInBounds" parent="MechanicalArachnid" index="0" node_paths=PackedStringArray("bounds")]
 bounds = NodePath("../../Bounds/Area3D")
