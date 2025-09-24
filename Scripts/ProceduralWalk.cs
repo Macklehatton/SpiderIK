@@ -14,29 +14,32 @@ public partial class ProceduralWalk : CharacterBody3D
     [Export] private float raycastDistance;
     [Export] private float raycastHeight;
 
-    [ExportGroup("")]
+    [ExportGroup("Feet")]
+    [Export] private float minStepDistanceSquared;
     [Export] private float footTargetRadialProjection;
+
+    [ExportGroup("Cycle")]
+    [Export] private float strideCycleFactor;
+    [Export] private float maxLongestStrideDistance;
 
     [ExportGroup("Projection")]
     [Export] private int projectionIterations;
 
-    [Export] private float strideCycleFactor;
-    [Export] private float maxLongestStrideDistance;
-    [Export] private Curve rotationBySpeedRotation;
-    [Export] private Curve translationBySpeedRotation;
-
     [ExportSubgroup("Projection Translation")]
     [Export(PropertyHint.Range, "-10,50")] private float moveSpeed;
     [Export(PropertyHint.Range, "0,50")] private float maxSpeed;
-    [Export] private float projectionTranslationSample;
+    [Export(PropertyHint.Range, "0,1")] private float projectionTranslationSample;
     [Export] private Curve translationBySpeed;
     [Export] private Curve translationReductionByRotation;
+    [Export] private Curve translationBySpeedRotation;
+    [Export] private Curve addTranslationBySpeed;
 
     [ExportSubgroup("Projection Rotation")]
     [Export(PropertyHint.Range, "-0.1,0.1")] private float turnSpeed;
     [Export(PropertyHint.Range, "0,0.1")] private float factorMaxRotation;
-    [Export] private float projectionRotationSample;
+    [Export(PropertyHint.Range, "0,1")] private float projectionRotationSample;
     [Export] private Curve rotationReductionBySpeed;
+    [Export] private Curve rotationBySpeedRotation;
 
     [ExportGroup("Height")]
     [Export] private bool enableStepHeight = true;
@@ -62,8 +65,6 @@ public partial class ProceduralWalk : CharacterBody3D
     private bool[] feetMoving;
     private Vector3[] currentTargets;
     private Vector3[] footOrigins;
-
-    private float strideDistanceSquared;
 
     private float currentCycle;
     private float currentRotation;
@@ -131,8 +132,11 @@ public partial class ProceduralWalk : CharacterBody3D
         MoveAndSlide();
         MoveFeet();
 
-        UpdateProjection();
-        UpdateRaycastProjections();
+        Vector3 relativeVelocity = Velocity * Transform.Basis;
+        int moveDirection = Mathf.Sign(relativeVelocity.Z);
+
+        UpdateProjection(moveDirection);
+        UpdateRaycastProjections(moveDirection);
 
         HandleDebug();
     }
@@ -179,11 +183,8 @@ public partial class ProceduralWalk : CharacterBody3D
         }
     }
 
-    private void UpdateProjection()
+    private void UpdateProjection(int moveDirection)
     {
-        Vector3 relativeVelocity = Velocity * Transform.Basis;
-        int moveDirection = Mathf.Sign(relativeVelocity.Z);
-
         // 0-10 inclusive
         projectionCurve.PointCount = projectionIterations + 1;
         projectionCurveRotation.ClearPoints();
@@ -216,16 +217,14 @@ public partial class ProceduralWalk : CharacterBody3D
         projection.GlobalRotation = new Vector3(0.0f, projectedRotation, 0.0f);
     }
 
-    private void UpdateRaycastProjections()
+    private void UpdateRaycastProjections(int moveDirection)
     {
-
-
         currentMoveFactor = Mathf.Abs(moveSpeed) / maxSpeed;
         currentRotationFactor = Mathf.Abs(currentRotation) / factorMaxRotation;
         speedRotationFactor = Mathf.Sqrt(currentMoveFactor * currentRotationFactor);
 
         UpdateRaycastRotation();
-        UpdateRaycastPosition();
+        UpdateRaycastPosition(moveDirection);
         UpdateIndividualRaycasts();
 
         raycastContainer.Rotate(Vector3.Up, debugRaycastRotation);
@@ -256,7 +255,7 @@ public partial class ProceduralWalk : CharacterBody3D
                 0.0f);
     }
 
-    private void UpdateRaycastPosition()
+    private void UpdateRaycastPosition(int moveDirection)
     {
         // We get an error if we sample a zero length curve
         if (!Mathf.IsEqualApprox(currentMoveFactor, 0.0f))
@@ -271,6 +270,11 @@ public partial class ProceduralWalk : CharacterBody3D
             }
 
             raycastContainer.GlobalPosition = projectionCurve.SampleBaked(sample);
+
+            Vector3 addTranslation = moveDirection * projection.Basis.Z;
+            addTranslation = addTranslation.Normalized();
+            addTranslation *= addTranslationBySpeed.Sample(currentMoveFactor);
+            raycastContainer.GlobalPosition += addTranslation;
         }
         else
         {
@@ -298,57 +302,10 @@ public partial class ProceduralWalk : CharacterBody3D
     {
         for (int i = 0; i <= feet.Length - 1; i++)
         {
-            feetMoving[i] = CheckMoveFoot(i);
-
             if (feetMoving[i])
             {
                 MoveFoot(i);
             }
-        }
-    }
-
-    private bool CheckMoveFoot(int footIndex)
-    {
-        if (!inCycle[footIndex])
-        {
-            return false;
-        }
-
-        // if (currentTarget[footIndex].HasValue)
-        // {
-        //     return true;
-        // }
-
-        return true;
-
-        // if (CheckDistance(footIndex))
-        // {
-        //     // Cache the target position
-        //     currentTarget[footIndex] = rayCasts[footIndex].GetCollisionPoint();
-        //     return true;
-        // }
-        // else
-        // {
-        //     currentTarget[footIndex] = null;
-        //     feetMoving[footIndex] = false;
-        // }
-
-        // currentTarget[footIndex] = null;
-        // return false;
-    }
-
-    private bool CheckDistance(int footIndex)
-    {
-        Vector3 footPosition = feet[footIndex].GlobalPosition;
-        Vector3 targetPosition = rayCasts[footIndex].GetCollisionPoint();
-
-        if (footPosition.DistanceSquaredTo(targetPosition) > strideDistanceSquared)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
         }
     }
 
@@ -395,14 +352,88 @@ public partial class ProceduralWalk : CharacterBody3D
         Node3D foot = feet[footIndex];
 
         foot.GlobalPosition = footOrigin.Lerp(targetPosition, currentCycle);
+    }
 
-        // // MoveToward isn't guaranteed to reach the target
-        // // It's a little easier to insert pauses with it
-        // // It's useful for debugging cycle rate
-        // float rotationFootSpeed = Mathf.Lerp(0.0f, footSpeedByRotation, currentRotationFactor);
-        // float movementFootSpeed = footSpeedBySpeed * currentMoveFactor;
-        // float currentFootSpeed = movementFootSpeed + rotationFootSpeed;
-        // foot.GlobalPosition = foot.GlobalPosition.MoveToward(targetPosition, currentFootSpeed);
+    private void SwapInCycle()
+    {
+        longestStrideDistance = maxLongestStrideDistance;
+
+        for (int i = 0; i <= inCycle.Length - 1; i++)
+        {
+            inCycle[i] = !inCycle[i];
+
+            if (inCycle[i])
+            {
+                currentTargets[i] = rayCasts[i].GetCollisionPoint();
+                footOrigins[i] = feet[i].GlobalPosition;
+
+                float distance = footOrigins[i].DistanceSquaredTo(currentTargets[i]);
+                if (distance > longestStrideDistance)
+                {
+                    longestStrideDistance = distance;
+                }
+            }
+            else
+            {
+                // Snap the rest of the way to destination
+                // Fixes not reaching target at high cycle speeds
+                feet[i].GlobalPosition = currentTargets[i];
+            }
+
+            feetMoving[i] = inCycle[i];
+
+            if (!CheckDistance(footOrigins[i], currentTargets[i]))
+            {
+                feetMoving[i] = false;
+                currentTargets[i] = feet[i].GlobalPosition;
+            }
+        }
+
+        longestStrideDistance = Mathf.Sqrt(longestStrideDistance);
+        currentStrideFactor = longestStrideDistance / maxLongestStrideDistance;
+    }
+
+    private bool CheckDistance(Vector3 footOrigin, Vector3 footTarget)
+    {
+        return footOrigin.DistanceSquaredTo(footTarget) > minStepDistanceSquared;
+    }
+
+    private RayCast3D[] AddRayCasts(Node3D[] feet)
+    {
+        RayCast3D[] rayCasts = new RayCast3D[feet.Length];
+        raycastContainer = new Node3D();
+        AddChild(raycastContainer);
+
+        for (int i = 0; i <= feet.Length - 1; i++)
+        {
+            Node3D foot = feet[i];
+
+            Node3D raycastPivot = new Node3D();
+            raycastContainer.AddChild(raycastPivot);
+            raycastPivot.Name = "RaycastPivot_" + foot.Name;
+
+
+            Node3D raycastOrigin = new Node3D();
+            raycastPivot.AddChild(raycastOrigin);
+            raycastOrigin.Name = "RaycastOrigin_" + foot.Name;
+
+            raycastOrigin.GlobalPosition = foot.GlobalPosition;
+            raycastOrigin.GlobalPosition += new Vector3(0.0f, raycastHeight, 0.0f);
+
+            Vector3 lookDirection = GlobalPosition.PlanarPosition() - raycastOrigin.GlobalPosition.PlanarPosition();
+            lookDirection = lookDirection.Normalized();
+            float lookAngle = raycastOrigin.GlobalBasis.Z.SignedAngleTo(lookDirection, Vector3.Up);
+            raycastOrigin.Rotate(Vector3.Up, lookAngle);
+            raycastOrigin.GlobalPosition = raycastOrigin.Basis * new Vector3(0.0f, 0.0f, -footTargetRadialProjection);
+
+            RayCast3D rayCast = new RayCast3D();
+            raycastOrigin.AddChild(rayCast);
+            rayCast.Name = "Raycast_" + foot.Name;
+
+            rayCast.TargetPosition = new Vector3(0.0f, -raycastDistance, 0.0f);
+            rayCasts[i] = rayCast;
+        }
+        return rayCasts;
     }
 
     private int[] GetLegRoots()
@@ -477,75 +508,6 @@ public partial class ProceduralWalk : CharacterBody3D
             currentTargets[i] = footGlobal;
             feet[i].GlobalPosition = footGlobal;
         }
-    }
-
-    private RayCast3D[] AddRayCasts(Node3D[] feet)
-    {
-        RayCast3D[] rayCasts = new RayCast3D[feet.Length];
-        raycastContainer = new Node3D();
-        AddChild(raycastContainer);
-
-        for (int i = 0; i <= feet.Length - 1; i++)
-        {
-            Node3D foot = feet[i];
-
-            Node3D raycastPivot = new Node3D();
-            raycastContainer.AddChild(raycastPivot);
-            raycastPivot.Name = "RaycastPivot_" + foot.Name;
-
-
-            Node3D raycastOrigin = new Node3D();
-            raycastPivot.AddChild(raycastOrigin);
-            raycastOrigin.Name = "RaycastOrigin_" + foot.Name;
-
-            raycastOrigin.GlobalPosition = foot.GlobalPosition;
-            raycastOrigin.GlobalPosition += new Vector3(0.0f, raycastHeight, 0.0f);
-
-            Vector3 lookDirection = GlobalPosition.PlanarPosition() - raycastOrigin.GlobalPosition.PlanarPosition();
-            lookDirection = lookDirection.Normalized();
-            float lookAngle = raycastOrigin.GlobalBasis.Z.SignedAngleTo(lookDirection, Vector3.Up);
-            raycastOrigin.Rotate(Vector3.Up, lookAngle);
-            raycastOrigin.GlobalPosition = raycastOrigin.Basis * new Vector3(0.0f, 0.0f, -footTargetRadialProjection);
-
-            RayCast3D rayCast = new RayCast3D();
-            raycastOrigin.AddChild(rayCast);
-            rayCast.Name = "Raycast_" + foot.Name;
-
-            rayCast.TargetPosition = new Vector3(0.0f, -raycastDistance, 0.0f);
-            rayCasts[i] = rayCast;
-        }
-        return rayCasts;
-    }
-
-    private void SwapInCycle()
-    {
-        longestStrideDistance = maxLongestStrideDistance;
-
-        for (int i = 0; i <= inCycle.Length - 1; i++)
-        {
-            inCycle[i] = !inCycle[i];
-
-            if (inCycle[i])
-            {
-                currentTargets[i] = rayCasts[i].GetCollisionPoint();
-                footOrigins[i] = feet[i].GlobalPosition;
-
-                float distance = footOrigins[i].DistanceSquaredTo(currentTargets[i]);
-                if (distance > longestStrideDistance)
-                {
-                    longestStrideDistance = distance;
-                }
-            }
-            else
-            {
-                // Snap the rest of the way to destination
-                // Fixes not reaching target at high cycle speeds
-                feet[i].GlobalPosition = currentTargets[i];
-            }
-        }
-
-        longestStrideDistance = Mathf.Sqrt(longestStrideDistance);
-        currentStrideFactor = longestStrideDistance / maxLongestStrideDistance;
     }
 
     private void SetAlternateFeet()
