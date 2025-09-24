@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://ccnba2mdvamym"]
+[gd_scene load_steps=15 format=3 uid="uid://ccnba2mdvamym"]
 
 [ext_resource type="PackedScene" uid="uid://du6kxaldswwyq" path="res://Prefabs/mechanical_arachnid.tscn" id="1_glv2v"]
 [ext_resource type="Texture2D" uid="uid://ef4gue7tekom" path="res://addons/kenney_prototype_textures/dark/texture_01.png" id="2_uu6xs"]
@@ -26,6 +26,9 @@ point_count = 3
 [sub_resource type="Curve" id="Curve_cm0pq"]
 _data = [Vector2(0, 1), 0.0, 0.0924543, 0, 0, Vector2(1, 0.825), -0.175, 0.0, 1, 0]
 point_count = 2
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_uu6xs"]
+radius = 3.25
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_glv2v"]
 sky_horizon_color = Color(0.662243, 0.671743, 0.686743, 1)
@@ -55,11 +58,12 @@ size = 29.283
 
 [node name="MechanicalArachnid" parent="." node_paths=PackedStringArray("projection") instance=ExtResource("1_glv2v")]
 projection = NodePath("Projection")
+raycastHeight = 6.0
 minStepDistanceSquared = 1.0
 strideCycleFactor = 0.055
 maxLongestStrideDistance = 6.5
 projectionIterations = 10
-moveSpeed = 50.0
+moveSpeed = 11.48
 maxSpeed = 50.0
 projectionTranslationSample = 1.0
 translationBySpeed = SubResource("Curve_sc1dx")
@@ -96,6 +100,10 @@ transform = Transform3D(-0.22681, -0.360497, -0.904765, -2.98023e-08, -0.928975,
 
 [node name="ik_e23_30-31" parent="MechanicalArachnid/MechanicalArachnidRig/EDGE_ARM_LegsEdges_001/Skeleton3D/@GodotIK@35344" index="7"]
 transform = Transform3D(-0.614802, -0.291926, -0.732665, -4.10946e-08, -0.928975, 0.370144, -0.788682, 0.227565, 0.571135, 3.62985, 2.61946, -3.27531)
+
+[node name="CollisionShape3D" parent="MechanicalArachnid" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.25, 0)
+shape = SubResource("SphereShape3D_uu6xs")
 
 [node name="CSGBox3D" type="CSGBox3D" parent="MechanicalArachnid"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.65, 0)
@@ -163,14 +171,24 @@ size = Vector3(475, 100, 475)
 [node name="Obstacles" type="Node3D" parent="."]
 
 [node name="CSGBox3D" type="CSGBox3D" parent="Obstacles"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.654398, 0.506719, -13.0887)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.08609, 0.506719, -13.0887)
 use_collision = true
 size = Vector3(10, 1.5, 10)
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="Obstacles"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.654398, 2.09963, -36.2716)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.654398, 2.09963, -70.2001)
 use_collision = true
 size = Vector3(10, 5, 10)
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="Obstacles"]
+transform = Transform3D(1, 0, 0, 0, 0.965926, -0.258819, 0, 0.258819, 0.965926, 0.654398, 0.418064, -37.0262)
+use_collision = true
+size = Vector3(10, 1.5, 10)
+
+[node name="CSGBox3D4" type="CSGBox3D" parent="Obstacles"]
+transform = Transform3D(-1, -2.26267e-08, -8.44439e-08, 0, 0.965926, -0.258819, 8.74228e-08, -0.258819, -0.965926, 0.654398, 0.418064, -46.2827)
+use_collision = true
+size = Vector3(10, 1.5, 10)
 
 [editable path="MechanicalArachnid"]
 [editable path="MechanicalArachnid/MechanicalArachnidRig"]
