@@ -130,7 +130,7 @@ public partial class ProceduralWalk : CharacterBody3D
 
         //currentRotation = turnSpeed;
         Rotate(Vector3.Up, currentRotation);
-        Velocity = -Transform.Basis.Z * currentSpeed;
+        //Velocity = -Transform.Basis.Z * currentSpeed;
 
         MoveAndSlide();
         MoveFeet();
@@ -196,7 +196,9 @@ public partial class ProceduralWalk : CharacterBody3D
         projection.GlobalRotation = GlobalRotation;
 
         Vector3 projectedGlobal = GlobalPosition;
-        Vector3 projectedForward = moveDirection * projection.Basis.Z * Velocity.Length() / Engine.PhysicsTicksPerSecond;
+        //Vector3 projectedForward = moveDirection * projection.Basis.Z * Velocity.Length() / Engine.PhysicsTicksPerSecond;
+        Vector3 projectedForward = Velocity / Engine.PhysicsTicksPerSecond;
+
         float projectedRotation = projection.GlobalRotation.Y;
 
         int iteration = 0;

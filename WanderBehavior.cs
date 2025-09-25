@@ -6,6 +6,7 @@ using static Godot.Mathf;
 
 public partial class WanderBehavior : Node3D
 {
+    [Export] private bool strafe;
     [Export] private float wanderRadius;
     [Export] private float closeEnoughThreshold;
     [Export] private float rotationEpsilon;
@@ -76,11 +77,20 @@ public partial class WanderBehavior : Node3D
 
     private void UpdateSpeed()
     {
+        if (strafe)
+        {
+            characterBody.currentSpeed = currentSpeed;
+            Vector3 direction = (destination - GlobalPosition.PlanarVector()).Normalized();
+            characterBody.Velocity = direction * currentSpeed;
+            return;
+        }
+
         float slowFactor = currentDistance / slowDistance;
         slowFactor = Min(1.0f, slowFactor);
         slowFactor = 1.0f - slowFactor;
 
         characterBody.currentSpeed = currentSpeed * slowCurve.Sample(slowFactor);
+        characterBody.Velocity = -characterBody.Basis.Z * currentSpeed;
     }
 
     private void UpdateDestination()
