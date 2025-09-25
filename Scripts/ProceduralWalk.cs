@@ -196,7 +196,6 @@ public partial class ProceduralWalk : CharacterBody3D
         projection.GlobalRotation = GlobalRotation;
 
         Vector3 projectedGlobal = GlobalPosition;
-        //Vector3 projectedForward = moveDirection * projection.Basis.Z * Velocity.Length() / Engine.PhysicsTicksPerSecond;
         Vector3 projectedForward = Velocity / Engine.PhysicsTicksPerSecond;
 
         float projectedRotation = projection.GlobalRotation.Y;
