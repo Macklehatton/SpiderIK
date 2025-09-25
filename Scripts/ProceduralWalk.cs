@@ -2,6 +2,7 @@ using Godot;
 using System;
 using System.Diagnostics;
 using VectorExtensions;
+using static Godot.Mathf;
 
 public partial class ProceduralWalk : CharacterBody3D
 {
@@ -107,8 +108,8 @@ public partial class ProceduralWalk : CharacterBody3D
         {
             MinDomain = 0.0f,
             MaxDomain = 1.0f,
-            MinValue = 2.0f * -Mathf.Pi,
-            MaxValue = 2.0f * Mathf.Pi
+            MinValue = 2.0f * -Pi,
+            MaxValue = 2.0f * Pi
         };
 
         longestStrideDistance = 1.0f;
@@ -133,7 +134,7 @@ public partial class ProceduralWalk : CharacterBody3D
         MoveFeet();
 
         Vector3 relativeVelocity = Velocity * Transform.Basis;
-        int moveDirection = Mathf.Sign(relativeVelocity.Z);
+        int moveDirection = Sign(relativeVelocity.Z);
 
         UpdateProjection(moveDirection);
         UpdateRaycastProjections(moveDirection);
@@ -219,9 +220,9 @@ public partial class ProceduralWalk : CharacterBody3D
 
     private void UpdateRaycastProjections(int moveDirection)
     {
-        currentMoveFactor = Mathf.Abs(moveSpeed) / maxSpeed;
-        currentRotationFactor = Mathf.Abs(currentRotation) / factorMaxRotation;
-        speedRotationFactor = Mathf.Sqrt(currentMoveFactor * currentRotationFactor);
+        currentMoveFactor = Abs(moveSpeed) / maxSpeed;
+        currentRotationFactor = Abs(currentRotation) / factorMaxRotation;
+        speedRotationFactor = Sqrt(currentMoveFactor * currentRotationFactor);
 
         UpdateRaycastRotation();
         UpdateRaycastPosition(moveDirection);
@@ -234,7 +235,7 @@ public partial class ProceduralWalk : CharacterBody3D
     {
         float sample = projectionRotationSample;
 
-        if (!Mathf.IsEqualApprox(currentMoveFactor, 0.0f))
+        if (!IsEqualApprox(currentMoveFactor, 0.0f))
         {
             sample *= rotationReductionBySpeed.Sample(currentMoveFactor);
             sample *= rotationBySpeedRotation.Sample(speedRotationFactor);
@@ -265,7 +266,7 @@ public partial class ProceduralWalk : CharacterBody3D
             return;
         }
 
-        if (Mathf.IsEqualApprox(currentMoveFactor, 0.0f))
+        if (IsEqualApprox(currentMoveFactor, 0.0f))
         {
             raycastContainer.GlobalPosition = GlobalPosition;
             return;
@@ -274,7 +275,7 @@ public partial class ProceduralWalk : CharacterBody3D
         float sample = projectionTranslationSample * projectionCurve.GetBakedLength();
         sample *= translationBySpeed.Sample(currentMoveFactor);
 
-        if (!Mathf.IsEqualApprox(currentRotationFactor, 0.0f))
+        if (!IsEqualApprox(currentRotationFactor, 0.0f))
         {
             sample *= translationReductionByRotation.Sample(currentRotationFactor);
             sample *= translationBySpeedRotation.Sample(speedRotationFactor);
@@ -344,13 +345,13 @@ public partial class ProceduralWalk : CharacterBody3D
 
         if (enableStepHeight)
         {
-            float cycleOffset = Mathf.Sin(currentCycle * Mathf.Pi);
+            float cycleOffset = Sin(currentCycle * Pi);
             float strideFactor = distance / maxStride;
-            strideFactor = Mathf.Clamp(strideFactor, 0.0f, 1.0f);
+            strideFactor = Clamp(strideFactor, 0.0f, 1.0f);
 
-            float targetHeight = Mathf.Lerp(0.0f, maxHeight * strideFactor, cycleOffset);
+            float targetHeight = Lerp(0.0f, maxHeight * strideFactor, cycleOffset);
 
-            currentHeight = targetHeight * Mathf.Sin(currentCycle * Mathf.Pi);
+            currentHeight = targetHeight * Sin(currentCycle * Pi);
         }
 
         Vector3 targetPosition = new Vector3(destination.X, currentHeight, destination.Z);
@@ -395,7 +396,7 @@ public partial class ProceduralWalk : CharacterBody3D
             }
         }
 
-        longestStrideDistance = Mathf.Sqrt(longestStrideDistance);
+        longestStrideDistance = Sqrt(longestStrideDistance);
         currentStrideFactor = longestStrideDistance / maxLongestStrideDistance;
     }
 
