@@ -16,10 +16,17 @@ public partial class WanderBehavior : Node3D
     [Export] private float wanderMinRotation;
     [Export] private float wanderMaxRotation;
 
+    [Export] private float slowDistance;
+
+    [Export] private Curve slowCurve;
+
+    [Export] private bool debugDestination;
+
     private ProceduralWalk characterBody;
     private float currentRotationRate;
     private float currentSpeed;
     private Vector3 destination;
+    private float currentDistance;
 
     public override void _Ready()
     {
@@ -29,7 +36,12 @@ public partial class WanderBehavior : Node3D
 
     public override void _Process(double delta)
     {
-        DebugDraw3D.DrawSphere(destination, 2.0f);
+        currentDistance = GlobalPosition.DistanceTo(destination);
+
+        if (debugDestination)
+        {
+            DebugDraw3D.DrawSphere(destination, 1.0f, Colors.Black);
+        }
 
         if (CloseEnough())
         {
@@ -40,6 +52,12 @@ public partial class WanderBehavior : Node3D
     }
 
     private void MoveToDestination()
+    {
+        UpdateRotation();
+        UpdateSpeed();
+    }
+
+    private void UpdateRotation()
     {
         Vector3 direction = (destination - GlobalPosition.PlanarVector()).Normalized();
         Vector3 forward = -GlobalTransform.Basis.Z;
@@ -54,8 +72,15 @@ public partial class WanderBehavior : Node3D
         }
 
         characterBody.currentRotation = -turnDirection * currentRotationRate;
+    }
 
-        characterBody.currentSpeed = currentSpeed;
+    private void UpdateSpeed()
+    {
+        float slowFactor = currentDistance / slowDistance;
+        slowFactor = Min(1.0f, slowFactor);
+        slowFactor = 1.0f - slowFactor;
+
+        characterBody.currentSpeed = currentSpeed * slowCurve.Sample(slowFactor);
     }
 
     private void UpdateDestination()
@@ -71,7 +96,7 @@ public partial class WanderBehavior : Node3D
 
     private bool CloseEnough()
     {
-        if (GlobalPosition.DistanceSquaredTo(destination) <= closeEnoughThreshold)
+        if (currentDistance <= closeEnoughThreshold)
         {
             return true;
         }

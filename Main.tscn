@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://ccnba2mdvamym"]
+[gd_scene load_steps=22 format=3 uid="uid://ccnba2mdvamym"]
 
 [ext_resource type="PackedScene" uid="uid://du6kxaldswwyq" path="res://Prefabs/mechanical_arachnid.tscn" id="1_glv2v"]
 [ext_resource type="Script" uid="uid://3gaulduncu44" path="res://WanderBehavior.cs" id="2_r0du0"]
@@ -27,6 +27,10 @@ point_count = 3
 
 [sub_resource type="Curve" id="Curve_cm0pq"]
 _data = [Vector2(0, 1), 0.0, 0.0924543, 0, 0, Vector2(1, 0.825), -0.175, 0.0, 1, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_lgr22"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.25), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_uu6xs"]
@@ -91,13 +95,15 @@ rotationBySpeedRotation = SubResource("Curve_cm0pq")
 
 [node name="WanderBehavior" type="Node3D" parent="MechanicalArachnid"]
 script = ExtResource("2_r0du0")
-wanderRadius = 20.0
-closeEnoughThreshold = 50.0
-rotationEpsilon = 0.5
+wanderRadius = 40.0
+closeEnoughThreshold = 3.5
+rotationEpsilon = 0.1
 wanderMinSpeed = 10.0
 wanderMaxSpeed = 20.0
 wanderMinRotation = 0.05
 wanderMaxRotation = 0.06
+slowDistance = 10.0
+slowCurve = SubResource("Curve_lgr22")
 
 [node name="KeepInBounds" parent="MechanicalArachnid" index="1" node_paths=PackedStringArray("bounds")]
 bounds = NodePath("../../Bounds/Area3D")
@@ -141,7 +147,6 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3)
 [node name="TopCamera" type="Camera3D" parent="MechanicalArachnid"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 15, 0)
 projection = 1
-current = true
 size = 19.063
 
 [node name="SideCamera" type="Camera3D" parent="MechanicalArachnid"]
