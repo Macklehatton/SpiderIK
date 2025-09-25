@@ -9,8 +9,13 @@ public partial class WanderBehavior : Node3D
     [Export] private float wanderRadius;
     [Export] private float closeEnoughThreshold;
 
+    [Export] private float wanderMinSpeed;
+    [Export] private float wanderMaxSpeed;
+
+    [Export] private float wanderMinRotation;
+    [Export] private float wanderMaxRotation;
+
     private ProceduralWalk characterBody;
-    private float currentSpeed;
     private float currentRotationRate;
     private Vector3 destination;
 
@@ -40,9 +45,7 @@ public partial class WanderBehavior : Node3D
         float dot = forward.PlanarVector().Dot(direction);
         dot = 1.0f - dot;
 
-        Debug.WriteLine(dot);
-
-        characterBody.currentRotation = dot * characterBody.maxRotation;
+        characterBody.currentRotation = dot * currentRotationRate;
     }
 
     private void UpdateDestination()
@@ -52,8 +55,8 @@ public partial class WanderBehavior : Node3D
         // Radius implicitly around zero
         destination = RandomDirection() * rng.RandfRange(0.0f, wanderRadius);
 
-        //characterBody.moveSpeed = rng.RandfRange(0.0f, characterBody.maxSpeed);
-        characterBody.moveSpeed = 2.5f;
+        characterBody.moveSpeed = rng.RandfRange(wanderMinSpeed, wanderMaxSpeed);
+        currentRotationRate = rng.RandfRange(wanderMinRotation, wanderMaxRotation);
     }
 
     private bool CloseEnough()

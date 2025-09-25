@@ -55,7 +55,6 @@ data = PackedVector3Array(250, -25, -250, -237.5, -25, -237.5, 237.5, -25, -237.
 
 [node name="AerialCamera" type="Camera3D" parent="."]
 transform = Transform3D(-0.636076, -0.498564, 0.588932, 0, 0.763235, 0.646121, -0.771626, 0.410982, -0.485476, 11.7486, 18.0173, -20.3672)
-current = true
 size = 29.283
 
 [node name="MechanicalArachnid" parent="." node_paths=PackedStringArray("projection") instance=ExtResource("1_glv2v")]
@@ -78,8 +77,12 @@ rotationBySpeedRotation = SubResource("Curve_cm0pq")
 
 [node name="WanderBehavior" type="Node3D" parent="MechanicalArachnid"]
 script = ExtResource("2_r0du0")
-wanderRadius = 10.0
+wanderRadius = 50.0
 closeEnoughThreshold = 50.0
+wanderMinSpeed = 5.0
+wanderMaxSpeed = 15.0
+wanderMinRotation = 0.02
+wanderMaxRotation = 0.05
 
 [node name="KeepInBounds" parent="MechanicalArachnid" index="1" node_paths=PackedStringArray("bounds")]
 bounds = NodePath("../../Bounds/Area3D")
@@ -131,10 +134,11 @@ projection = 1
 size = 9.216
 
 [node name="ThirdPersonCameraPivot" type="Node3D" parent="MechanicalArachnid"]
-transform = Transform3D(-0.875465, 0, -0.483282, 0, 1, 0, 0.483282, 0, -0.875465, 0, 0, 0)
+transform = Transform3D(0.849893, 0, 0.526956, 0, 1, 0, -0.526956, 0, 0.849893, 0, 0, 0)
 
 [node name="ThirdPersonCamera" type="Camera3D" parent="MechanicalArachnid/ThirdPersonCameraPivot"]
-transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 12.69, 7.189)
+transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 12.33, 9.724)
+current = true
 size = 12.175
 
 [node name="Projection" type="CSGBox3D" parent="MechanicalArachnid"]
@@ -177,7 +181,7 @@ size = Vector3(475, 100, 475)
 [node name="Obstacles" type="Node3D" parent="."]
 
 [node name="CSGBox3D" type="CSGBox3D" parent="Obstacles"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.08609, 0.506719, -13.0887)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.08609, -0.375074, -13.0887)
 use_collision = true
 size = Vector3(10, 1.5, 10)
 
