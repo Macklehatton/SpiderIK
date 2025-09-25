@@ -1,8 +1,9 @@
-[gd_scene load_steps=16 format=3 uid="uid://ccnba2mdvamym"]
+[gd_scene load_steps=21 format=3 uid="uid://ccnba2mdvamym"]
 
 [ext_resource type="PackedScene" uid="uid://du6kxaldswwyq" path="res://Prefabs/mechanical_arachnid.tscn" id="1_glv2v"]
 [ext_resource type="Script" uid="uid://3gaulduncu44" path="res://WanderBehavior.cs" id="2_r0du0"]
 [ext_resource type="Texture2D" uid="uid://ef4gue7tekom" path="res://addons/kenney_prototype_textures/dark/texture_01.png" id="2_uu6xs"]
+[ext_resource type="Texture2D" uid="uid://da17mjgl6y4a0" path="res://addons/kenney_prototype_textures/orange/texture_01.png" id="4_cm0pq"]
 
 [sub_resource type="Curve" id="Curve_sc1dx"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 1, Vector2(0.0845865, 1), 0.0, -0.568049, 0, 1, Vector2(1, 0.48), -0.568049, -0.568049, 1, 1]
@@ -51,10 +52,23 @@ uv1_scale = Vector3(50, 50, 50)
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_uu6xs"]
 data = PackedVector3Array(250, -25, -250, -237.5, -25, -237.5, 237.5, -25, -237.5, 237.5, 25, 237.5, 250, 25, -250, 250, 25, 250, 250, 25, 250, -237.5, 25, 237.5, 237.5, 25, 237.5, 237.5, 25, -237.5, 250, 25, -250, 237.5, 25, 237.5, 250, 25, 250, 250, 25, -250, 250, -25, -250, 250, 25, -250, 237.5, 25, -237.5, -250, 25, -250, 250, -25, -250, 250, 25, -250, -250, 25, -250, 250, -25, 250, 250, 25, 250, 250, -25, -250, 237.5, -25, 237.5, 250, -25, 250, 237.5, -25, -237.5, 250, 25, 250, 250, -25, 250, -250, -25, 250, 250, -25, 250, 237.5, -25, 237.5, -250, -25, 250, 237.5, -25, -237.5, 250, -25, 250, 250, -25, -250, -237.5, -25, -237.5, -250, -25, -250, -237.5, -25, 237.5, -250, 25, 250, -237.5, 25, 237.5, 250, 25, 250, -237.5, 25, 237.5, -250, 25, 250, -237.5, 25, -237.5, -250, -25, 250, -250, -25, -250, -250, 25, -250, -250, -25, -250, -237.5, -25, -237.5, 250, -25, -250, 250, -25, -250, -250, 25, -250, -250, -25, -250, -237.5, -25, 237.5, -250, -25, -250, -250, -25, 250, -250, -25, 250, 237.5, -25, 237.5, -237.5, -25, 237.5, -237.5, 25, -237.5, -250, 25, 250, -250, 25, -250, -250, 25, -250, 237.5, 25, -237.5, -237.5, 25, -237.5, -250, 25, -250, -250, 25, 250, -250, -25, 250, -250, 25, 250, 250, 25, 250, -250, -25, 250, -237.5, 25, -237.5, 237.5, 25, -237.5, -237.5, -25, -237.5, 237.5, 25, 237.5, 237.5, -25, 237.5, 237.5, -25, -237.5, -237.5, -25, 237.5, 237.5, -25, 237.5, -237.5, 25, 237.5, 237.5, 25, 237.5, 237.5, -25, -237.5, 237.5, 25, -237.5, 237.5, -25, -237.5, -237.5, -25, -237.5, 237.5, 25, -237.5, -237.5, -25, 237.5, -237.5, 25, 237.5, -237.5, 25, -237.5, 237.5, 25, 237.5, -237.5, 25, 237.5, 237.5, -25, 237.5, -237.5, -25, 237.5, -237.5, 25, -237.5, -237.5, -25, -237.5)
 
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_fos0i"]
+albedo_texture = ExtResource("4_cm0pq")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_3dxm6"]
+albedo_texture = ExtResource("4_cm0pq")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_lgr22"]
+albedo_texture = ExtResource("4_cm0pq")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_trn2v"]
+albedo_texture = ExtResource("4_cm0pq")
+
 [node name="Root" type="Node3D"]
 
 [node name="AerialCamera" type="Camera3D" parent="."]
-transform = Transform3D(-0.636076, -0.498564, 0.588932, 0, 0.763235, 0.646121, -0.771626, 0.410982, -0.485476, 11.7486, 18.0173, -20.3672)
+transform = Transform3D(0.562802, -0.640104, 0.522991, 0, 0.632708, 0.774391, -0.826592, -0.435829, 0.35609, 31.051, 47.041, 15.958)
+current = true
 size = 29.283
 
 [node name="MechanicalArachnid" parent="." node_paths=PackedStringArray("projection") instance=ExtResource("1_glv2v")]
@@ -77,12 +91,13 @@ rotationBySpeedRotation = SubResource("Curve_cm0pq")
 
 [node name="WanderBehavior" type="Node3D" parent="MechanicalArachnid"]
 script = ExtResource("2_r0du0")
-wanderRadius = 50.0
+wanderRadius = 20.0
 closeEnoughThreshold = 50.0
-wanderMinSpeed = 5.0
-wanderMaxSpeed = 15.0
-wanderMinRotation = 0.02
-wanderMaxRotation = 0.05
+rotationEpsilon = 0.1
+wanderMinSpeed = 10.0
+wanderMaxSpeed = 20.0
+wanderMinRotation = 0.05
+wanderMaxRotation = 0.06
 
 [node name="KeepInBounds" parent="MechanicalArachnid" index="1" node_paths=PackedStringArray("bounds")]
 bounds = NodePath("../../Bounds/Area3D")
@@ -126,6 +141,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3)
 [node name="TopCamera" type="Camera3D" parent="MechanicalArachnid"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 15, 0)
 projection = 1
+current = true
 size = 19.063
 
 [node name="SideCamera" type="Camera3D" parent="MechanicalArachnid"]
@@ -138,7 +154,6 @@ transform = Transform3D(0.849893, 0, 0.526956, 0, 1, 0, -0.526956, 0, 0.849893, 
 
 [node name="ThirdPersonCamera" type="Camera3D" parent="MechanicalArachnid/ThirdPersonCameraPivot"]
 transform = Transform3D(1, 0, 0, 0, 0.707107, 0.707107, 0, -0.707107, 0.707107, 0, 12.33, 9.724)
-current = true
 size = 12.175
 
 [node name="Projection" type="CSGBox3D" parent="MechanicalArachnid"]
@@ -182,21 +197,25 @@ size = Vector3(475, 100, 475)
 
 [node name="CSGBox3D" type="CSGBox3D" parent="Obstacles"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -8.08609, -0.375074, -13.0887)
+material_override = SubResource("StandardMaterial3D_fos0i")
 use_collision = true
 size = Vector3(10, 1.5, 10)
 
 [node name="CSGBox3D2" type="CSGBox3D" parent="Obstacles"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.654398, 2.09963, -70.2001)
+material_override = SubResource("StandardMaterial3D_3dxm6")
 use_collision = true
 size = Vector3(10, 5, 10)
 
 [node name="CSGBox3D3" type="CSGBox3D" parent="Obstacles"]
 transform = Transform3D(1, 0, 0, 0, 0.965926, -0.258819, 0, 0.258819, 0.965926, 0.654398, 0.418064, -37.0262)
+material_override = SubResource("StandardMaterial3D_lgr22")
 use_collision = true
 size = Vector3(10, 1.5, 10)
 
 [node name="CSGBox3D4" type="CSGBox3D" parent="Obstacles"]
 transform = Transform3D(-1, -2.26267e-08, -8.44439e-08, 0, 0.965926, -0.258819, 8.74228e-08, -0.258819, -0.965926, 0.654398, 0.418064, -46.2827)
+material_override = SubResource("StandardMaterial3D_trn2v")
 use_collision = true
 size = Vector3(10, 1.5, 10)
 

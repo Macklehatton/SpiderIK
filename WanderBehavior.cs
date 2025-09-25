@@ -8,6 +8,7 @@ public partial class WanderBehavior : Node3D
 {
     [Export] private float wanderRadius;
     [Export] private float closeEnoughThreshold;
+    [Export] private float rotationEpsilon;
 
     [Export] private float wanderMinSpeed;
     [Export] private float wanderMaxSpeed;
@@ -43,9 +44,12 @@ public partial class WanderBehavior : Node3D
         Vector3 forward = -GlobalTransform.Basis.Z;
 
         float dot = forward.PlanarVector().Dot(direction);
-        dot = 1.0f - dot;
 
-        characterBody.currentRotation = dot * currentRotationRate;
+        float turnAngle = direction.SignedAngleTo(forward, Vector3.Up);
+
+        Debug.WriteLine(dot);
+
+        characterBody.currentRotation = -turnAngle * 0.5f * currentRotationRate;
     }
 
     private void UpdateDestination()
