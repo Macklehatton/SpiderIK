@@ -17,7 +17,6 @@ raycastDistance = 50.0
 raycastHeight = 5.0
 footTargetRadialProjection = 4.25
 maxSpeed = 10.0
-factorMaxRotation = 0.1
 maxHeight = 3.0
 maxStride = 2.5
 

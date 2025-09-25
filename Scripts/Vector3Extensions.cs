@@ -150,42 +150,42 @@ namespace VectorExtensions
             return positions;
         }
 
-        public static Vector3 PlanarPosition(this Vector3 position)
+        public static Vector3 PlanarVector(this Vector3 vector)
         {
-            Vector3 planarPosition = new Vector3(
-                position.X,
+            Vector3 planarVector = new Vector3(
+                vector.X,
                 0.0f,
-                position.Z);
+                vector.Z);
 
-            return planarPosition;
+            return planarVector;
         }
 
-        public static Vector2 PlanarVector2(this Vector3 position)
+        public static Vector2 PlanarVector2(this Vector3 vector)
         {
-            Vector2 planarPosition = new Vector2(
-                position.X,
-                position.Z);
+            Vector2 planarVector = new Vector2(
+                vector.X,
+                vector.Z);
 
-            return planarPosition;
+            return planarVector;
         }
 
-        public static Vector3I PlanarPosition(this Vector3I position)
+        public static Vector3I PlanarPosition(this Vector3I vector)
         {
-            Vector3I planarPosition = new Vector3I(
-                position.X,
+            Vector3I planarVector = new Vector3I(
+                vector.X,
                 0,
-                position.Z);
+                vector.Z);
 
-            return planarPosition;
+            return planarVector;
         }
 
-        public static Vector2I PlanarVector2I(this Vector3I position)
+        public static Vector2I PlanarVector2I(this Vector3I vector)
         {
-            Vector2I planarPosition = new Vector2I(
-                position.X,
-                position.Z);
+            Vector2I planarVector = new Vector2I(
+                vector.X,
+                vector.Z);
 
-            return planarPosition;
+            return planarVector;
         }
     }
 }

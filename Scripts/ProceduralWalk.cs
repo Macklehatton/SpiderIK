@@ -27,8 +27,8 @@ public partial class ProceduralWalk : CharacterBody3D
     [Export] private int projectionIterations;
 
     [ExportSubgroup("Projection Translation")]
-    [Export(PropertyHint.Range, "-10,50")] private float moveSpeed;
-    [Export(PropertyHint.Range, "0,50")] private float maxSpeed;
+    [Export(PropertyHint.Range, "-10,50")] public float moveSpeed;
+    [Export(PropertyHint.Range, "0,50")] public float maxSpeed;
     [Export(PropertyHint.Range, "0,1")] private float projectionTranslationSample;
     [Export] private Curve translationBySpeed;
     [Export] private Curve translationReductionByRotation;
@@ -37,7 +37,7 @@ public partial class ProceduralWalk : CharacterBody3D
 
     [ExportSubgroup("Projection Rotation")]
     [Export(PropertyHint.Range, "-0.1,0.1")] private float turnSpeed;
-    [Export(PropertyHint.Range, "0,0.1")] private float factorMaxRotation;
+    [Export(PropertyHint.Range, "0,0.1")] public float maxRotation;
     [Export(PropertyHint.Range, "0,1")] private float projectionRotationSample;
     [Export] private Curve rotationReductionBySpeed;
     [Export] private Curve rotationBySpeedRotation;
@@ -68,7 +68,9 @@ public partial class ProceduralWalk : CharacterBody3D
     private Vector3[] footOrigins;
 
     private float currentCycle;
-    private float currentRotation;
+
+    public float currentRotation;
+
     private float currentRotationFactor;
     private float currentMoveFactor;
     private float speedRotationFactor;
@@ -126,7 +128,7 @@ public partial class ProceduralWalk : CharacterBody3D
 
         UpdateCycle();
 
-        currentRotation = turnSpeed;
+        //currentRotation = turnSpeed;
         Rotate(Vector3.Up, currentRotation);
         Velocity = -Transform.Basis.Z * moveSpeed;
 
@@ -221,7 +223,7 @@ public partial class ProceduralWalk : CharacterBody3D
     private void UpdateRaycastProjections(int moveDirection)
     {
         currentMoveFactor = Abs(moveSpeed) / maxSpeed;
-        currentRotationFactor = Abs(currentRotation) / factorMaxRotation;
+        currentRotationFactor = Abs(currentRotation) / maxRotation;
         speedRotationFactor = Sqrt(currentMoveFactor * currentRotationFactor);
 
         UpdateRaycastRotation();
@@ -427,7 +429,7 @@ public partial class ProceduralWalk : CharacterBody3D
             raycastOrigin.GlobalPosition = foot.GlobalPosition;
             raycastOrigin.GlobalPosition += new Vector3(0.0f, raycastHeight, 0.0f);
 
-            Vector3 lookDirection = GlobalPosition.PlanarPosition() - raycastOrigin.GlobalPosition.PlanarPosition();
+            Vector3 lookDirection = GlobalPosition.PlanarVector() - raycastOrigin.GlobalPosition.PlanarVector();
             lookDirection = lookDirection.Normalized();
             float lookAngle = raycastOrigin.GlobalBasis.Z.SignedAngleTo(lookDirection, Vector3.Up);
             raycastOrigin.Rotate(Vector3.Up, lookAngle);
