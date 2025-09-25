@@ -18,6 +18,7 @@ public partial class WanderBehavior : Node3D
 
     private ProceduralWalk characterBody;
     private float currentRotationRate;
+    private float currentSpeed;
     private Vector3 destination;
 
     public override void _Ready()
@@ -43,13 +44,18 @@ public partial class WanderBehavior : Node3D
         Vector3 direction = (destination - GlobalPosition.PlanarVector()).Normalized();
         Vector3 forward = -GlobalTransform.Basis.Z;
 
-        float dot = forward.PlanarVector().Dot(direction);
-
         float turnAngle = direction.SignedAngleTo(forward, Vector3.Up);
+        float turnDirection = Sign(turnAngle);
 
-        Debug.WriteLine(dot);
+        if (Abs(turnAngle) <= rotationEpsilon)
+        {
+            characterBody.currentRotation = -turnAngle * currentRotationRate;
+            return;
+        }
 
-        characterBody.currentRotation = -turnAngle * 0.5f * currentRotationRate;
+        characterBody.currentRotation = -turnDirection * currentRotationRate;
+
+        characterBody.currentSpeed = currentSpeed;
     }
 
     private void UpdateDestination()
@@ -59,7 +65,7 @@ public partial class WanderBehavior : Node3D
         // Radius implicitly around zero
         destination = RandomDirection() * rng.RandfRange(0.0f, wanderRadius);
 
-        characterBody.moveSpeed = rng.RandfRange(wanderMinSpeed, wanderMaxSpeed);
+        currentSpeed = rng.RandfRange(wanderMinSpeed, wanderMaxSpeed);
         currentRotationRate = rng.RandfRange(wanderMinRotation, wanderMaxRotation);
     }
 

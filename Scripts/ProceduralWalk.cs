@@ -27,7 +27,7 @@ public partial class ProceduralWalk : CharacterBody3D
     [Export] private int projectionIterations;
 
     [ExportSubgroup("Projection Translation")]
-    [Export(PropertyHint.Range, "-10,50")] public float moveSpeed;
+    [Export(PropertyHint.Range, "-10,50")] public float currentSpeed;
     [Export(PropertyHint.Range, "0,50")] public float maxSpeed;
     [Export(PropertyHint.Range, "0,1")] private float projectionTranslationSample;
     [Export] private Curve translationBySpeed;
@@ -72,7 +72,7 @@ public partial class ProceduralWalk : CharacterBody3D
     public float currentRotation;
 
     private float currentRotationFactor;
-    private float currentMoveFactor;
+    private float currentSpeedFactor;
     private float speedRotationFactor;
 
     private float longestStrideDistance;
@@ -130,7 +130,7 @@ public partial class ProceduralWalk : CharacterBody3D
 
         //currentRotation = turnSpeed;
         Rotate(Vector3.Up, currentRotation);
-        Velocity = -Transform.Basis.Z * moveSpeed;
+        Velocity = -Transform.Basis.Z * currentSpeed;
 
         MoveAndSlide();
         MoveFeet();
@@ -222,9 +222,9 @@ public partial class ProceduralWalk : CharacterBody3D
 
     private void UpdateRaycastProjections(int moveDirection)
     {
-        currentMoveFactor = Abs(moveSpeed) / maxSpeed;
+        currentSpeedFactor = Abs(currentSpeed) / maxSpeed;
         currentRotationFactor = Abs(currentRotation) / maxRotation;
-        speedRotationFactor = Sqrt(currentMoveFactor * currentRotationFactor);
+        speedRotationFactor = Sqrt(currentSpeedFactor * currentRotationFactor);
 
         UpdateRaycastRotation();
         UpdateRaycastPosition(moveDirection);
@@ -237,9 +237,9 @@ public partial class ProceduralWalk : CharacterBody3D
     {
         float sample = projectionRotationSample;
 
-        if (!IsEqualApprox(currentMoveFactor, 0.0f))
+        if (!IsEqualApprox(currentSpeedFactor, 0.0f))
         {
-            sample *= rotationReductionBySpeed.Sample(currentMoveFactor);
+            sample *= rotationReductionBySpeed.Sample(currentSpeedFactor);
             sample *= rotationBySpeedRotation.Sample(speedRotationFactor);
 
             if (enableDebugs)
@@ -268,14 +268,14 @@ public partial class ProceduralWalk : CharacterBody3D
             return;
         }
 
-        if (IsEqualApprox(currentMoveFactor, 0.0f))
+        if (IsEqualApprox(currentSpeedFactor, 0.0f))
         {
             raycastContainer.GlobalPosition = GlobalPosition;
             return;
         }
 
         float sample = projectionTranslationSample * projectionCurve.GetBakedLength();
-        sample *= translationBySpeed.Sample(currentMoveFactor);
+        sample *= translationBySpeed.Sample(currentSpeedFactor);
 
         if (!IsEqualApprox(currentRotationFactor, 0.0f))
         {
@@ -287,7 +287,7 @@ public partial class ProceduralWalk : CharacterBody3D
 
         Vector3 addTranslation = moveDirection * projection.Basis.Z;
         addTranslation = addTranslation.Normalized();
-        addTranslation *= addTranslationBySpeed.Sample(currentMoveFactor);
+        addTranslation *= addTranslationBySpeed.Sample(currentSpeedFactor);
         raycastContainer.GlobalPosition += addTranslation;
     }
 
