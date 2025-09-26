@@ -23,7 +23,7 @@ public partial class WanderBehavior : Node3D
 
     [Export] private bool debugDestination;
 
-    private ProceduralWalk characterBody;
+    private SpiderMovement characterBody;
     private float currentRotationRate;
     private float currentSpeed;
     private Vector3 destination;
@@ -31,7 +31,7 @@ public partial class WanderBehavior : Node3D
 
     public override void _Ready()
     {
-        characterBody = (ProceduralWalk)GetParent();
+        characterBody = (SpiderMovement)GetParent();
         UpdateDestination();
     }
 
@@ -68,18 +68,18 @@ public partial class WanderBehavior : Node3D
 
         if (Abs(turnAngle) <= rotationEpsilon)
         {
-            characterBody.currentRotation = -turnAngle * currentRotationRate;
+            characterBody.CurrentRotation = -turnAngle * currentRotationRate;
             return;
         }
 
-        characterBody.currentRotation = -turnDirection * currentRotationRate;
+        characterBody.CurrentRotation = -turnDirection * currentRotationRate;
     }
 
     private void UpdateSpeed()
     {
         if (strafe)
         {
-            characterBody.currentSpeed = currentSpeed;
+            characterBody.CurrentSpeed = currentSpeed;
             Vector3 direction = (destination - GlobalPosition.PlanarVector()).Normalized();
             characterBody.Velocity = direction * currentSpeed;
             return;
@@ -89,7 +89,7 @@ public partial class WanderBehavior : Node3D
         slowFactor = Min(1.0f, slowFactor);
         slowFactor = 1.0f - slowFactor;
 
-        characterBody.currentSpeed = currentSpeed * slowCurve.Sample(slowFactor);
+        characterBody.CurrentSpeed = currentSpeed * slowCurve.Sample(slowFactor);
         characterBody.Velocity = -characterBody.Basis.Z * currentSpeed;
     }
 

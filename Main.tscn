@@ -1,9 +1,18 @@
-[gd_scene load_steps=22 format=3 uid="uid://ccnba2mdvamym"]
+[gd_scene load_steps=24 format=3 uid="uid://ccnba2mdvamym"]
 
 [ext_resource type="PackedScene" uid="uid://du6kxaldswwyq" path="res://Prefabs/mechanical_arachnid.tscn" id="1_glv2v"]
+[ext_resource type="Script" uid="uid://ffetdx4ooyjq" path="res://Scripts/SpiderMovement.cs" id="2_3dxm6"]
+[ext_resource type="Script" uid="uid://d0cb6qh74duvu" path="res://Scripts/ProceduralWalk.cs" id="2_fos0i"]
 [ext_resource type="Script" uid="uid://3gaulduncu44" path="res://Scripts/WanderBehavior.cs" id="2_r0du0"]
 [ext_resource type="Texture2D" uid="uid://ef4gue7tekom" path="res://addons/kenney_prototype_textures/dark/texture_01.png" id="2_uu6xs"]
 [ext_resource type="Texture2D" uid="uid://da17mjgl6y4a0" path="res://addons/kenney_prototype_textures/orange/texture_01.png" id="4_cm0pq"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_uu6xs"]
+radius = 3.25
+
+[sub_resource type="Curve" id="Curve_lgr22"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.25), 0.0, 0.0, 0, 0]
+point_count = 2
 
 [sub_resource type="Curve" id="Curve_sc1dx"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 1, Vector2(0.0845865, 1), 0.0, -0.568049, 0, 1, Vector2(1, 0.48), -0.568049, -0.568049, 1, 1]
@@ -27,13 +36,6 @@ point_count = 3
 
 [sub_resource type="Curve" id="Curve_cm0pq"]
 _data = [Vector2(0, 1), 0.0, 0.0924543, 0, 0, Vector2(1, 0.825), -0.175, 0.0, 1, 0]
-point_count = 2
-
-[sub_resource type="SphereShape3D" id="SphereShape3D_uu6xs"]
-radius = 3.25
-
-[sub_resource type="Curve" id="Curve_lgr22"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.25), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_glv2v"]
@@ -75,23 +77,8 @@ transform = Transform3D(0.601812, -0.680949, 0.41729, 0, 0.522502, 0.852638, -0.
 current = true
 size = 29.283
 
-[node name="MechanicalArachnid" parent="." node_paths=PackedStringArray("projection") instance=ExtResource("1_glv2v")]
-projection = NodePath("Projection")
-raycastHeight = 6.0
-minStepDistanceSquared = 1.0
-strideCycleFactor = 0.055
-maxLongestStrideDistance = 6.5
-projectionIterations = 10
-maxSpeed = 50.0
-projectionTranslationSample = 1.0
-translationBySpeed = SubResource("Curve_sc1dx")
-translationReductionByRotation = SubResource("Curve_uu6xs")
-translationBySpeedRotation = SubResource("Curve_fos0i")
-addTranslationBySpeed = SubResource("Curve_3dxm6")
-maxRotation = 0.1
-projectionRotationSample = 0.65
-rotationReductionBySpeed = SubResource("Curve_r0du0")
-rotationBySpeedRotation = SubResource("Curve_cm0pq")
+[node name="MechanicalArachnid" parent="." instance=ExtResource("1_glv2v")]
+script = ExtResource("2_3dxm6")
 
 [node name="KeepInBounds" parent="MechanicalArachnid" index="0" node_paths=PackedStringArray("bounds")]
 bounds = NodePath("../../Bounds/Area3D")
@@ -124,8 +111,6 @@ transform = Transform3D(-0.614802, -0.291926, -0.732665, -4.10946e-08, -0.928975
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.25, 0)
 shape = SubResource("SphereShape3D_uu6xs")
 
-[node name="ProceduralWalk" type="Node3D" parent="MechanicalArachnid"]
-
 [node name="WanderBehavior" type="Node3D" parent="MechanicalArachnid"]
 script = ExtResource("2_r0du0")
 wanderRadius = 40.0
@@ -139,9 +124,35 @@ slowDistance = 10.0
 slowCurve = SubResource("Curve_lgr22")
 debugDestination = true
 
+[node name="ProceduralWalk" type="Node3D" parent="MechanicalArachnid" node_paths=PackedStringArray("spiderMovement", "footContainer", "skeleton", "projection")]
+script = ExtResource("2_fos0i")
+spiderMovement = NodePath("..")
+footContainer = NodePath("../MechanicalArachnidRig/FootContainer")
+skeleton = NodePath("../MechanicalArachnidRig/EDGE_ARM_LegsEdges_001/Skeleton3D")
+projection = NodePath("../Projection")
+raycastDistance = 50.0
+raycastHeight = 6.0
+minStepDistanceSquared = 1.0
+footTargetRadialProjection = 4.25
+strideCycleFactor = 0.055
+maxLongestStrideDistance = 6.5
+projectionIterations = 10
+maxSpeed = 50.0
+projectionTranslationSample = 1.0
+translationBySpeed = SubResource("Curve_sc1dx")
+translationReductionByRotation = SubResource("Curve_uu6xs")
+translationBySpeedRotation = SubResource("Curve_fos0i")
+addTranslationBySpeed = SubResource("Curve_3dxm6")
+maxRotation = 0.1
+projectionRotationSample = 0.65
+rotationReductionBySpeed = SubResource("Curve_r0du0")
+rotationBySpeedRotation = SubResource("Curve_cm0pq")
+maxHeight = 3.0
+maxStride = 2.5
+enableDebugs = true
+
 [node name="CSGBox3D" type="CSGBox3D" parent="MechanicalArachnid"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.65, 0)
-visible = false
 size = Vector3(1, 1, 6)
 
 [node name="CSGSphere3D" type="CSGSphere3D" parent="MechanicalArachnid/CSGBox3D"]
@@ -150,6 +161,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3)
 [node name="TopCamera" type="Camera3D" parent="MechanicalArachnid"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 15, 0)
 projection = 1
+current = true
 size = 19.063
 
 [node name="SideCamera" type="Camera3D" parent="MechanicalArachnid"]
@@ -166,7 +178,6 @@ size = 12.175
 
 [node name="Projection" type="CSGBox3D" parent="MechanicalArachnid"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.65, 0)
-visible = false
 size = Vector3(1, 1, 6)
 
 [node name="CSGSphere3D" type="CSGSphere3D" parent="MechanicalArachnid/Projection"]

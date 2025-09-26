@@ -28,8 +28,8 @@ public partial class ProceduralWalk : Node3D
     [Export] private int projectionIterations;
 
     [ExportSubgroup("Projection Translation")]
-    [Export(PropertyHint.Range, "-10,50")] public float currentSpeed;
-    [Export(PropertyHint.Range, "0,50")] public float maxSpeed;
+    [Export(PropertyHint.Range, "-10,50")] private float currentSpeed;
+    [Export(PropertyHint.Range, "0,50")] private float maxSpeed;
     [Export(PropertyHint.Range, "0,1")] private float projectionTranslationSample;
     [Export] private Curve translationBySpeed;
     [Export] private Curve translationReductionByRotation;
@@ -38,7 +38,7 @@ public partial class ProceduralWalk : Node3D
 
     [ExportSubgroup("Projection Rotation")]
     [Export(PropertyHint.Range, "-0.1,0.1")] private float turnSpeed;
-    [Export(PropertyHint.Range, "0,0.1")] public float maxRotation;
+    [Export(PropertyHint.Range, "0,0.1")] private float maxRotation;
     [Export(PropertyHint.Range, "0,1")] private float projectionRotationSample;
     [Export] private Curve rotationReductionBySpeed;
     [Export] private Curve rotationBySpeedRotation;
@@ -70,7 +70,7 @@ public partial class ProceduralWalk : Node3D
 
     private float currentCycle;
 
-    public float currentRotation;
+    private float currentRotation;
 
     private float currentRotationFactor;
     private float currentSpeedFactor;
@@ -129,11 +129,8 @@ public partial class ProceduralWalk : Node3D
 
         UpdateCycle();
 
-        //currentRotation = turnSpeed;
         Rotate(Vector3.Up, currentRotation);
-        //Velocity = -Transform.Basis.Z * currentSpeed;
 
-        spiderMovement.MoveAndSlide();
         MoveFeet();
 
         Vector3 relativeVelocity = spiderMovement.Velocity * Transform.Basis;
@@ -503,7 +500,7 @@ public partial class ProceduralWalk : Node3D
         return feet;
     }
 
-    public void ResetFeet()
+    private void ResetFeet()
     {
         longestStrideDistance = maxLongestStrideDistance;
 
