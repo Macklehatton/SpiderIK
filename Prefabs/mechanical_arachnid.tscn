@@ -2,7 +2,7 @@
 
 [ext_resource type="PackedScene" uid="uid://dgixv1ydirgkn" path="res://Prefabs/mechanical_arachnid_rig.tscn" id="1_i2uhj"]
 [ext_resource type="Script" uid="uid://d0cb6qh74duvu" path="res://Scripts/ProceduralWalk.cs" id="1_l0n85"]
-[ext_resource type="Script" uid="uid://2n33y10okjb3" path="res://Prefabs/KeepInBounds.cs" id="2_dif34"]
+[ext_resource type="Script" uid="uid://2n33y10okjb3" path="res://Scripts/KeepInBounds.cs" id="2_dif34"]
 
 [sub_resource type="CylinderShape3D" id="CylinderShape3D_i2uhj"]
 height = 2.39063

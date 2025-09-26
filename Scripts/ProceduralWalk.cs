@@ -4,9 +4,10 @@ using System.Diagnostics;
 using VectorExtensions;
 using static Godot.Mathf;
 
-public partial class ProceduralWalk : CharacterBody3D
+public partial class ProceduralWalk : Node3D
 {
     [ExportGroup("References")]
+    [Export] private CharacterBody3D spiderMovement;
     [Export] private Node3D footContainer;
     [Export] private Skeleton3D skeleton;
     [Export] private Node3D projection;
@@ -132,10 +133,10 @@ public partial class ProceduralWalk : CharacterBody3D
         Rotate(Vector3.Up, currentRotation);
         //Velocity = -Transform.Basis.Z * currentSpeed;
 
-        MoveAndSlide();
+        spiderMovement.MoveAndSlide();
         MoveFeet();
 
-        Vector3 relativeVelocity = Velocity * Transform.Basis;
+        Vector3 relativeVelocity = spiderMovement.Velocity * Transform.Basis;
         int moveDirection = Sign(relativeVelocity.Z);
 
         UpdateProjection(moveDirection);
@@ -196,7 +197,7 @@ public partial class ProceduralWalk : CharacterBody3D
         projection.GlobalRotation = GlobalRotation;
 
         Vector3 projectedGlobal = GlobalPosition;
-        Vector3 projectedForward = Velocity / Engine.PhysicsTicksPerSecond;
+        Vector3 projectedForward = spiderMovement.Velocity / Engine.PhysicsTicksPerSecond;
 
         float projectedRotation = projection.GlobalRotation.Y;
 
