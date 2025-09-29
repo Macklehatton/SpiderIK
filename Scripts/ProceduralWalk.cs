@@ -28,7 +28,6 @@ public partial class ProceduralWalk : Node3D
     [Export] private int projectionIterations;
 
     [ExportSubgroup("Projection Translation")]
-    [Export(PropertyHint.Range, "-10,50")] private float currentSpeed;
     [Export(PropertyHint.Range, "0,50")] private float maxSpeed;
     [Export(PropertyHint.Range, "0,1")] private float projectionTranslationSample;
     [Export] private Curve translationBySpeed;
@@ -37,7 +36,6 @@ public partial class ProceduralWalk : Node3D
     [Export] private Curve addTranslationBySpeed;
 
     [ExportSubgroup("Projection Rotation")]
-    [Export(PropertyHint.Range, "-0.1,0.1")] private float turnSpeed;
     [Export(PropertyHint.Range, "0,0.1")] private float maxRotation;
     [Export(PropertyHint.Range, "0,1")] private float projectionRotationSample;
     [Export] private Curve rotationReductionBySpeed;
@@ -68,6 +66,7 @@ public partial class ProceduralWalk : Node3D
     private Vector3[] currentTargets;
     private Vector3[] footOrigins;
 
+    private float currentSpeed;
     private float currentCycle;
 
     private float currentRotation;
@@ -79,10 +78,14 @@ public partial class ProceduralWalk : Node3D
     private float longestStrideDistance;
     private float currentStrideFactor;
 
+    private Vector3 lastPosition;
+    private Vector3 lastRotation;
+
     public bool ResetFeetFlag { get; set; }
 
     public override void _Ready()
     {
+
         // Giving my GPU a break
         Engine.MaxFps = 60;
 
@@ -129,17 +132,37 @@ public partial class ProceduralWalk : Node3D
 
         UpdateCycle();
 
-        Rotate(Vector3.Up, currentRotation);
-
         MoveFeet();
 
-        Vector3 relativeVelocity = spiderMovement.Velocity * Transform.Basis;
+        currentSpeed = GetVelocity().Length();
+        currentRotation = GetCurrentRotation().Y;
+
+        Vector3 relativeVelocity = GetVelocity() * spiderMovement.Transform.Basis;
         int moveDirection = Sign(relativeVelocity.Z);
 
         UpdateProjection(moveDirection);
         UpdateRaycastProjections(moveDirection);
 
         HandleDebug();
+    }
+
+    // Derive speed and rotation, this way
+    // movement code doesn't need to be directly wired to IK
+
+    private Vector3 GetVelocity()
+    {
+        Vector3 velocity = GlobalPosition - lastPosition;
+        lastPosition = GlobalPosition;
+
+        return velocity;
+    }
+
+    private Vector3 GetCurrentRotation()
+    {
+        Vector3 rotation = GlobalRotation - lastRotation;
+        lastRotation = GlobalRotation;
+
+        return rotation;
     }
 
     private void HandleDebug()
@@ -235,6 +258,13 @@ public partial class ProceduralWalk : Node3D
     private void UpdateRaycastRotation()
     {
         float sample = projectionRotationSample;
+
+        // We get an error if we sample a zero length curve
+        if (projectionCurve.GetPointPosition(0) ==
+            projectionCurve.GetPointPosition(projectionCurve.PointCount - 1))
+        {
+            return;
+        }
 
         if (!IsEqualApprox(currentSpeedFactor, 0.0f))
         {
@@ -409,7 +439,7 @@ public partial class ProceduralWalk : Node3D
     private RayCast3D[] AddRayCasts(Node3D[] feet)
     {
         RayCast3D[] rayCasts = new RayCast3D[feet.Length];
-        raycastContainer = new Node3D();
+        raycastContainer = new Node3D() { Name = "RayCastContainer" };
         AddChild(raycastContainer);
 
         for (int i = 0; i <= feet.Length - 1; i++)

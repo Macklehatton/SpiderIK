@@ -1,20 +1,19 @@
 using Godot;
 using System;
-using System.Diagnostics;
-using VectorExtensions;
-using static Godot.Mathf;
 
 public partial class SpiderMovement : CharacterBody3D
 {
-    public float CurrentRotation { get; set; }
-    public float CurrentSpeed { get; set; }
+    [Export(PropertyHint.Range, "-0.1,0.1")] private float currentRotation;
+    [Export(PropertyHint.Range, "-10,50")] private float currentSpeed;
+
+    public float CurrentRotation { get => currentRotation; set => currentRotation = value; }
+    public float CurrentSpeed { get => currentSpeed; set => currentSpeed = value; }
 
     public override void _PhysicsProcess(double delta)
     {
-        Rotate(Vector3.Up, CurrentRotation);
-        Velocity = -Transform.Basis.Z * CurrentSpeed;
+        Rotate(Vector3.Up, currentRotation);
+        Velocity = -Transform.Basis.Z * currentSpeed;
 
         MoveAndSlide();
-        //MoveFeet();
     }
 }
