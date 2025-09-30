@@ -7,7 +7,7 @@ using static Godot.Mathf;
 public partial class ProceduralWalk : Node3D
 {
     [ExportGroup("References")]
-    [Export] private CharacterBody3D spiderMovement;
+    [Export] private SpiderMovement spiderMovement;
     [Export] private Node3D footContainer;
     [Export] private Skeleton3D skeleton;
     [Export] private Node3D projection;
@@ -77,10 +77,6 @@ public partial class ProceduralWalk : Node3D
     private float speedRotationFactor;
 
     private float longestStrideDistance;
-    private float currentStrideFactor;
-
-    private Vector3 lastPosition;
-    private Vector3 lastRotation;
 
     public override void _Ready()
     {
@@ -123,10 +119,10 @@ public partial class ProceduralWalk : Node3D
     {
         UpdateCycle();
 
-        currentSpeed = GetVelocity().Length();
-        currentRotation = GetCurrentRotation().Y;
+        currentSpeed = spiderMovement.CurrentSpeed;
+        currentRotation = spiderMovement.CurrentRotation;
 
-        Vector3 relativeVelocity = GetVelocity() * spiderMovement.Transform.Basis;
+        Vector3 relativeVelocity = spiderMovement.Velocity * spiderMovement.Transform.Basis;
         int moveDirection = Sign(relativeVelocity.Z);
 
         UpdateProjection(moveDirection);
@@ -135,25 +131,6 @@ public partial class ProceduralWalk : Node3D
         MoveFeet();
 
         HandleDebug();
-    }
-
-    // Derive speed and rotation, this way
-    // movement code doesn't need to be directly wired to IK
-
-    private Vector3 GetVelocity()
-    {
-        Vector3 velocity = GlobalPosition - lastPosition;
-        lastPosition = GlobalPosition;
-
-        return velocity;
-    }
-
-    private Vector3 GetCurrentRotation()
-    {
-        Vector3 rotation = GlobalRotation - lastRotation;
-        lastRotation = GlobalRotation;
-
-        return rotation;
     }
 
     private void HandleDebug()
@@ -388,7 +365,7 @@ public partial class ProceduralWalk : Node3D
 
     private void SwapInCycle()
     {
-        longestStrideDistance = maxLongestStrideDistance;
+        longestStrideDistance = 0.0f;
 
         for (int i = 0; i <= inCycle.Length - 1; i++)
         {
@@ -422,7 +399,6 @@ public partial class ProceduralWalk : Node3D
         }
 
         longestStrideDistance = Sqrt(longestStrideDistance);
-        currentStrideFactor = longestStrideDistance / maxLongestStrideDistance;
     }
 
     private bool CheckDistance(Vector3 footOrigin, Vector3 footTarget)

@@ -78,11 +78,12 @@ transform = Transform3D(0.601812, -0.680949, 0.41729, 0, 0.522502, 0.852638, -0.
 current = true
 size = 29.283
 
-[node name="MechanicalArachnid" type="CharacterBody3D" parent="." groups=["spider"]]
+[node name="MechanicalArachnid" type="CharacterBody3D" parent="." node_paths=PackedStringArray("proceduralWalk") groups=["spider"]]
 collision_layer = 2
 script = ExtResource("2_3dxm6")
-currentRotation = -0.025
-currentSpeed = 25.709
+currentRotation = 0.024
+currentSpeed = 50.0
+proceduralWalk = NodePath("ProceduralWalk")
 
 [node name="KeepInBounds" type="Node3D" parent="MechanicalArachnid" node_paths=PackedStringArray("bounds")]
 script = ExtResource("2_lgr22")
@@ -156,6 +157,7 @@ maxRotation = 0.1
 projectionRotationSample = 0.65
 rotationReductionBySpeed = SubResource("Curve_r0du0")
 rotationBySpeedRotation = SubResource("Curve_cm0pq")
+enableStepHeight = false
 maxHeight = 3.0
 maxStride = 2.5
 enableDebugs = true
