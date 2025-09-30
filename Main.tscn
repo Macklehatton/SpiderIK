@@ -16,8 +16,8 @@ _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.25), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [sub_resource type="Curve" id="Curve_sc1dx"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 1, Vector2(0.0845865, 1), 0.0, -0.622669, 0, 1, Vector2(1, 0.43), -0.622669, -0.568049, 1, 1]
-point_count = 3
+_data = [Vector2(0, 1), 0.0, -0.665, 0, 1, Vector2(1, 0.335), -0.665, -0.568049, 1, 1]
+point_count = 2
 
 [sub_resource type="Curve" id="Curve_uu6xs"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 1, Vector2(0.5, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.88), -0.24, 0.0, 1, 0]
@@ -28,8 +28,8 @@ _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.5, 0.814), -0.199344, -0.19934
 point_count = 4
 
 [sub_resource type="Curve" id="Curve_3dxm6"]
-_data = [Vector2(0, 0.4), 0.0, 0.0, 0, 0, Vector2(0.105, 0), -7.97073, 0.0, 0, 0]
-point_count = 2
+_data = [Vector2(0, 0.297909), 0.0, 0.0, 0, 0]
+point_count = 1
 
 [sub_resource type="Curve" id="Curve_r0du0"]
 _data = [Vector2(0, 1), 0.0, 0.00907625, 0, 0, Vector2(0.5, 0.995), 0.0, 0.0, 0, 0, Vector2(1, 0.77), -0.23, 0.0, 0, 0]
@@ -81,8 +81,7 @@ size = 29.283
 [node name="MechanicalArachnid" type="CharacterBody3D" parent="." node_paths=PackedStringArray("proceduralWalk") groups=["spider"]]
 collision_layer = 2
 script = ExtResource("2_3dxm6")
-currentRotation = 0.024
-currentSpeed = 50.0
+currentSpeed = 25.0
 proceduralWalk = NodePath("ProceduralWalk")
 
 [node name="KeepInBounds" type="Node3D" parent="MechanicalArachnid" node_paths=PackedStringArray("bounds")]
@@ -144,7 +143,7 @@ raycastHeight = 6.0
 minStepDistanceSquared = 1.0
 footTargetRadialProjection = 4.25
 resetDistance = 20.0
-strideCycleFactor = 0.055
+strideCycleFactor = 0.05
 maxLongestStrideDistance = 6.5
 projectionIterations = 10
 maxSpeed = 50.0

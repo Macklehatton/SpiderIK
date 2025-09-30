@@ -119,7 +119,7 @@ public partial class ProceduralWalk : Node3D
     {
         UpdateCycle();
 
-        currentSpeed = spiderMovement.CurrentSpeed;
+        currentSpeed = spiderMovement.Velocity.Z;
         currentRotation = spiderMovement.CurrentRotation;
 
         Vector3 relativeVelocity = spiderMovement.Velocity * spiderMovement.Transform.Basis;
@@ -140,7 +140,7 @@ public partial class ProceduralWalk : Node3D
             return;
         }
 
-        DebugDraw3D.DrawSphere(projection.GlobalPosition, 0.75f, Colors.AliceBlue);
+        DebugDraw3D.DrawSphere(projection.GlobalPosition, 0.3f, Colors.White);
 
         for (int i = 0; i <= rayCasts.Length - 1; i++)
         {
@@ -212,9 +212,12 @@ public partial class ProceduralWalk : Node3D
 
     private void UpdateRaycastProjections(int moveDirection)
     {
-        currentSpeedFactor = Abs(currentSpeed) / maxSpeed * Engine.PhysicsTicksPerSecond;
+        currentSpeedFactor = Abs(currentSpeed) / maxSpeed;
         currentRotationFactor = Abs(currentRotation) / maxRotation;
         speedRotationFactor = Sqrt(currentSpeedFactor * currentRotationFactor);
+
+        Debug.WriteLine(currentSpeedFactor);
+
 
         UpdateRaycastRotation();
         UpdateRaycastPosition(moveDirection);
@@ -284,6 +287,16 @@ public partial class ProceduralWalk : Node3D
         addTranslation = addTranslation.Normalized();
         addTranslation *= addTranslationBySpeed.Sample(currentSpeedFactor);
         raycastContainer.GlobalPosition += addTranslation;
+
+        if (enableDebugs)
+        {
+            // We get an error if we sample a zero length Curve3D
+            if (projectionCurve.GetPointPosition(0) != projectionCurve.GetPointPosition(projectionCurve.PointCount - 1))
+            {
+                Vector3 samplePosition = projectionCurve.SampleBaked(sample * projectionCurve.GetBakedLength());
+                DebugDraw3D.DrawSphere(samplePosition, 0.5f, Colors.SkyBlue);
+            }
+        }
     }
 
     private void UpdateIndividualRaycasts()
