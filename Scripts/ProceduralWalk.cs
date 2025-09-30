@@ -82,11 +82,8 @@ public partial class ProceduralWalk : Node3D
     private Vector3 lastPosition;
     private Vector3 lastRotation;
 
-    public bool ResetFeetFlag { get; set; }
-
     public override void _Ready()
     {
-
         // Giving my GPU a break
         Engine.MaxFps = 60;
 
@@ -124,13 +121,6 @@ public partial class ProceduralWalk : Node3D
 
     public override void _PhysicsProcess(double delta)
     {
-        if (ResetFeetFlag)
-        {
-            ResetFeet();
-            ResetFeetFlag = false;
-            return;
-        }
-
         UpdateCycle();
 
         MoveFeet();
