@@ -250,13 +250,7 @@ public partial class ProceduralWalk : Node3D
     {
         float sample = projectionRotationSample;
 
-        // We get an error if we sample a zero length curve
-        if (projectionCurve.GetPointPosition(0) ==
-            projectionCurve.GetPointPosition(projectionCurve.PointCount - 1))
-        {
-            return;
-        }
-
+        // Only applied based on speed
         if (!IsEqualApprox(currentSpeedFactor, 0.0f))
         {
             sample *= rotationReductionBySpeed.Sample(currentSpeedFactor);
@@ -264,8 +258,12 @@ public partial class ProceduralWalk : Node3D
 
             if (enableDebugs)
             {
-                Vector3 rotationPosition = projectionCurve.SampleBaked(sample * projectionCurve.GetBakedLength());
-                DebugDraw3D.DrawSphere(rotationPosition, 0.5f, Colors.MistyRose);
+                // We get an error if we sample a zero length Curve3D
+                if (projectionCurve.GetPointPosition(0) != projectionCurve.GetPointPosition(projectionCurve.PointCount - 1))
+                {
+                    Vector3 rotationPosition = projectionCurve.SampleBaked(sample * projectionCurve.GetBakedLength());
+                    DebugDraw3D.DrawSphere(rotationPosition, 0.5f, Colors.MistyRose);
+                }
             }
         }
 
