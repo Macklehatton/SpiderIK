@@ -19,6 +19,7 @@ public partial class ProceduralWalk : Node3D
     [ExportGroup("Feet")]
     [Export] private float minStepDistanceSquared;
     [Export] private float footTargetRadialProjection;
+    [Export] private float resetDistance;
 
     [ExportGroup("Cycle")]
     [Export] private float strideCycleFactor;
@@ -363,6 +364,11 @@ public partial class ProceduralWalk : Node3D
 
         if (distance == 0.0f)
         {
+            return;
+        }
+        else if (distance > resetDistance)
+        {
+            ResetFeet();
             return;
         }
 
