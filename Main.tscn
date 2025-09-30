@@ -16,7 +16,7 @@ _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.25), 0.0, 0.0, 0, 0]
 point_count = 2
 
 [sub_resource type="Curve" id="Curve_sc1dx"]
-_data = [Vector2(0, 1), 0.0, 0.0, 0, 1, Vector2(0.0845865, 1), 0.0, -0.568049, 0, 1, Vector2(1, 0.48), -0.568049, -0.568049, 1, 1]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 1, Vector2(0.0845865, 1), 0.0, -0.622669, 0, 1, Vector2(1, 0.43), -0.622669, -0.568049, 1, 1]
 point_count = 3
 
 [sub_resource type="Curve" id="Curve_uu6xs"]
@@ -81,7 +81,8 @@ size = 29.283
 [node name="MechanicalArachnid" type="CharacterBody3D" parent="." groups=["spider"]]
 collision_layer = 2
 script = ExtResource("2_3dxm6")
-currentRotation = -0.006
+currentRotation = -0.025
+currentSpeed = 25.709
 
 [node name="KeepInBounds" type="Node3D" parent="MechanicalArachnid" node_paths=PackedStringArray("bounds")]
 script = ExtResource("2_lgr22")

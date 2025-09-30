@@ -123,8 +123,6 @@ public partial class ProceduralWalk : Node3D
     {
         UpdateCycle();
 
-        MoveFeet();
-
         currentSpeed = GetVelocity().Length();
         currentRotation = GetCurrentRotation().Y;
 
@@ -133,6 +131,8 @@ public partial class ProceduralWalk : Node3D
 
         UpdateProjection(moveDirection);
         UpdateRaycastProjections(moveDirection);
+
+        MoveFeet();
 
         HandleDebug();
     }
@@ -235,7 +235,7 @@ public partial class ProceduralWalk : Node3D
 
     private void UpdateRaycastProjections(int moveDirection)
     {
-        currentSpeedFactor = Abs(currentSpeed) / maxSpeed;
+        currentSpeedFactor = Abs(currentSpeed) / maxSpeed * Engine.PhysicsTicksPerSecond;
         currentRotationFactor = Abs(currentRotation) / maxRotation;
         speedRotationFactor = Sqrt(currentSpeedFactor * currentRotationFactor);
 
