@@ -12,6 +12,8 @@ public partial class DebugUI : Node
     [Export] private Control leftDebug;
     [Export] private CheckButton debugCheck;
 
+    [Export] private CheckButton orthogonalButton;
+
     [Export] private Slider speedSlider;
     [Export] private Slider rotationSlider;
     [Export] private Label speedLabel;
@@ -98,7 +100,16 @@ public partial class DebugUI : Node
         {
             if (cameraButtons[i].ButtonPressed)
             {
-                cameras[i].MakeCurrent();
+                Camera3D camera = cameras[i];
+                camera.MakeCurrent();
+                if (orthogonalButton.ButtonPressed)
+                {
+                    camera.Projection = Camera3D.ProjectionType.Orthogonal;
+                }
+                else
+                {
+                    camera.Projection = Camera3D.ProjectionType.Perspective;
+                }
             }
         }
     }

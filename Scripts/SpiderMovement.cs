@@ -14,7 +14,7 @@ public partial class SpiderMovement : CharacterBody3D
     {
         Rotate(Vector3.Up, currentRotation);
         Velocity = -Transform.Basis.Z * currentSpeed;
-        Velocity += new Vector3(0.0f, -9.8f, 0.0f) / Engine.PhysicsTicksPerSecond;
+        Velocity += new Vector3(0.0f, -9.8f, 0.0f);
 
         MoveAndSlide();
     }
