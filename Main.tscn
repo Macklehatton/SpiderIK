@@ -76,12 +76,17 @@ albedo_texture = ExtResource("4_cm0pq")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="DebugUI" type="Node" parent="CanvasLayer" node_paths=PackedStringArray("proceduralWalk", "fieldsContainer", "leftDebug", "debugCheck")]
+[node name="DebugUI" type="Node" parent="CanvasLayer" node_paths=PackedStringArray("spiderMovement", "proceduralWalk", "fieldsContainer", "leftDebug", "debugCheck", "speedSlider", "rotationSlider", "speedLabel", "rotationLabel")]
 script = ExtResource("1_trn2v")
+spiderMovement = NodePath("../../MechanicalArachnid")
 proceduralWalk = NodePath("../../MechanicalArachnid/ProceduralWalk")
 fieldsContainer = NodePath("../VBoxContainer/LeftDebug/DebugFields")
 leftDebug = NodePath("../VBoxContainer/LeftDebug")
 debugCheck = NodePath("../VBoxContainer/HBoxContainer/DebugButton")
+speedSlider = NodePath("../VBoxContainer2/HBoxContainer/SpeedSlider")
+rotationSlider = NodePath("../VBoxContainer2/HBoxContainer2/RotationSlider")
+speedLabel = NodePath("../VBoxContainer2/HBoxContainer/SpeedLabel")
+rotationLabel = NodePath("../VBoxContainer2/HBoxContainer2/RotationLabel")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer"]
 offset_right = 268.0
@@ -151,13 +156,15 @@ size_flags_horizontal = 8
 text = "Speed"
 horizontal_alignment = 2
 
-[node name="HSlider" type="HSlider" parent="CanvasLayer/VBoxContainer2/HBoxContainer"]
+[node name="SpeedSlider" type="HSlider" parent="CanvasLayer/VBoxContainer2/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
+min_value = -10.0
+max_value = 50.0
 
-[node name="Label2" type="Label" parent="CanvasLayer/VBoxContainer2/HBoxContainer"]
-custom_minimum_size = Vector2(25, 0)
+[node name="SpeedLabel" type="Label" parent="CanvasLayer/VBoxContainer2/HBoxContainer"]
+custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 text = "0"
 
@@ -170,13 +177,16 @@ layout_mode = 2
 text = "Rotation"
 horizontal_alignment = 2
 
-[node name="HSlider2" type="HSlider" parent="CanvasLayer/VBoxContainer2/HBoxContainer2"]
+[node name="RotationSlider" type="HSlider" parent="CanvasLayer/VBoxContainer2/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
+min_value = -0.1
+max_value = 0.1
+step = 0.001
 
-[node name="Label2" type="Label" parent="CanvasLayer/VBoxContainer2/HBoxContainer2"]
-custom_minimum_size = Vector2(25, 0)
+[node name="RotationLabel" type="Label" parent="CanvasLayer/VBoxContainer2/HBoxContainer2"]
+custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 text = "0"
 

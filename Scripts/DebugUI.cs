@@ -5,10 +5,17 @@ using System.Reflection;
 
 public partial class DebugUI : Node
 {
+    [Export] private SpiderMovement spiderMovement;
     [Export] private ProceduralWalk proceduralWalk;
+
     [Export] private Control fieldsContainer;
     [Export] private Control leftDebug;
     [Export] private CheckButton debugCheck;
+
+    [Export] private Slider speedSlider;
+    [Export] private Slider rotationSlider;
+    [Export] private Label speedLabel;
+    [Export] private Label rotationLabel;
 
     private Dictionary<FieldInfo, Label> fieldValues;
 
@@ -20,8 +27,6 @@ public partial class DebugUI : Node
 
     public override void _Process(double delta)
     {
-        UpdateUI();
-
         if (debugCheck.ButtonPressed)
         {
             leftDebug.Visible = true;
@@ -29,7 +34,16 @@ public partial class DebugUI : Node
         else
         {
             leftDebug.Visible = false;
+            return;
         }
+
+        UpdateUI();
+
+        spiderMovement.CurrentSpeed = (float)speedSlider.Value;
+        spiderMovement.CurrentRotation = (float)rotationSlider.Value;
+
+        speedLabel.Text = spiderMovement.CurrentSpeed.ToString();
+        rotationLabel.Text = spiderMovement.CurrentRotation.ToString();
     }
 
     private void SetupUI()
@@ -65,10 +79,6 @@ public partial class DebugUI : Node
 
     private void UpdateUI()
     {
-        if (!debugCheck.ButtonPressed)
-        {
-            return;
-        }
         foreach (KeyValuePair<FieldInfo, Label> kvp in fieldValues)
         {
             kvp.Value.Text = kvp.Key.GetValue(proceduralWalk).ToString();
