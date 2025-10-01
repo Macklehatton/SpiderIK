@@ -24,6 +24,7 @@ public partial class ProceduralWalk : Node3D
     [ExportGroup("Cycle")]
     [Export] private float strideCycleFactor;
     [Export] private float maxLongestStrideDistance;
+    [Export] private float minCycle;
 
     [ExportGroup("Projection")]
     [Export] private int projectionIterations;
@@ -99,7 +100,6 @@ public partial class ProceduralWalk : Node3D
 
         // We don't want the foot IK targets moving with the character
         footContainer.CallDeferred("reparent", GetTree().Root);
-
         projection.CallDeferred("reparent", GetTree().Root);
 
         projectionCurve = new Curve3D();
@@ -119,11 +119,11 @@ public partial class ProceduralWalk : Node3D
     {
         UpdateCycle();
 
-        currentSpeed = spiderMovement.Velocity.Z;
-        currentRotation = spiderMovement.CurrentRotation;
-
-        Vector3 relativeVelocity = spiderMovement.Velocity * spiderMovement.Transform.Basis;
+        Vector3 relativeVelocity = spiderMovement.Velocity * spiderMovement.GlobalBasis;
         int moveDirection = Sign(relativeVelocity.Z);
+
+        currentSpeed = spiderMovement.CurrentSpeed / Engine.PhysicsTicksPerSecond;
+        currentRotation = spiderMovement.CurrentRotation;
 
         UpdateProjection(moveDirection);
         UpdateRaycastProjections(moveDirection);
@@ -164,6 +164,7 @@ public partial class ProceduralWalk : Node3D
     {
         float cycleDelta = 0.0f;
         cycleDelta += longestStrideDistance * strideCycleFactor;
+        cycleDelta = Max(cycleDelta, minCycle);
 
         currentCycle += cycleDelta;
 
@@ -212,12 +213,9 @@ public partial class ProceduralWalk : Node3D
 
     private void UpdateRaycastProjections(int moveDirection)
     {
-        currentSpeedFactor = Abs(currentSpeed) / maxSpeed;
+        currentSpeedFactor = Abs(currentSpeed) / maxSpeed * Engine.PhysicsTicksPerSecond;
         currentRotationFactor = Abs(currentRotation) / maxRotation;
         speedRotationFactor = Sqrt(currentSpeedFactor * currentRotationFactor);
-
-        Debug.WriteLine(currentSpeedFactor);
-
 
         UpdateRaycastRotation();
         UpdateRaycastPosition(moveDirection);

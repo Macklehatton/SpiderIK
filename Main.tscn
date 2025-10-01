@@ -81,7 +81,6 @@ size = 29.283
 [node name="MechanicalArachnid" type="CharacterBody3D" parent="." node_paths=PackedStringArray("proceduralWalk") groups=["spider"]]
 collision_layer = 2
 script = ExtResource("2_3dxm6")
-currentSpeed = 25.0
 proceduralWalk = NodePath("ProceduralWalk")
 
 [node name="KeepInBounds" type="Node3D" parent="MechanicalArachnid" node_paths=PackedStringArray("bounds")]
@@ -140,11 +139,12 @@ skeleton = NodePath("../MechanicalArachnidRig/EDGE_ARM_LegsEdges_001/Skeleton3D"
 projection = NodePath("../Projection")
 raycastDistance = 50.0
 raycastHeight = 6.0
-minStepDistanceSquared = 1.0
+minStepDistanceSquared = 2.0
 footTargetRadialProjection = 4.25
 resetDistance = 20.0
 strideCycleFactor = 0.05
 maxLongestStrideDistance = 6.5
+minCycle = 0.1
 projectionIterations = 10
 maxSpeed = 50.0
 projectionTranslationSample = 1.0
