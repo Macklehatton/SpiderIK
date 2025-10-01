@@ -17,16 +17,28 @@ public partial class DebugUI : Node
     [Export] private Label speedLabel;
     [Export] private Label rotationLabel;
 
+    [Export] private Godot.Collections.Array<Camera3D> cameras;
+    [Export] private Godot.Collections.Array<Button> cameraButtons;
+
     private Dictionary<FieldInfo, Label> fieldValues;
 
     public override void _Ready()
     {
         fieldValues = new Dictionary<FieldInfo, Label>();
         SetupUI();
+
+        // Possible bug resets this to min value instead of 0
+        rotationSlider.Value = 0.0f;
     }
 
     public override void _Process(double delta)
     {
+        spiderMovement.CurrentSpeed = (float)speedSlider.Value;
+        spiderMovement.CurrentRotation = (float)rotationSlider.Value;
+
+        speedLabel.Text = spiderMovement.CurrentSpeed.ToString();
+        rotationLabel.Text = spiderMovement.CurrentRotation.ToString();
+
         if (debugCheck.ButtonPressed)
         {
             leftDebug.Visible = true;
@@ -38,12 +50,7 @@ public partial class DebugUI : Node
         }
 
         UpdateUI();
-
-        spiderMovement.CurrentSpeed = (float)speedSlider.Value;
-        spiderMovement.CurrentRotation = (float)rotationSlider.Value;
-
-        speedLabel.Text = spiderMovement.CurrentSpeed.ToString();
-        rotationLabel.Text = spiderMovement.CurrentRotation.ToString();
+        UpdateCameras();
     }
 
     private void SetupUI()
@@ -82,6 +89,17 @@ public partial class DebugUI : Node
         foreach (KeyValuePair<FieldInfo, Label> kvp in fieldValues)
         {
             kvp.Value.Text = kvp.Key.GetValue(proceduralWalk).ToString();
+        }
+    }
+
+    private void UpdateCameras()
+    {
+        for (int i = 0; i < cameras.Count; i++)
+        {
+            if (cameraButtons[i].ButtonPressed)
+            {
+                cameras[i].MakeCurrent();
+            }
         }
     }
 }

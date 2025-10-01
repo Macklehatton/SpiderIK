@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://ccnba2mdvamym"]
+[gd_scene load_steps=27 format=3 uid="uid://ccnba2mdvamym"]
 
 [ext_resource type="Script" uid="uid://cor8dpuurj6p5" path="res://Scripts/DebugUI.cs" id="1_trn2v"]
 [ext_resource type="Script" uid="uid://ffetdx4ooyjq" path="res://Scripts/SpiderMovement.cs" id="2_3dxm6"]
@@ -8,6 +8,8 @@
 [ext_resource type="Texture2D" uid="uid://ef4gue7tekom" path="res://addons/kenney_prototype_textures/dark/texture_01.png" id="2_uu6xs"]
 [ext_resource type="PackedScene" uid="uid://dgixv1ydirgkn" path="res://Prefabs/mechanical_arachnid_rig.tscn" id="3_trn2v"]
 [ext_resource type="Texture2D" uid="uid://da17mjgl6y4a0" path="res://addons/kenney_prototype_textures/orange/texture_01.png" id="4_cm0pq"]
+
+[sub_resource type="ButtonGroup" id="ButtonGroup_trn2v"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_uu6xs"]
 radius = 3.25
@@ -76,7 +78,7 @@ albedo_texture = ExtResource("4_cm0pq")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="DebugUI" type="Node" parent="CanvasLayer" node_paths=PackedStringArray("spiderMovement", "proceduralWalk", "fieldsContainer", "leftDebug", "debugCheck", "speedSlider", "rotationSlider", "speedLabel", "rotationLabel")]
+[node name="DebugUI" type="Node" parent="CanvasLayer" node_paths=PackedStringArray("spiderMovement", "proceduralWalk", "fieldsContainer", "leftDebug", "debugCheck", "speedSlider", "rotationSlider", "speedLabel", "rotationLabel", "cameras", "cameraButtons")]
 script = ExtResource("1_trn2v")
 spiderMovement = NodePath("../../MechanicalArachnid")
 proceduralWalk = NodePath("../../MechanicalArachnid/ProceduralWalk")
@@ -87,6 +89,8 @@ speedSlider = NodePath("../VBoxContainer2/HBoxContainer/SpeedSlider")
 rotationSlider = NodePath("../VBoxContainer2/HBoxContainer2/RotationSlider")
 speedLabel = NodePath("../VBoxContainer2/HBoxContainer/SpeedLabel")
 rotationLabel = NodePath("../VBoxContainer2/HBoxContainer2/RotationLabel")
+cameras = [NodePath("../../AerialCamera"), NodePath("../../MechanicalArachnid/ThirdPersonCameraPivot/ThirdPersonCamera"), NodePath("../../MechanicalArachnid/SideCamera"), NodePath("../../MechanicalArachnid/TopCamera")]
+cameraButtons = [NodePath("../VBoxContainer/LeftDebug/Cameras/Aerial"), NodePath("../VBoxContainer/LeftDebug/Cameras/ThirdPerson"), NodePath("../VBoxContainer/LeftDebug/Cameras/Side"), NodePath("../VBoxContainer/LeftDebug/Cameras/Top")]
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer"]
 offset_right = 268.0
@@ -109,29 +113,39 @@ layout_mode = 2
 
 [node name="OrthoButton" type="CheckButton" parent="CanvasLayer/VBoxContainer/LeftDebug"]
 layout_mode = 2
+disabled = true
 text = "Orthographic"
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/VBoxContainer/LeftDebug"]
+[node name="Cameras" type="HBoxContainer" parent="CanvasLayer/VBoxContainer/LeftDebug"]
 layout_mode = 2
 
-[node name="Aerial" type="Button" parent="CanvasLayer/VBoxContainer/LeftDebug/HBoxContainer2"]
+[node name="Top" type="Button" parent="CanvasLayer/VBoxContainer/LeftDebug/Cameras"]
 layout_mode = 2
-text = "Aerial"
+toggle_mode = true
+button_group = SubResource("ButtonGroup_trn2v")
+text = "Top"
 
-[node name="ThirdPerson" type="Button" parent="CanvasLayer/VBoxContainer/LeftDebug/HBoxContainer2"]
+[node name="Side" type="Button" parent="CanvasLayer/VBoxContainer/LeftDebug/Cameras"]
 layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_trn2v")
+text = "Side"
+
+[node name="ThirdPerson" type="Button" parent="CanvasLayer/VBoxContainer/LeftDebug/Cameras"]
+layout_mode = 2
+toggle_mode = true
+button_group = SubResource("ButtonGroup_trn2v")
 text = "Third Person"
 
-[node name="Profile" type="Button" parent="CanvasLayer/VBoxContainer/LeftDebug/HBoxContainer2"]
+[node name="Aerial" type="Button" parent="CanvasLayer/VBoxContainer/LeftDebug/Cameras"]
 layout_mode = 2
-text = "Profile"
-
-[node name="Aerial4" type="Button" parent="CanvasLayer/VBoxContainer/LeftDebug/HBoxContainer2"]
-layout_mode = 2
-text = "Top"
+toggle_mode = true
+button_group = SubResource("ButtonGroup_trn2v")
+text = "Aerial"
 
 [node name="ResetButton" type="Button" parent="CanvasLayer/VBoxContainer/LeftDebug"]
 layout_mode = 2
+disabled = true
 text = "Reset IK"
 
 [node name="DebugFields" type="VBoxContainer" parent="CanvasLayer/VBoxContainer/LeftDebug"]
@@ -183,7 +197,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 1
 min_value = -0.1
 max_value = 0.1
-step = 0.001
+step = 0.01
 
 [node name="RotationLabel" type="Label" parent="CanvasLayer/VBoxContainer2/HBoxContainer2"]
 custom_minimum_size = Vector2(50, 0)
@@ -192,7 +206,6 @@ text = "0"
 
 [node name="AerialCamera" type="Camera3D" parent="."]
 transform = Transform3D(0.601812, -0.680949, 0.41729, 0, 0.522502, 0.852638, -0.798637, -0.513128, 0.314448, 24.6471, 46.1284, 8.00414)
-current = true
 size = 29.283
 
 [node name="MechanicalArachnid" type="CharacterBody3D" parent="." node_paths=PackedStringArray("proceduralWalk") groups=["spider"]]
@@ -288,16 +301,16 @@ size = Vector3(1, 1, 6)
 [node name="CSGSphere3D" type="CSGSphere3D" parent="MechanicalArachnid/CSGBox3D"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3)
 
+[node name="SideCamera" type="Camera3D" parent="MechanicalArachnid"]
+transform = Transform3D(0.595468, 0, 0.803379, 0, 1, 0, -0.803379, 0, 0.595468, 6.34524, 2.46237, 5.50257)
+projection = 1
+size = 9.216
+
 [node name="TopCamera" type="Camera3D" parent="MechanicalArachnid"]
 transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 15, 0)
 projection = 1
 current = true
 size = 19.063
-
-[node name="SideCamera" type="Camera3D" parent="MechanicalArachnid"]
-transform = Transform3D(0.595468, 0, 0.803379, 0, 1, 0, -0.803379, 0, 0.595468, 6.34524, 2.46237, 5.50257)
-projection = 1
-size = 9.216
 
 [node name="ThirdPersonCameraPivot" type="Node3D" parent="MechanicalArachnid"]
 transform = Transform3D(0.849893, 0, 0.526956, 0, 1, 0, -0.526956, 0, 0.849893, 0, 0, 0)
