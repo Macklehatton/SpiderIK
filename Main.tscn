@@ -76,18 +76,69 @@ albedo_texture = ExtResource("4_cm0pq")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="DebugUI" type="Node" parent="CanvasLayer" node_paths=PackedStringArray("proceduralWalk", "fieldsContainer")]
+[node name="DebugUI" type="Node" parent="CanvasLayer" node_paths=PackedStringArray("proceduralWalk", "fieldsContainer", "leftDebug", "debugCheck")]
 script = ExtResource("1_trn2v")
 proceduralWalk = NodePath("../../MechanicalArachnid/ProceduralWalk")
-fieldsContainer = NodePath("../DebugFields")
+fieldsContainer = NodePath("../VBoxContainer/LeftDebug/DebugFields")
+leftDebug = NodePath("../VBoxContainer/LeftDebug")
+debugCheck = NodePath("../VBoxContainer/HBoxContainer/DebugButton")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer"]
+offset_right = 268.0
+offset_bottom = 133.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="CanvasLayer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "Debug"
+
+[node name="DebugButton" type="CheckButton" parent="CanvasLayer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+button_pressed = true
+
+[node name="LeftDebug" type="VBoxContainer" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
+
+[node name="OrthoButton" type="CheckButton" parent="CanvasLayer/VBoxContainer/LeftDebug"]
+layout_mode = 2
+text = "Orthographic"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/VBoxContainer/LeftDebug"]
+layout_mode = 2
+
+[node name="Aerial" type="Button" parent="CanvasLayer/VBoxContainer/LeftDebug/HBoxContainer2"]
+layout_mode = 2
+text = "Aerial"
+
+[node name="ThirdPerson" type="Button" parent="CanvasLayer/VBoxContainer/LeftDebug/HBoxContainer2"]
+layout_mode = 2
+text = "Third Person"
+
+[node name="Profile" type="Button" parent="CanvasLayer/VBoxContainer/LeftDebug/HBoxContainer2"]
+layout_mode = 2
+text = "Profile"
+
+[node name="Aerial4" type="Button" parent="CanvasLayer/VBoxContainer/LeftDebug/HBoxContainer2"]
+layout_mode = 2
+text = "Top"
+
+[node name="ResetButton" type="Button" parent="CanvasLayer/VBoxContainer/LeftDebug"]
+layout_mode = 2
+text = "Reset IK"
+
+[node name="DebugFields" type="VBoxContainer" parent="CanvasLayer/VBoxContainer/LeftDebug"]
+layout_mode = 2
 
 [node name="VBoxContainer2" type="VBoxContainer" parent="CanvasLayer"]
 custom_minimum_size = Vector2(300, 0)
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -40.0
-offset_bottom = 40.0
+offset_left = -300.0
+offset_bottom = 50.0
 grow_horizontal = 0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/VBoxContainer2"]
@@ -129,47 +180,6 @@ custom_minimum_size = Vector2(25, 0)
 layout_mode = 2
 text = "0"
 
-[node name="Panel" type="Panel" parent="CanvasLayer"]
-offset_left = 1112.0
-offset_right = 1152.0
-size_flags_vertical = 3
-
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer"]
-offset_right = 268.0
-offset_bottom = 155.0
-
-[node name="CheckButton" type="CheckButton" parent="CanvasLayer/VBoxContainer"]
-layout_mode = 2
-text = "Orthographic"
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/VBoxContainer"]
-layout_mode = 2
-
-[node name="Aerial" type="Button" parent="CanvasLayer/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-text = "Aerial"
-
-[node name="ThirdPerson" type="Button" parent="CanvasLayer/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-text = "Third Person"
-
-[node name="Profile" type="Button" parent="CanvasLayer/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-text = "Profile"
-
-[node name="Aerial4" type="Button" parent="CanvasLayer/VBoxContainer/HBoxContainer2"]
-layout_mode = 2
-text = "Top"
-
-[node name="ResetButton" type="Button" parent="CanvasLayer/VBoxContainer"]
-layout_mode = 2
-text = "Reset IK"
-
-[node name="DebugFields" type="VBoxContainer" parent="CanvasLayer"]
-offset_top = 159.0
-offset_right = 268.0
-offset_bottom = 159.0
-
 [node name="AerialCamera" type="Camera3D" parent="."]
 transform = Transform3D(0.601812, -0.680949, 0.41729, 0, 0.522502, 0.852638, -0.798637, -0.513128, 0.314448, 24.6471, 46.1284, 8.00414)
 current = true
@@ -178,6 +188,7 @@ size = 29.283
 [node name="MechanicalArachnid" type="CharacterBody3D" parent="." node_paths=PackedStringArray("proceduralWalk") groups=["spider"]]
 collision_layer = 2
 script = ExtResource("2_3dxm6")
+currentRotation = -0.001
 currentSpeed = 23.83
 proceduralWalk = NodePath("ProceduralWalk")
 

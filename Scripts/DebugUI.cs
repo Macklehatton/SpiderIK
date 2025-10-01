@@ -7,6 +7,8 @@ public partial class DebugUI : Node
 {
     [Export] private ProceduralWalk proceduralWalk;
     [Export] private Control fieldsContainer;
+    [Export] private Control leftDebug;
+    [Export] private CheckButton debugCheck;
 
     private Dictionary<FieldInfo, Label> fieldValues;
 
@@ -19,6 +21,15 @@ public partial class DebugUI : Node
     public override void _Process(double delta)
     {
         UpdateUI();
+
+        if (debugCheck.ButtonPressed)
+        {
+            leftDebug.Visible = true;
+        }
+        else
+        {
+            leftDebug.Visible = false;
+        }
     }
 
     private void SetupUI()
