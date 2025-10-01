@@ -211,8 +211,6 @@ size = 29.283
 [node name="MechanicalArachnid" type="CharacterBody3D" parent="." node_paths=PackedStringArray("proceduralWalk") groups=["spider"]]
 collision_layer = 2
 script = ExtResource("2_3dxm6")
-currentRotation = -0.001
-currentSpeed = 23.83
 proceduralWalk = NodePath("ProceduralWalk")
 
 [node name="KeepInBounds" type="Node3D" parent="MechanicalArachnid" node_paths=PackedStringArray("bounds")]
