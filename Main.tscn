@@ -78,77 +78,76 @@ albedo_texture = ExtResource("4_cm0pq")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="DebugUI" type="Node" parent="CanvasLayer" node_paths=PackedStringArray("spiderMovement", "proceduralWalk", "fieldsContainer", "leftDebug", "debugCheck", "orthogonalButton", "speedSlider", "rotationSlider", "speedLabel", "rotationLabel", "cameras", "cameraButtons")]
+[node name="DebugUI" type="Node" parent="CanvasLayer" node_paths=PackedStringArray("spiderMovement", "proceduralWalk", "fieldsContainer", "leftDebug", "orthogonalCheck", "debugCheck", "raycastsCheck", "speedSlider", "rotationSlider", "speedLabel", "rotationLabel", "cameras", "cameraButtons")]
 script = ExtResource("1_trn2v")
 spiderMovement = NodePath("../../MechanicalArachnid")
 proceduralWalk = NodePath("../../MechanicalArachnid/ProceduralWalk")
 fieldsContainer = NodePath("../VBoxContainer/LeftDebug/DebugFields")
 leftDebug = NodePath("../VBoxContainer/LeftDebug")
-debugCheck = NodePath("../VBoxContainer/HBoxContainer/DebugButton")
-orthogonalButton = NodePath("../VBoxContainer/LeftDebug/OrthoButton")
-speedSlider = NodePath("../VBoxContainer2/HBoxContainer/SpeedSlider")
-rotationSlider = NodePath("../VBoxContainer2/HBoxContainer2/RotationSlider")
-speedLabel = NodePath("../VBoxContainer2/HBoxContainer/SpeedLabel")
-rotationLabel = NodePath("../VBoxContainer2/HBoxContainer2/RotationLabel")
+orthogonalCheck = NodePath("../VBoxContainer/OrthoButton")
+debugCheck = NodePath("../VBoxContainer/DebugButton")
+raycastsCheck = NodePath("../VBoxContainer/LeftDebug/RaycastsButton")
+speedSlider = NodePath("../Sliders/HBoxContainer/SpeedSlider")
+rotationSlider = NodePath("../Sliders/HBoxContainer2/RotationSlider")
+speedLabel = NodePath("../Sliders/HBoxContainer/SpeedLabel")
+rotationLabel = NodePath("../Sliders/HBoxContainer2/RotationLabel")
 cameras = [NodePath("../../AerialCamera"), NodePath("../../MechanicalArachnid/ThirdPersonCameraPivot/ThirdPersonCamera"), NodePath("../../MechanicalArachnid/SideCamera"), NodePath("../../MechanicalArachnid/TopCamera")]
-cameraButtons = [NodePath("../VBoxContainer/LeftDebug/Cameras/Aerial"), NodePath("../VBoxContainer/LeftDebug/Cameras/ThirdPerson"), NodePath("../VBoxContainer/LeftDebug/Cameras/Side"), NodePath("../VBoxContainer/LeftDebug/Cameras/Top")]
+cameraButtons = [NodePath("../VBoxContainer/Cameras/Aerial"), NodePath("../VBoxContainer/Cameras/ThirdPerson"), NodePath("../VBoxContainer/Cameras/Side"), NodePath("../VBoxContainer/Cameras/Top")]
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer"]
 offset_right = 268.0
 offset_bottom = 133.0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/VBoxContainer"]
-layout_mode = 2
-
-[node name="Label" type="Label" parent="CanvasLayer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-text = "Debug"
-
-[node name="DebugButton" type="CheckButton" parent="CanvasLayer/VBoxContainer/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 0
-button_pressed = true
-
-[node name="LeftDebug" type="VBoxContainer" parent="CanvasLayer/VBoxContainer"]
-layout_mode = 2
-
-[node name="OrthoButton" type="CheckButton" parent="CanvasLayer/VBoxContainer/LeftDebug"]
+[node name="OrthoButton" type="CheckButton" parent="CanvasLayer/VBoxContainer"]
 layout_mode = 2
 button_pressed = true
 text = "Orthogonal"
 
-[node name="Cameras" type="HBoxContainer" parent="CanvasLayer/VBoxContainer/LeftDebug"]
+[node name="Cameras" type="HBoxContainer" parent="CanvasLayer/VBoxContainer"]
 layout_mode = 2
 
-[node name="Top" type="Button" parent="CanvasLayer/VBoxContainer/LeftDebug/Cameras"]
+[node name="Top" type="Button" parent="CanvasLayer/VBoxContainer/Cameras"]
 layout_mode = 2
 toggle_mode = true
 button_pressed = true
 button_group = SubResource("ButtonGroup_trn2v")
 text = "Top"
 
-[node name="Side" type="Button" parent="CanvasLayer/VBoxContainer/LeftDebug/Cameras"]
+[node name="Side" type="Button" parent="CanvasLayer/VBoxContainer/Cameras"]
 layout_mode = 2
 toggle_mode = true
 button_group = SubResource("ButtonGroup_trn2v")
 text = "Side"
 
-[node name="ThirdPerson" type="Button" parent="CanvasLayer/VBoxContainer/LeftDebug/Cameras"]
+[node name="ThirdPerson" type="Button" parent="CanvasLayer/VBoxContainer/Cameras"]
 layout_mode = 2
 toggle_mode = true
 button_group = SubResource("ButtonGroup_trn2v")
 text = "Third Person"
 
-[node name="Aerial" type="Button" parent="CanvasLayer/VBoxContainer/LeftDebug/Cameras"]
+[node name="Aerial" type="Button" parent="CanvasLayer/VBoxContainer/Cameras"]
 layout_mode = 2
 toggle_mode = true
 button_group = SubResource("ButtonGroup_trn2v")
 text = "Aerial"
 
+[node name="DebugButton" type="CheckButton" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
+button_pressed = true
+text = "Debug"
+
+[node name="LeftDebug" type="VBoxContainer" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
+
+[node name="RaycastsButton" type="CheckButton" parent="CanvasLayer/VBoxContainer/LeftDebug"]
+layout_mode = 2
+button_pressed = true
+text = "Raycasts"
+
 [node name="DebugFields" type="VBoxContainer" parent="CanvasLayer/VBoxContainer/LeftDebug"]
 layout_mode = 2
 
-[node name="VBoxContainer2" type="VBoxContainer" parent="CanvasLayer"]
+[node name="Sliders" type="VBoxContainer" parent="CanvasLayer"]
 custom_minimum_size = Vector2(300, 0)
 anchors_preset = 1
 anchor_left = 1.0
@@ -157,46 +156,46 @@ offset_left = -300.0
 offset_bottom = 50.0
 grow_horizontal = 0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/VBoxContainer2"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Sliders"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="CanvasLayer/VBoxContainer2/HBoxContainer"]
+[node name="Label" type="Label" parent="CanvasLayer/Sliders/HBoxContainer"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 size_flags_horizontal = 8
 text = "Speed"
 horizontal_alignment = 2
 
-[node name="SpeedSlider" type="HSlider" parent="CanvasLayer/VBoxContainer2/HBoxContainer"]
+[node name="SpeedSlider" type="HSlider" parent="CanvasLayer/Sliders/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 min_value = -10.0
 max_value = 50.0
 
-[node name="SpeedLabel" type="Label" parent="CanvasLayer/VBoxContainer2/HBoxContainer"]
+[node name="SpeedLabel" type="Label" parent="CanvasLayer/Sliders/HBoxContainer"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 text = "0"
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/VBoxContainer2"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/Sliders"]
 layout_mode = 2
 
-[node name="Label" type="Label" parent="CanvasLayer/VBoxContainer2/HBoxContainer2"]
+[node name="Label" type="Label" parent="CanvasLayer/Sliders/HBoxContainer2"]
 custom_minimum_size = Vector2(80, 0)
 layout_mode = 2
 text = "Rotation"
 horizontal_alignment = 2
 
-[node name="RotationSlider" type="HSlider" parent="CanvasLayer/VBoxContainer2/HBoxContainer2"]
+[node name="RotationSlider" type="HSlider" parent="CanvasLayer/Sliders/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 1
 min_value = -0.1
 max_value = 0.1
-step = 0.01
+step = 0.001
 
-[node name="RotationLabel" type="Label" parent="CanvasLayer/VBoxContainer2/HBoxContainer2"]
+[node name="RotationLabel" type="Label" parent="CanvasLayer/Sliders/HBoxContainer2"]
 custom_minimum_size = Vector2(50, 0)
 layout_mode = 2
 text = "0"
@@ -266,11 +265,11 @@ skeleton = NodePath("../MechanicalArachnidRig/EDGE_ARM_LegsEdges_001/Skeleton3D"
 projection = NodePath("../Projection")
 raycastDistance = 50.0
 raycastHeight = 6.0
-minStepDistanceSquared = 2.0
+minStepDistanceSquared = 1.5
 footTargetRadialProjection = 4.25
 resetDistance = 20.0
-strideCycleFactor = 0.05
-maxLongestStrideDistance = 6.5
+strideCycleFactor = 0.08
+maxLongestStrideDistance = 6.11
 minCycle = 0.1
 projectionIterations = 10
 maxSpeed = 50.0
@@ -283,9 +282,8 @@ maxRotation = 0.1
 projectionRotationSample = 0.65
 rotationReductionBySpeed = SubResource("Curve_r0du0")
 rotationBySpeedRotation = SubResource("Curve_cm0pq")
-enableStepHeight = false
 maxHeight = 3.0
-maxStride = 2.5
+maxStride = 3.0
 enableDebugs = true
 
 [node name="CSGBox3D" type="CSGBox3D" parent="MechanicalArachnid"]
@@ -297,7 +295,7 @@ size = Vector3(1, 1, 6)
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3)
 
 [node name="SideCamera" type="Camera3D" parent="MechanicalArachnid"]
-transform = Transform3D(0.595468, 0, 0.803379, 0, 1, 0, -0.803379, 0, 0.595468, 6.34524, 2.46237, 5.50257)
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 9.8, 2.462, 0)
 projection = 1
 size = 9.216
 

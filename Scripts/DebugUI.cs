@@ -7,13 +7,12 @@ public partial class DebugUI : Node
 {
     [Export] private SpiderMovement spiderMovement;
     [Export] private ProceduralWalk proceduralWalk;
-
     [Export] private Control fieldsContainer;
     [Export] private Control leftDebug;
+
+    [Export] private CheckButton orthogonalCheck;
     [Export] private CheckButton debugCheck;
-
-    [Export] private CheckButton orthogonalButton;
-
+    [Export] private CheckButton raycastsCheck;
     [Export] private Slider speedSlider;
     [Export] private Slider rotationSlider;
     [Export] private Label speedLabel;
@@ -41,6 +40,10 @@ public partial class DebugUI : Node
         speedLabel.Text = spiderMovement.CurrentSpeed.ToString();
         rotationLabel.Text = spiderMovement.CurrentRotation.ToString();
 
+        proceduralWalk.EnableDebugs = raycastsCheck.ButtonPressed;
+
+        UpdateCameras();
+
         if (debugCheck.ButtonPressed)
         {
             leftDebug.Visible = true;
@@ -52,7 +55,6 @@ public partial class DebugUI : Node
         }
 
         UpdateUI();
-        UpdateCameras();
     }
 
     private void SetupUI()
@@ -102,7 +104,7 @@ public partial class DebugUI : Node
             {
                 Camera3D camera = cameras[i];
                 camera.MakeCurrent();
-                if (orthogonalButton.ButtonPressed)
+                if (orthogonalCheck.ButtonPressed)
                 {
                     camera.Projection = Camera3D.ProjectionType.Orthogonal;
                 }

@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Diagnostics;
+using System.Reflection.Metadata.Ecma335;
 using VectorExtensions;
 using static Godot.Mathf;
 
@@ -77,7 +78,9 @@ public partial class ProceduralWalk : Node3D
     [Debug] private float currentSpeedFactor;
     [Debug] private float speedRotationFactor;
 
-    private float longestStrideDistance;
+    [Debug] private float longestStrideDistance;
+
+    public bool EnableDebugs { get => enableDebugs; set => enableDebugs = value; }
 
     public override void _Ready()
     {
