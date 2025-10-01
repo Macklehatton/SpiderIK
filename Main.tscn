@@ -145,11 +145,6 @@ toggle_mode = true
 button_group = SubResource("ButtonGroup_trn2v")
 text = "Aerial"
 
-[node name="ResetButton" type="Button" parent="CanvasLayer/VBoxContainer/LeftDebug"]
-layout_mode = 2
-disabled = true
-text = "Reset IK"
-
 [node name="DebugFields" type="VBoxContainer" parent="CanvasLayer/VBoxContainer/LeftDebug"]
 layout_mode = 2
 
