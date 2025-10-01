@@ -65,6 +65,10 @@ public partial class DebugUI : Node
 
     private void UpdateUI()
     {
+        if (!debugCheck.ButtonPressed)
+        {
+            return;
+        }
         foreach (KeyValuePair<FieldInfo, Label> kvp in fieldValues)
         {
             kvp.Value.Text = kvp.Key.GetValue(proceduralWalk).ToString();
