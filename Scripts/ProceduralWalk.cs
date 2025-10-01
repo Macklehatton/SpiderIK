@@ -68,14 +68,14 @@ public partial class ProceduralWalk : Node3D
     private Vector3[] currentTargets;
     private Vector3[] footOrigins;
 
-    private float currentSpeed;
-    private float currentCycle;
+    [Debug] private float currentSpeed;
+    [Debug] private float currentCycle;
 
-    private float currentRotation;
+    [Debug] private float currentRotation;
 
-    private float currentRotationFactor;
-    private float currentSpeedFactor;
-    private float speedRotationFactor;
+    [Debug] private float currentRotationFactor;
+    [Debug] private float currentSpeedFactor;
+    [Debug] private float speedRotationFactor;
 
     private float longestStrideDistance;
 

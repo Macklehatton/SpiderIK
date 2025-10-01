@@ -1,5 +1,6 @@
-[gd_scene load_steps=25 format=3 uid="uid://ccnba2mdvamym"]
+[gd_scene load_steps=26 format=3 uid="uid://ccnba2mdvamym"]
 
+[ext_resource type="Script" uid="uid://cor8dpuurj6p5" path="res://Scripts/DebugUI.cs" id="1_trn2v"]
 [ext_resource type="Script" uid="uid://ffetdx4ooyjq" path="res://Scripts/SpiderMovement.cs" id="2_3dxm6"]
 [ext_resource type="Script" uid="uid://d0cb6qh74duvu" path="res://Scripts/ProceduralWalk.cs" id="2_fos0i"]
 [ext_resource type="Script" uid="uid://2n33y10okjb3" path="res://Scripts/KeepInBounds.cs" id="2_lgr22"]
@@ -75,6 +76,11 @@ albedo_texture = ExtResource("4_cm0pq")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
+[node name="DebugUI" type="Node" parent="CanvasLayer" node_paths=PackedStringArray("proceduralWalk", "fieldsContainer")]
+script = ExtResource("1_trn2v")
+proceduralWalk = NodePath("../../MechanicalArachnid/ProceduralWalk")
+fieldsContainer = NodePath("../DebugFields")
+
 [node name="VBoxContainer2" type="VBoxContainer" parent="CanvasLayer"]
 custom_minimum_size = Vector2(300, 0)
 anchors_preset = 1
@@ -129,8 +135,8 @@ offset_right = 1152.0
 size_flags_vertical = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer"]
-offset_right = 40.0
-offset_bottom = 40.0
+offset_right = 268.0
+offset_bottom = 155.0
 
 [node name="CheckButton" type="CheckButton" parent="CanvasLayer/VBoxContainer"]
 layout_mode = 2
@@ -159,58 +165,10 @@ text = "Top"
 layout_mode = 2
 text = "Reset IK"
 
-[node name="HBoxContainer4" type="HBoxContainer" parent="CanvasLayer/VBoxContainer"]
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/VBoxContainer/HBoxContainer4"]
-layout_mode = 2
-
-[node name="SpeedLabel" type="Label" parent="CanvasLayer/VBoxContainer/HBoxContainer4/HBoxContainer"]
-custom_minimum_size = Vector2(70, 0)
-layout_mode = 2
-text = "Speed"
-
-[node name="Speed" type="Label" parent="CanvasLayer/VBoxContainer/HBoxContainer4/HBoxContainer"]
-custom_minimum_size = Vector2(30, 0)
-layout_mode = 2
-text = "0"
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/VBoxContainer/HBoxContainer4"]
-layout_mode = 2
-
-[node name="SpeedLabel" type="Label" parent="CanvasLayer/VBoxContainer/HBoxContainer4/HBoxContainer2"]
-layout_mode = 2
-text = "Factor"
-
-[node name="Speed" type="Label" parent="CanvasLayer/VBoxContainer/HBoxContainer4/HBoxContainer2"]
-custom_minimum_size = Vector2(30, 0)
-layout_mode = 2
-text = "0"
-
-[node name="HBoxContainer3" type="HBoxContainer" parent="CanvasLayer/VBoxContainer"]
-layout_mode = 2
-
-[node name="RotationLabel" type="Label" parent="CanvasLayer/VBoxContainer/HBoxContainer3"]
-custom_minimum_size = Vector2(70, 0)
-layout_mode = 2
-text = "Rotation"
-
-[node name="Rotation" type="Label" parent="CanvasLayer/VBoxContainer/HBoxContainer3"]
-custom_minimum_size = Vector2(30, 0)
-layout_mode = 2
-text = "0"
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/VBoxContainer/HBoxContainer3"]
-layout_mode = 2
-
-[node name="SpeedLabel" type="Label" parent="CanvasLayer/VBoxContainer/HBoxContainer3/HBoxContainer2"]
-layout_mode = 2
-text = "Factor"
-
-[node name="Speed" type="Label" parent="CanvasLayer/VBoxContainer/HBoxContainer3/HBoxContainer2"]
-custom_minimum_size = Vector2(30, 0)
-layout_mode = 2
-text = "0"
+[node name="DebugFields" type="VBoxContainer" parent="CanvasLayer"]
+offset_top = 159.0
+offset_right = 268.0
+offset_bottom = 159.0
 
 [node name="AerialCamera" type="Camera3D" parent="."]
 transform = Transform3D(0.601812, -0.680949, 0.41729, 0, 0.522502, 0.852638, -0.798637, -0.513128, 0.314448, 24.6471, 46.1284, 8.00414)
@@ -220,6 +178,7 @@ size = 29.283
 [node name="MechanicalArachnid" type="CharacterBody3D" parent="." node_paths=PackedStringArray("proceduralWalk") groups=["spider"]]
 collision_layer = 2
 script = ExtResource("2_3dxm6")
+currentSpeed = 23.83
 proceduralWalk = NodePath("ProceduralWalk")
 
 [node name="KeepInBounds" type="Node3D" parent="MechanicalArachnid" node_paths=PackedStringArray("bounds")]
