@@ -85,7 +85,7 @@ public partial class ProceduralWalk : Node3D
     public override void _Ready()
     {
         // Giving my GPU a break
-        Engine.MaxFps = 60;
+        Engine.MaxFps = 120;
 
         feet = GetFeet();
         rayCasts = AddRayCasts(feet);
@@ -120,8 +120,6 @@ public partial class ProceduralWalk : Node3D
 
     public override void _PhysicsProcess(double delta)
     {
-        UpdateCycle();
-
         Vector3 relativeVelocity = spiderMovement.Velocity * spiderMovement.GlobalBasis;
         int moveDirection = Sign(relativeVelocity.Z);
 
@@ -131,9 +129,13 @@ public partial class ProceduralWalk : Node3D
         UpdateProjection();
         UpdateRaycastProjections(moveDirection);
 
-        MoveFeet();
-
         HandleDebug();
+    }
+
+    public override void _Process(double delta)
+    {
+        UpdateCycle((float)delta);
+        MoveFeet();
     }
 
     private void HandleDebug()
@@ -163,11 +165,11 @@ public partial class ProceduralWalk : Node3D
         }
     }
 
-    private void UpdateCycle()
+    private void UpdateCycle(float delta)
     {
         float cycleDelta = 0.0f;
-        cycleDelta += longestStrideDistance * strideCycleFactor;
-        cycleDelta = Max(cycleDelta, minCycle);
+        cycleDelta += longestStrideDistance * strideCycleFactor * delta;
+        cycleDelta = Max(cycleDelta, minCycle * delta);
 
         currentCycle += cycleDelta;
 
