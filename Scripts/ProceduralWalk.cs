@@ -128,7 +128,7 @@ public partial class ProceduralWalk : Node3D
         currentSpeed = spiderMovement.CurrentSpeed / Engine.PhysicsTicksPerSecond;
         currentRotation = spiderMovement.CurrentRotation;
 
-        UpdateProjection(moveDirection);
+        UpdateProjection();
         UpdateRaycastProjections(moveDirection);
 
         MoveFeet();
@@ -179,7 +179,7 @@ public partial class ProceduralWalk : Node3D
         }
     }
 
-    private void UpdateProjection(int moveDirection)
+    private void UpdateProjection()
     {
         // 0-10 inclusive
         projectionCurve.PointCount = projectionIterations + 1;
