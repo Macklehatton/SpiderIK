@@ -1,7 +1,6 @@
 using Godot;
 using System;
 using System.Diagnostics;
-using System.Reflection.Metadata.Ecma335;
 using VectorExtensions;
 using static Godot.Mathf;
 
@@ -26,6 +25,7 @@ public partial class ProceduralWalk : Node3D
     [Export] private float strideCycleFactor;
     [Export] private float maxLongestStrideDistance;
     [Export] private float minCycle;
+    [Export] private Curve cycleBySpeedPlusRotation;
 
     [ExportGroup("Projection")]
     [Export] private int projectionIterations;
@@ -169,6 +169,8 @@ public partial class ProceduralWalk : Node3D
     {
         float cycleDelta = 0.0f;
         cycleDelta += longestStrideDistance * strideCycleFactor * delta;
+        float speedPlusRotation = (currentSpeedFactor + currentRotationFactor) / 2.0f;
+        cycleDelta *= cycleBySpeedPlusRotation.Sample(speedPlusRotation);
         cycleDelta = Max(cycleDelta, minCycle * delta);
 
         currentCycle += cycleDelta;

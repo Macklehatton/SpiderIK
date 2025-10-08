@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=3 uid="uid://ccnba2mdvamym"]
+[gd_scene load_steps=28 format=3 uid="uid://ccnba2mdvamym"]
 
 [ext_resource type="Script" uid="uid://cor8dpuurj6p5" path="res://Scripts/DebugUI.cs" id="1_trn2v"]
 [ext_resource type="Script" uid="uid://ffetdx4ooyjq" path="res://Scripts/SpiderMovement.cs" id="2_3dxm6"]
@@ -16,6 +16,11 @@ radius = 3.25
 
 [sub_resource type="Curve" id="Curve_lgr22"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0.25), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_trn2v"]
+_limits = [0.0, 10.0, 0.0, 1.0]
+_data = [Vector2(0, 1), 0.0, 4.91, 0, 1, Vector2(1, 5.91), 4.91, 0.0, 1, 0]
 point_count = 2
 
 [sub_resource type="Curve" id="Curve_sc1dx"]
@@ -269,9 +274,9 @@ raycastHeight = 6.0
 minStepDistanceSquared = 1.0
 footTargetRadialProjection = 4.25
 resetDistance = 20.0
-strideCycleFactor = 4.4
+strideCycleFactor = 1.0
 maxLongestStrideDistance = 6.11
-minCycle = 0.5
+cycleBySpeedPlusRotation = SubResource("Curve_trn2v")
 projectionIterations = 10
 maxSpeed = 50.0
 projectionTranslationSample = 1.0
